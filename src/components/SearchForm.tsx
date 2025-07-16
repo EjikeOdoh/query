@@ -1,12 +1,16 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-export function SearchForm() {
+type SearchFormProps = {
+  action: string | ((formData: FormData) => void | Promise<void>) | undefined
+}
+
+export function SearchForm({action}:SearchFormProps) {
   return (
-    <form className="flex w-full max-w-sm items-center gap-2">
-      <Input type="text" placeholder="Enter student name" required />
+    <form action={action} className="flex w-full max-w-sm items-center gap-2">
+      <Input name="name" type="text" placeholder="Enter student name" required />
       <Button type="submit" variant="outline">
-        Subscribe
+        Search
       </Button>
     </form>
   )

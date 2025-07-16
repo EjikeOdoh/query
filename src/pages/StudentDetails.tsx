@@ -1,21 +1,33 @@
-import useGetStudentDetails from "@/hooks/useGetStudentDetails"
-import type { StudentDetail } from "@/types/types"
-import { useParams } from "react-router"
+import useGetStudentDetails from "@/hooks/useGetStudentDetails";
+import type { StudentDetail } from "@/utils/types";
+import { useParams } from "react-router";
 
-export default function StudentDetail() {
-    const { studentId } = useParams()
-    const { isLoading, isError, error, data } = useGetStudentDetails(studentId)
+export default function Student() {
+    const { studentId } = useParams();
+    
+    if (!studentId) {
+        return <div>No student ID provided</div>
+    }
+
+    const { isLoading, isError, error, data } = useGetStudentDetails(studentId);
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <div>Loading...</div>;
     }
 
     if (isError) {
-        return <div>Error: {error.message}</div>
+        return <div>Error: {error.message}</div>;
     }
 
-    const studentDetail: StudentDetail = data
-    const date = new Date(studentDetail.dob)
+
+    if (!data) {
+        return <div>No student data found</div>;
+    }
+
+
+    const studentDetail: StudentDetail = data;
+    const date = new Date(studentDetail.dob);
+
     return (
         <div>
             <div>
@@ -42,9 +54,7 @@ export default function StudentDetail() {
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
-    )
+    );
 }

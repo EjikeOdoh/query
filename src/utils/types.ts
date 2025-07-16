@@ -6,6 +6,11 @@ export interface Student {
     country: string
     yearJoined: number
   }
+
+export interface LoginForm {
+  name: string
+  password: string
+}
   
 export interface Meta {
     hasNextPage: boolean
@@ -81,3 +86,24 @@ export interface StudentDetail {
   grades: Grade[];
   participations: Participation[];
 }
+
+export interface SearchResult {
+  count: number
+  students: Student[]
+}
+
+export type TokenState = {
+  token: string | null;
+};
+
+export interface ProfileState {
+  role: "admin" | "staff" | "viewer" | null
+  name?: string
+}
+
+export interface ProfileAction  {
+  type: 'loggedIn' | 'loggedOut'
+  value?: ProfileState | null
+}
+
+export type TokenAction =  { type: 'login' | 'logout'; value: string | null }

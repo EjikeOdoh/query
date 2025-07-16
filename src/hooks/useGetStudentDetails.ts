@@ -1,10 +1,11 @@
 
+import client from "@/utils/api";
+import type { StudentDetail } from "@/utils/types";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
 
-async function getStudentDetails(id: any) {
-   return axios.get(`http://localhost:3000/students/${id}`)
+async function getStudentDetails(id: any): Promise<StudentDetail | undefined> {
+   return client.get(`/students/${id}`)
    .then(res=>res.data)
 }
 

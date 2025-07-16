@@ -1,36 +1,17 @@
-interface Student {
-    country: string
-    dob: Date
-    firstName: string
-    lastName: string
-    id: number
-    yearJoined: number
-  }
-  
-interface Meta {
-    hasNextPage: boolean
-    hasPreviousPage: boolean
-    limit: number
-    nextPage: number
-    page: number
-    total: number
-    totalPages: number
-  }
-  
-interface StudentResponse {
-    data: Student[]
-    meta: Meta
-  }
-  
+import client from "./api"
+import type { LoginForm } from "./types"
 
-export async function getStudents() {
+export async function searchStudent(name: string) {
+ const res = await client.get(`/students/search?name=${name}`)
+ return await res.data
+}
+
+export async function login(payload: LoginForm) {
     try {
-      const res = await fetch('http://localhost:3000/students')
-      const data: StudentResponse = await res.json()
-  
-      return data;
+        const res = await client.post('/auth/login', payload)
+        return res.data
     } catch (error) {
-      throw error
+        console.log(error)
     }
+}
 
-  }

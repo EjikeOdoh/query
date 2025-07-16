@@ -1,16 +1,18 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import type { StudentPagination } from "../types/types";
+import type { StudentPagination } from "../utils/types";
+import client from "@/utils/api";
 
 async function getAllStudents(meta: StudentPagination) {
-   return axios.get(`http://localhost:3000/students?page=${meta.page}&limit=${meta.limit}`)
-   .then(res=>res.data)
+   return client.get(`/students?page=${meta.page}&limit=${meta.limit}`)
+      .then(res => res.data)
 }
 
-export default function useGetAllStudents(meta: StudentPagination) {
+export default function useGetAllStudents(meta: StudentPagination, token: string | null) {
    return useQuery({
-        queryKey:['students', meta.page, meta.limit],
-        queryFn: () => getAllStudents(meta),
-        placeholderData: keepPreviousData
-    })
+      queryKey: ['students', meta.page, meta.limit],
+      queryFn: () => getAllStudents(meta),
+      placeholderData: keepPreviousData,
+      staleTime: 5 * 60 * 1000,
+      enabled: !!(token)
+   })
 }
