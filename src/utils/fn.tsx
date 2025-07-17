@@ -6,6 +6,8 @@ export async function searchStudent(name: string) {
  return await res.data
 }
 
+
+
 export async function login(payload: LoginForm) {
     try {
         const res = await client.post('/auth/login', payload)
@@ -13,5 +15,10 @@ export async function login(payload: LoginForm) {
     } catch (error) {
         console.log(error)
     }
+}
+
+export async function getProfile() {
+    const res = await client.get('/auth/profile')
+    return res.data
 }
 

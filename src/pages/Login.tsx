@@ -20,7 +20,6 @@ const dispatch: Dispatch<TokenAction> = useContext(TokenReducerContext)
         const password = formData.get('password') as string
         try {
             const res:{token: string} = await login({name, password})
-            console.log(res)
             
             setValue(res.token)
 
