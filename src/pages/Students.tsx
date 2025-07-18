@@ -1,6 +1,6 @@
 
-import { useState } from "react"
-import useGetAllStudents from "../hooks/useGetAllStudents"
+import { useEffect, useState } from "react"
+import useGetAllStudents, { getAllStudents } from "../hooks/useGetAllStudents"
 import type { Meta, Student, StudentPagination, StudentResponse } from "../utils/types"
 import {
   Select,
@@ -25,11 +25,10 @@ import {
 import StudentTable from "@/components/Table"
 import { SearchForm } from "@/components/SearchForm"
 import { useNavigate } from "react-router"
-import { useLocalStorage } from "react-use"
 
 export default function Students() {
 
-  const [value]  = useLocalStorage("myToken") as string[]
+  const [token, setToken] = useState("")
 
   const navigate = useNavigate()
 
@@ -40,16 +39,38 @@ export default function Students() {
     })
   }
 
+  useEffect(() => {
+    const myToken = window.sessionStorage.getItem("myToken")
+    if (myToken) {
+      setToken(myToken)
+      new Promise((resolve, reject) => {
+        try {
+
+          const cover = resolve(() => getAllStudents(meta))
+          console.log(cover)
+
+        } catch (error) {
+          reject(error)
+        }
+
+      })
+
+    }
+  }, [token])
+
   const [meta, setMeta] = useState<StudentPagination>({
     page: 1,
     limit: 20
   })
-  const { isPending, isError, data, error } = useGetAllStudents(meta, value)
+
+  const { isPending, isError, data, error } = useGetAllStudents(meta, token)
+
   if (isPending) {
     return <span>Loading...</span>
   }
 
   if (isError) {
+    console.log(error)
     return <span>Error: {error.message}</span>
   }
 

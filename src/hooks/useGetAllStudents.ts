@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { StudentPagination } from "../utils/types";
 import client from "@/utils/api";
 
-async function getAllStudents(meta: StudentPagination) {
+export async function getAllStudents(meta: StudentPagination) {
    return client.get(`/students?page=${meta.page}&limit=${meta.limit}`)
       .then(res => res.data)
 }
@@ -14,5 +14,6 @@ export default function useGetAllStudents(meta: StudentPagination, token: string
       placeholderData: keepPreviousData,
       staleTime: 5 * 60 * 1000,
       enabled: !!(token)
+      
    })
 }

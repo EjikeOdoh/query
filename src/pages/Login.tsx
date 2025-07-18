@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import {useLocalStorage} from 'react-use'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +9,6 @@ import { useContext, type Dispatch } from "react";
 
 export default function LoginPage() {
 
-const [_, setValue] = useLocalStorage("myToken", "")
 
 const dispatch: Dispatch<TokenAction> = useContext(TokenReducerContext)
 
@@ -21,7 +19,7 @@ const dispatch: Dispatch<TokenAction> = useContext(TokenReducerContext)
         try {
             const res:{token: string} = await login({name, password})
             
-            setValue(res.token)
+         window.sessionStorage.setItem("myToken", res.token)
 
             dispatch({
                 type: "login",

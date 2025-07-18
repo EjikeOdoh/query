@@ -1,5 +1,4 @@
 import { Outlet } from "react-router";
-import { useLocalStorage } from "react-use";
 import { Button } from "@/components/ui/button";
 import useGetProfile from "@/hooks/useGetProfile";
 import { useEffect } from "react";
@@ -7,22 +6,25 @@ import type { ProfileState } from "@/utils/types";
 
 export default function Protected() {
 
-    const [token, , removeToken] = useLocalStorage("myToken");
-    const [profile, setProfile, removeProfile] = useLocalStorage("profile");
+    let accountType: ProfileState
+    let token = sessionStorage.getItem("myToken");
+   let profile = sessionStorage.getItem("profile")
+   if (profile) {
+    accountType = JSON.parse(profile)
+   }
 
-    let accountType: ProfileState = profile as ProfileState
+   
 
     const { data } = useGetProfile(token as string)
 
     useEffect(() => {
         if (data) {
-            setProfile(data);
+            sessionStorage.setItem("profile", data)
         }
-    }, [data, setProfile]);
+    }, [data]);
 
     function logout() {
-        removeToken();
-        removeProfile();
+        sessionStorage.clear();
         window.history.replaceState({}, '', '/');
         window.location.reload();
     }
@@ -34,10 +36,10 @@ export default function Protected() {
 
             <Outlet />
             <div className="flex gap-2 items-center justify-center">
-
+{/* 
                 {
-                    (!!accountType && accountType.role === "admin") && <Button>Admin</Button>
-                }
+                    (accountType.role === "admin") && <Button>Admin</Button>
+                } */}
 
                 <Button onClick={logout}>Logout</Button>
             </div>
