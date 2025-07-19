@@ -28,7 +28,9 @@ import { useNavigate } from "react-router"
 
 export default function Students() {
 
-  const [token, setToken] = useState("")
+  const [token] = useState(()=>{
+   return window.sessionStorage.getItem("myToken")
+  })
 
   const navigate = useNavigate()
 
@@ -38,25 +40,6 @@ export default function Students() {
       state: studentName
     })
   }
-
-  useEffect(() => {
-    const myToken = window.sessionStorage.getItem("myToken")
-    if (myToken) {
-      setToken(myToken)
-      new Promise((resolve, reject) => {
-        try {
-
-          const cover = resolve(() => getAllStudents(meta))
-          console.log(cover)
-
-        } catch (error) {
-          reject(error)
-        }
-
-      })
-
-    }
-  }, [token])
 
   const [meta, setMeta] = useState<StudentPagination>({
     page: 1,

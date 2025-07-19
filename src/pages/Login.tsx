@@ -10,16 +10,16 @@ import { useContext, type Dispatch } from "react";
 export default function LoginPage() {
 
 
-const dispatch: Dispatch<TokenAction> = useContext(TokenReducerContext)
+    const dispatch: Dispatch<TokenAction> = useContext(TokenReducerContext)
 
 
     async function handleLogin(formData: FormData) {
         const name = formData.get('name') as string
         const password = formData.get('password') as string
         try {
-            const res:{token: string} = await login({name, password})
-            
-         window.sessionStorage.setItem("myToken", res.token)
+            const res: { token: string } = await login({ name, password })
+
+            window.sessionStorage.setItem("myToken", res.token)
 
             dispatch({
                 type: "login",

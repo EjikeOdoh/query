@@ -14,10 +14,7 @@ client.interceptors.request.use(
 
         let token = sessionStorage.getItem('myToken');
 
-        console.log(token)
-
         if (token) {
-            token = JSON.parse(token)
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
