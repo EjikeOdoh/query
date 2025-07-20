@@ -1,35 +1,35 @@
 export interface Student {
-    id: number
-    firstName: string
-    lastName: string
-    dob: Date
-    country: string
-    yearJoined: number
-  }
+  id: number
+  firstName: string
+  lastName: string
+  dob: Date
+  country: string
+  yearJoined: number
+}
 
 export interface LoginForm {
   name: string
   password: string
 }
-  
+
 export interface Meta {
-    hasNextPage: boolean
-    hasPreviousPage: boolean
-    limit: number
-    nextPage: number
-    page: number
-    total: number
-    totalPages: number
-  }
-  
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+  limit: number
+  nextPage: number
+  page: number
+  total: number
+  totalPages: number
+}
+
 export interface StudentResponse {
-    data: Student[]
-    meta: Meta
-  }
+  data: Student[]
+  meta: Meta
+}
 
 export interface StudentPagination {
-    page: number
-    limit: number
+  page: number
+  limit: number
 }
 
 export interface Grade {
@@ -101,9 +101,20 @@ export interface ProfileState {
   name?: string
 }
 
-export interface ProfileAction  {
+export interface ProfileAction {
   type: 'loggedIn' | 'loggedOut'
   value?: ProfileState | null
 }
 
-export type TokenAction =  { type: 'login' | 'logout'; value: string | null }
+export type TokenAction = { type: 'login' | 'logout'; value: string | null }
+
+export type Program =  "ASCG" | "CBC" | "DSC" | "SSC"
+
+export interface DashStats {
+  year: string | number;
+  totalCount: number;
+  countByCountry: ({ country: string, count: number } | any)[];
+  countByProgram: ({ program: Program, count: number } | any)[];
+  uniqueCount: number;
+  target: number;
+}

@@ -1,6 +1,8 @@
 import client from "./api"
 import type { LoginForm, StudentDetail, StudentPagination } from "./types"
 
+
+// Fetchers
 export async function searchStudent(name: string) {
     const res = await client.get(`/students/search?name=${name}`)
     return await res.data
@@ -16,6 +18,23 @@ export async function getAllStudents(meta: StudentPagination) {
         .then(res => res.data)
 }
 
+export async function getProfile() {
+    const res = await client.get('/auth/profile')
+    return res.data
+}
+
+export async function getStats(year: number) {
+    let res;
+    if (year === 0) {
+        res = await client.get(`/participation`)
+    } else {
+        res = await client.get(`/participation?year=${year}`)
+    }
+    return res.data
+}
+
+
+// Auth functions
 export async function login(payload: LoginForm) {
     try {
         const res = await client.post('/auth/login', payload)
@@ -25,14 +44,10 @@ export async function login(payload: LoginForm) {
     }
 }
 
-export async function getProfile() {
-    const res = await client.get('/auth/profile')
-    return res.data
-}
-
 export function logout() {
     sessionStorage.clear();
     window.history.replaceState({}, '', '/');
     window.location.reload();
 }
+
 
