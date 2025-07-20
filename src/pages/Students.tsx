@@ -1,6 +1,5 @@
 
-import { useEffect, useState } from "react"
-import useGetAllStudents, { getAllStudents } from "../hooks/useGetAllStudents"
+import { useState } from "react"
 import type { Meta, Student, StudentPagination, StudentResponse } from "../utils/types"
 import {
   Select,
@@ -25,6 +24,8 @@ import {
 import StudentTable from "@/components/Table"
 import { SearchForm } from "@/components/SearchForm"
 import { useNavigate } from "react-router"
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { useGetAllStudents } from "@/hooks/use-students"
 
 export default function Students() {
 
@@ -36,7 +37,7 @@ export default function Students() {
 
   function logInput(formData: FormData) {
     const studentName = formData.get('name') as string;
-    navigate('/search', {
+    navigate('/students/search', {
       state: studentName
     })
   }
@@ -63,7 +64,10 @@ export default function Students() {
 
   return (
     <>
+    <div className="flex gap-5 items-center">
+    <SidebarTrigger />
       <SearchForm action={logInput} />
+    </div>
       <div>Page {meta.page} of {info.totalPages}</div>
       <div className="">
         <Select onValueChange={(value) => {

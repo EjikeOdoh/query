@@ -97,7 +97,7 @@ export type TokenState = {
 };
 
 export interface ProfileState {
-  role: "admin" | "staff" | "viewer" | null
+  role: "admin" | "editor" | "viewer" | null
   name?: string
 }
 

@@ -16,7 +16,7 @@ export default function StudentTable({ data }: StudentTableProps) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">Country</TableHead>
+          <TableHead className="">Country</TableHead>
           <TableHead className="text-left">First Name</TableHead>
           <TableHead className="text-left">Last Name</TableHead>
           <TableHead className="text-left">Year Joined</TableHead>

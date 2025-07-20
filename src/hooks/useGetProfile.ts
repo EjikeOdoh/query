@@ -6,6 +6,6 @@ export default function useGetProfile(token: string) {
     return useQuery({
         queryKey:['profile'],
         queryFn: getProfile,
-        enabled: !!(token)
+        enabled: !!(token),
     })
 }

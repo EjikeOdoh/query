@@ -1,4 +1,4 @@
-import useGetStudentDetails from "@/hooks/useGetStudentDetails";
+import { useGetStudentDetails } from "@/hooks/use-students";
 import type { StudentDetail } from "@/utils/types";
 import { useParams } from "react-router";
 
