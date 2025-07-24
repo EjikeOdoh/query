@@ -10,15 +10,18 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { NavLink } from 'react-router'
+import { NavLink, useLocation } from 'react-router'
 import { logout } from '@/utils/fn'
 import { ChartLine, GraduationCap, Handshake, LogOut, ShieldUser, User, UserRoundPlus } from 'lucide-react'
-import { Dialog, DialogHeader } from './ui/dialog'
-import { DialogContent, DialogDescription } from '@radix-ui/react-dialog'
 
 
 export default function MySidebar({ profile }: { profile: ProfileState }) {
     const { role } = profile
+    const { pathname } = useLocation();
+
+    const activeLink: string = "m-auto py-4 px-6 bg-black text-white hover:bg-black hover:text-white"
+    const normalLink: string = "m-auto py-4 px-6"
+
     return (
         <Sidebar collapsible="icon" variant='sidebar'>
             <SidebarHeader className='px-10 py-10 group-data-[collapsible=icon]:px-0'>
@@ -30,9 +33,9 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
             <SidebarContent className='p-10 group-data-[collapsible=icon]:p-0'>
                 <SidebarMenu className='gap-5 group-data-[collapsible=icon]:gap-3.5'>
                     <SidebarMenuItem className='w-full'>
-                        <SidebarMenuButton className='m-auto py-4 px-6' asChild>
-                            <NavLink className={({ isActive }) => isActive ? "text-red-700 flex gap-2" : ""} to='/'>
-                                <ChartLine size={16} />
+                        <SidebarMenuButton className={pathname === "/" ? activeLink : normalLink} asChild>
+                            <NavLink to='/'>
+                                <ChartLine />
                                 <span>
                                     Dashboard
                                 </span>
@@ -43,7 +46,7 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
                         (role === "admin" || role === "editor") && (
                             <>
                                 <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className='m-auto py-4 px-6' asChild>
+                                    <SidebarMenuButton className={pathname === "/students" ? activeLink : normalLink} asChild>
                                         <NavLink to='/students'>
                                             <GraduationCap />
                                             <span>
@@ -60,7 +63,7 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
                         role === 'admin' && (
                             <>
                                 <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className='m-auto py-4 px-6' asChild>
+                                    <SidebarMenuButton className={pathname === "/volunteers" ? activeLink : normalLink} asChild>
                                         <NavLink to='/volunteers'>
                                             <UserRoundPlus />
                                             <span>
@@ -70,7 +73,7 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                                 <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className='m-auto py-4 px-6' asChild>
+                                    <SidebarMenuButton className={pathname === "/staff" ? activeLink : normalLink} asChild>
                                         <NavLink to='/staff'>
                                             <User />
                                             <span>
@@ -80,7 +83,7 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                                 <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className='m-auto py-4 px-6' asChild>
+                                    <SidebarMenuButton className={pathname === "/partners" ? activeLink : normalLink} asChild>
                                         <NavLink to='/partners'>
                                             <Handshake />
                                             <span>
@@ -91,7 +94,7 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
                                 </SidebarMenuItem>
 
                                 <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className='m-auto py-4 px-6' asChild>
+                                    <SidebarMenuButton className={pathname === '/participation' ? activeLink : normalLink} asChild>
                                         <NavLink to='/participation'>
                                             <ShieldUser />
                                             <span>
