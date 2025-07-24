@@ -13,6 +13,7 @@ import Staff from "./Staff";
 import Dashboard from "./Dashboard";
 import Volunteers from "./Volunteers";
 import Partners from "./Partners";
+import Participation from "./Participation";
 
 export default function Navigation() {
 
@@ -72,7 +73,9 @@ export default function Navigation() {
                                 <Route path='/staff/:partnerId' element={<Student />} />
 
                                 {/* Admin routes */}
+                                <Route path='/participation' element={<Participation />} />
                                 <Route path='/students/upload' element={<Students />} />
+
                             </>
                         }
 

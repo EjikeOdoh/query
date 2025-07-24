@@ -48,9 +48,9 @@ export interface Grade {
 }
 
 export interface Participation {
-  participation_year: number;
-  participation_quarter: number;
-  program_program: string;
+  year: number;
+  quarter: number;
+  program: string;
 }
 
 export interface StudentDetail {
@@ -111,10 +111,23 @@ export type TokenAction = { type: 'login' | 'logout'; value: string | null }
 export type Program =  "ASCG" | "CBC" | "DSC" | "SSC"
 
 export interface DashStats {
-  year: string | number;
-  totalCount: number;
-  countByCountry: ({ country: string, count: number } | any)[];
-  countByProgram: ({ program: Program, count: number } | any)[];
-  uniqueCount: number;
-  target: number;
+  year: string | number
+  totalCount: number
+  countByCountry: ({ country: string, count: number } | any)[]
+  countByProgram: ({ program: Program, count: number } | any)[]
+  countByYear: ({year: number, count: number}| any)[]
+  uniqueCount: number
+  target: number
+}
+
+export interface ParticipationData {
+  participationId: any
+  year: any
+  quarter: any
+  studentId: any
+  firstName: any
+  lastName: any
+  dob: any
+  country: any
+  program: any
 }

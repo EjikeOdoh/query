@@ -10,7 +10,6 @@ export  function useGetAllStudents(meta: StudentPagination, token: string | null
       placeholderData: keepPreviousData,
       staleTime: 5 * 60 * 1000,
       enabled: !!(token)
-      
    })
 }
 

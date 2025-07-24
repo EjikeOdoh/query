@@ -1,5 +1,5 @@
 import client from "./api"
-import type { LoginForm, StudentDetail, StudentPagination } from "./types"
+import type { LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
 
 
 // Fetchers
@@ -16,6 +16,16 @@ export async function getStudentDetails(id: any): Promise<StudentDetail | undefi
 export async function getAllStudents(meta: StudentPagination) {
     return client.get(`/students?page=${meta.page}&limit=${meta.limit}`)
         .then(res => res.data)
+}
+
+export async function getAllParticipation(filterOptions: Participation):Promise<ParticipationData[]> {
+    const query = Object.entries(filterOptions)
+    .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
+    .join('&');
+
+    console.log(query)
+    return client.get('/participation/filter').then(res=>res.data)
 }
 
 export async function getProfile() {

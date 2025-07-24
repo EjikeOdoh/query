@@ -1,15 +1,15 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
-import type { Student } from "@/utils/types"
+import type { ParticipationData } from "@/utils/types"
 import { Button } from "./ui/button"
 import { MoreHorizontal } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { useNavigate } from "react-router" 
 
-interface StudentTableProps {
-  data: Student[]
+interface PTableProps {
+  data: ParticipationData[]
 }
 
-export default function StudentTable({ data }: StudentTableProps) {
+export default function PTable({ data }: PTableProps) {
   const navigate = useNavigate()
 
   return (
@@ -19,17 +19,23 @@ export default function StudentTable({ data }: StudentTableProps) {
           <TableHead className="">Country</TableHead>
           <TableHead className="text-left">First Name</TableHead>
           <TableHead className="text-left">Last Name</TableHead>
-          <TableHead className="text-left">Year Joined</TableHead>
+          <TableHead className="text-left">Program</TableHead>
+          <TableHead className="text-left">Quarter</TableHead>
+          <TableHead className="text-left">Year</TableHead>
           <TableHead className="text-center">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map(student => (
-          <TableRow key={student.id}>
-            <TableCell className="font-medium text-left">{student.country}</TableCell>
-            <TableCell className="text-left">{student.firstName}</TableCell>
-            <TableCell className="text-left">{student.lastName}</TableCell>
-            <TableCell className="text-left">{student.yearJoined}</TableCell>
+        {data.map(p => (
+          <TableRow key={p.participationId}>
+            <TableCell className="font-medium text-left">{p.country}</TableCell>
+            <TableCell className="text-left">{p.firstName}</TableCell>
+            <TableCell className="text-left">{p.lastName}</TableCell>
+            <TableCell className="text-left">{p.program}</TableCell>
+            <TableCell className="text-left">{p.quarter}</TableCell>
+
+            <TableCell className="text-left">{p.year}</TableCell>
+
             <TableCell className="text-center">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -41,7 +47,7 @@ export default function StudentTable({ data }: StudentTableProps) {
                 <DropdownMenuContent align="end" className="bg-white">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem
-                    onClick={() => navigate(`/students/${student.id}`)}
+                    onClick={() => navigate(`/students/${p.studentId}`)}
                   >
                     Edit
                   </DropdownMenuItem>

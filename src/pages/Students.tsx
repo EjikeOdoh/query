@@ -29,8 +29,8 @@ import { useGetAllStudents } from "@/hooks/use-students"
 
 export default function Students() {
 
-  const [token] = useState(()=>{
-   return window.sessionStorage.getItem("myToken")
+  const [token] = useState(() => {
+    return window.sessionStorage.getItem("myToken")
   })
 
   const navigate = useNavigate()
@@ -64,10 +64,10 @@ export default function Students() {
 
   return (
     <>
-    <div className="flex gap-5 items-center">
-    <SidebarTrigger />
-      <SearchForm action={logInput} />
-    </div>
+      <div className="flex gap-5 items-center">
+        <SidebarTrigger />
+        <SearchForm action={logInput} />
+      </div>
       <div>Page {meta.page} of {info.totalPages}</div>
       <div className="">
         <Select onValueChange={(value) => {
@@ -76,7 +76,7 @@ export default function Students() {
           })
         }} >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Choose size" />
+            <SelectValue placeholder={meta.limit} />
           </SelectTrigger>
           <SelectContent className="bg-white">
             <SelectGroup>
