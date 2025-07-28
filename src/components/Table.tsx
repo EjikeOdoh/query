@@ -13,23 +13,25 @@ export default function StudentTable({ data }: StudentTableProps) {
   const navigate = useNavigate()
 
   return (
-    <Table>
-      <TableHeader>
+    <Table className="rounded-xl">
+      <TableHeader className="bg-[#FEF7E6]">
         <TableRow>
-          <TableHead className="">Country</TableHead>
-          <TableHead className="text-left">First Name</TableHead>
-          <TableHead className="text-left">Last Name</TableHead>
-          <TableHead className="text-left">Year Joined</TableHead>
-          <TableHead className="text-center">Actions</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light">First Name</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light">Last Name</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light">School</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light">Year Joined</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light">Country</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {data.map(student => (
           <TableRow key={student.id}>
-            <TableCell className="font-medium text-left">{student.country}</TableCell>
-            <TableCell className="text-left">{student.firstName}</TableCell>
-            <TableCell className="text-left">{student.lastName}</TableCell>
-            <TableCell className="text-left">{student.yearJoined}</TableCell>
+            <TableCell className="text-[#171717] text-sm font-light">{student.firstName}</TableCell>
+            <TableCell className="text-[#171717] text-sm font-light">{student.lastName}</TableCell>
+            <TableCell className="text-[#171717] text-sm font-light">{student.school}</TableCell>
+            <TableCell className="text-[#171717] text-sm font-light">{student.yearJoined}</TableCell>
+            <TableCell className="text-[#171717] text-sm font-light">{student.country}</TableCell>
             <TableCell className="text-center">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

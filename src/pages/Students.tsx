@@ -65,13 +65,14 @@ export default function Students() {
 
   return (
     <>
-    <Header />
-      <div className="flex gap-5 items-center">
-        <SidebarTrigger />
-        <SearchForm action={logInput} />
-      </div>
-      <div>Page {meta.page} of {info.totalPages}</div>
-      <div className="">
+      <Header />
+      <div className="p-8">
+        <div className="flex gap-5 items-center justify-between">
+          <p className="text-sm font-light">Page {meta.page} of {info.totalPages}</p>
+          <SearchForm action={logInput} />
+        </div>
+
+        {/* <div className="">
         <Select onValueChange={(value) => {
           setMeta({
             page: 1, limit: Number(value)
@@ -90,61 +91,63 @@ export default function Students() {
           </SelectContent>
         </Select>
 
-      </div>
+      </div> */}
 
-      <StudentTable data={students} />
-      {/* {StudentTable(students)} */}
+        <StudentTable data={students} />
+        {/* {StudentTable(students)} */}
 
-      <div>
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                isActive={info.hasPreviousPage}
-                onClick={() => {
-                  if (info.hasPreviousPage) {
-                    setMeta({ ...meta, page: meta.page - 1 })
+        <div>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  isActive={info.hasPreviousPage}
+                  onClick={() => {
+                    if (info.hasPreviousPage) {
+                      setMeta({ ...meta, page: meta.page - 1 })
+                    }
+                  }}
+                />
+              </PaginationItem>
+              {
+                info.totalPages > 5 ? (<>
+                  {
+                    [1, 2, 3].map(x => (<PaginationItem
+                      key={x}>
+                      <PaginationLink
+                        isActive={x === meta.page}
+                        onClick={() => setMeta({ ...meta, page: x })}
+                      >{x}</PaginationLink>
+                    </PaginationItem>))
                   }
-                }}
-              />
-            </PaginationItem>
-            {
-              info.totalPages > 5 ? (<>
-                {
-                  [1, 2, 3].map(x => (<PaginationItem
-                    key={x}>
-                    <PaginationLink
-                      isActive={x === meta.page}
-                      onClick={() => setMeta({ ...meta, page: x })}
-                    >{x}</PaginationLink>
-                  </PaginationItem>))
-                }
 
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              </>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                </>
 
-              ) : Array(info.totalPages).fill(0).map((_, i) => i + 1).map(x => (<PaginationItem key={x}>
-                <PaginationLink
-                  isActive={x === meta.page}
-                  onClick={() => setMeta({ ...meta, page: x })}
-                >{x}</PaginationLink>
-              </PaginationItem>))
-            }
+                ) : Array(info.totalPages).fill(0).map((_, i) => i + 1).map(x => (<PaginationItem key={x}>
+                  <PaginationLink
+                    isActive={x === meta.page}
+                    onClick={() => setMeta({ ...meta, page: x })}
+                  >{x}</PaginationLink>
+                </PaginationItem>))
+              }
 
-            <PaginationItem>
-              <PaginationNext
-                isActive={info.hasNextPage}
-                onClick={() => {
-                  if (info.hasNextPage) {
-                    setMeta({ ...meta, page: meta.page + 1 })
-                  }
-                }}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              <PaginationItem>
+                <PaginationNext
+                  isActive={info.hasNextPage}
+                  onClick={() => {
+                    if (info.hasNextPage) {
+                      setMeta({ ...meta, page: meta.page + 1 })
+                    }
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+
       </div>
     </>
   )
