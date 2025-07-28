@@ -26,6 +26,7 @@ import { SearchForm } from "@/components/SearchForm"
 import { useNavigate } from "react-router"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useGetAllStudents } from "@/hooks/use-students"
+import Header from "@/components/Header"
 
 export default function Students() {
 
@@ -64,6 +65,7 @@ export default function Students() {
 
   return (
     <>
+    <Header />
       <div className="flex gap-5 items-center">
         <SidebarTrigger />
         <SearchForm action={logInput} />

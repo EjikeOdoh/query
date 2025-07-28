@@ -1,5 +1,5 @@
 import client from "./api"
-import type { LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
+import type { DashStats, LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
 
 
 // Fetchers
@@ -33,7 +33,7 @@ export async function getProfile() {
     return res.data
 }
 
-export async function getStats(year: number) {
+export async function getStats(year: number): Promise<DashStats> {
     let res;
     if (year === 0) {
         res = await client.get(`/participation`)

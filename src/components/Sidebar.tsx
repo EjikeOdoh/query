@@ -19,11 +19,11 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
     const { role } = profile
     const { pathname } = useLocation();
 
-    const activeLink: string = "m-auto py-4 px-6 bg-black text-white hover:bg-black hover:text-white"
+    const activeLink: string = "m-auto py-4 px-6 rounded-[6px] bg-[#00AEFF] border-2 border-[#B0E6FF] hover:bg-[#00AEFF] hover:text-white text-white"
     const normalLink: string = "m-auto py-4 px-6"
 
     return (
-        <Sidebar collapsible="icon" variant='sidebar'>
+        <Sidebar collapsible="icon" variant='sidebar' className='border-2'>
             <SidebarHeader className='px-10 py-10 group-data-[collapsible=icon]:px-0'>
                 <img src={Logo} className='group-data-[collapsible=icon]:hidden' />
                 <div className='max-w-8 m-auto hidden group-data-[collapsible=icon]:flex'>

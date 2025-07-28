@@ -163,9 +163,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+* {
+  font-family: "DM Sans", sans-serif !important;
+}
+
 body {
   max-width: 1920px;
   margin: auto;
+  background-color: #F5F5F5;
 }
 img {
   width: 100%;

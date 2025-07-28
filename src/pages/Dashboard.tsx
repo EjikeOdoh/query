@@ -1,6 +1,7 @@
+import StatCard from "@/components/Card"
+import Header from "@/components/Header"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getDashboardStats } from "@/hooks/use-dashboard"
-import type { DashStats } from "@/utils/types"
 import { useState } from "react"
 
 export default function Dashboard() {
@@ -17,39 +18,12 @@ export default function Dashboard() {
         return <div>Error: {error.message}</div>
     }
 
-    let dashStats: DashStats = data
-    const years: number[] = dashStats.countByYear.map(x => x.year)
+
+    const years: number[] = data!.countByYear.map(x => x.year)
     return (
         <div className="text-left">
-            <h1 className="font-bold text-2xl">Dashboard stats</h1>
-            <ul>
-                <li>Year: {dashStats.year}</li>
-                {
-                    filterYear !== 0 && <li>Target: {dashStats.target}</li>
-                }
-
-                <li>Total: {dashStats.totalCount}</li>
-                <li>Unique Count: {dashStats.uniqueCount}</li>
-                <div>
-                    <h2 className="font-semibold">Count By Country</h2>
-                    {dashStats.countByCountry.map(stat => (<p key={stat.country}>{stat.country}: {stat.count}</p>))}
-                </div>
-
-                <div>
-                    <h2 className="font-semibold">Count By Program</h2>
-                    {dashStats.countByProgram.map(stat => (<p key={stat.program}>{stat.program}: {stat.count}</p>))}
-                </div>
-
-                {
-                    filterYear === 0 && (
-                        <div>
-                            <h2 className="font-semibold">Count By Program</h2>
-                            {dashStats.countByYear.map(stat => (<p key={stat.year}>{stat.year}: {stat.count}</p>))}
-                        </div>
-                    )
-                }
-
-            </ul>
+            <Header />
+            <div>
 
             <div className="">
                 <Select
@@ -68,6 +42,66 @@ export default function Dashboard() {
                     </SelectContent>
                 </Select>
             </div>
+                <div className="flex items-center gap-6">
+                    <StatCard
+                        iconColor="#009DE6"
+                        value={data!.totalCount}
+                        label="Total students impacted"
+                        iconBackground="#B0E6FF"
+                        cardBackground="#D9F3FF"
+                        borderColor="#E6F7FF"
+                    />
+
+                    <StatCard
+                        iconColor="#8B86B4"
+                        value={data!.uniqueCount}
+                        label="Total unique students"
+                        iconBackground="#E0DEEE"
+                        cardBackground="#F0EFF7"
+                        borderColor="#F5F4FA"
+                    />
+
+                    <StatCard
+                        iconColor="#9EB707"
+                        value={data!.totalCount - data!.uniqueCount}
+                        label="Total returning students"
+                        iconBackground="#E6EFB2"
+                        cardBackground="#F3F7DA"
+                        borderColor="#F7FAE6"
+                    />
+                </div>
+
+            </div>
+            <h1 className="pt-20 font-bold text-2xl">Dashboard stats</h1>
+            <ul>
+                <li>Year: {data!.year}</li>
+                {
+                    filterYear !== 0 && <li>Target: {data!.target}</li>
+                }
+
+                <li>Total: {data!.totalCount}</li>
+                <li>Unique Count: {data!.uniqueCount}</li>
+                <div>
+                    <h2 className="font-semibold">Count By Country</h2>
+                    {data!.countByCountry.map(stat => (<p key={stat.country}>{stat.country}: {stat.count}</p>))}
+                </div>
+
+                <div>
+                    <h2 className="font-semibold">Count By Program</h2>
+                    {data!.countByProgram.map(stat => (<p key={stat.program}>{stat.program}: {stat.count}</p>))}
+                </div>
+
+                {
+                    filterYear === 0 && (
+                        <div>
+                            <h2 className="font-semibold">Count By Program</h2>
+                            {data!.countByYear.map(stat => (<p key={stat.year}>{stat.year}: {stat.count}</p>))}
+                        </div>
+                    )
+                }
+
+            </ul>
+
         </div>
     )
 }

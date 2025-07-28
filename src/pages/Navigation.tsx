@@ -91,7 +91,7 @@ export default function Navigation() {
                         <Route path='/' element={<LoginPage />} />
                         <Route
                             path="*"
-                            element={<LoginPage />}
+                            element={<Dashboard />}
                         />
 
                     </>

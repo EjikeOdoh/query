@@ -15,7 +15,6 @@ export default function Protected() {
                 <MySidebar profile={accountType} />
                 
                 <div className="w-full">
-                    <SidebarTrigger />
                     <Outlet />
                 </div>
 
