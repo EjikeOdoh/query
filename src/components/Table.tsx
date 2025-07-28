@@ -1,9 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import type { Student } from "@/utils/types"
 import { Button } from "./ui/button"
-import { MoreHorizontal } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu"
-import { useNavigate } from "react-router" 
+import { Eye, Pencil, Trash2 } from "lucide-react"
+import { useNavigate } from "react-router"
 
 interface StudentTableProps {
   data: Student[]
@@ -13,18 +12,18 @@ export default function StudentTable({ data }: StudentTableProps) {
   const navigate = useNavigate()
 
   return (
-    <Table className="rounded-xl">
-      <TableHeader className="bg-[#FEF7E6]">
-        <TableRow>
-          <TableHead className="text-[#808080] text-sm font-light">First Name</TableHead>
-          <TableHead className="text-[#808080] text-sm font-light">Last Name</TableHead>
-          <TableHead className="text-[#808080] text-sm font-light">School</TableHead>
-          <TableHead className="text-[#808080] text-sm font-light">Year Joined</TableHead>
-          <TableHead className="text-[#808080] text-sm font-light">Country</TableHead>
-          <TableHead className="text-[#808080] text-sm font-light">Actions</TableHead>
+    <Table className="rounded-xl overflow-hidden">
+      <TableHeader className="[ overflow-hidden">
+        <TableRow className="bg-[#FEF7E6]">
+          <TableHead className="text-[#808080] text-sm font-light min-w-28">First Name</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light min-w-28">Last Name</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light min-w-28">School</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light min-w-28">Year Joined</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light min-w-28">Country</TableHead>
+          <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28">Actions</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
+      <TableBody >
         {data.map(student => (
           <TableRow key={student.id}>
             <TableCell className="text-[#171717] text-sm font-light">{student.firstName}</TableCell>
@@ -32,8 +31,19 @@ export default function StudentTable({ data }: StudentTableProps) {
             <TableCell className="text-[#171717] text-sm font-light">{student.school}</TableCell>
             <TableCell className="text-[#171717] text-sm font-light">{student.yearJoined}</TableCell>
             <TableCell className="text-[#171717] text-sm font-light">{student.country}</TableCell>
-            <TableCell className="text-center">
-              <DropdownMenu>
+            <TableCell className="flex items-center justify-center gap-2">
+              <Button variant="ghost" size='icon'
+              onClick={() => navigate(`/students/${student.id}`)}
+              >
+                <Eye color="#171717" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Pencil color="#171717" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Trash2 color="#171717" />
+              </Button>
+              {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="h-8 w-8 p-0">
                     <span className="sr-only">Open menu</span>
@@ -51,7 +61,7 @@ export default function StudentTable({ data }: StudentTableProps) {
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
             </TableCell>
           </TableRow>
         ))}

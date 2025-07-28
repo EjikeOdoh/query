@@ -1,10 +1,12 @@
+import Heading from "@/components/Heading";
+import Row from "@/components/Row";
 import { useGetStudentDetails } from "@/hooks/use-students";
 import type { StudentDetail } from "@/utils/types";
 import { useParams } from "react-router";
 
 export default function Student() {
     const { studentId } = useParams();
-    
+
     if (!studentId) {
         return <div>No student ID provided</div>
     }
@@ -24,33 +26,43 @@ export default function Student() {
         return <div>No student data found</div>;
     }
 
-
-    const studentDetail: StudentDetail = data;
-    const date = new Date(studentDetail.dob);
+    const date = new Date(data.dob);
 
     return (
         <div>
             <div>
                 <div className="">
-                    <h1>{studentDetail.firstName} {studentDetail.lastName}</h1>
-                    <div className="subtitle">{studentDetail.school}</div>
+                    <h1>{data.firstName} {data.lastName}</h1>
+                    <div className="subtitle">{data.school}</div>
                 </div>
 
                 <div className="profile-section">
                     <div className="section">
-                        <h2>Personal Information</h2>
+                        <Heading
+                            text="Personal Details"
+                        />
                         <div className="info-grid">
-                            <p className="">Date of Birth:</p>
-                            <p className="">{new Intl.DateTimeFormat().format(date)}</p>
 
+                            <Row
+                                label="Date of Birth"
+                                value="Feb 6"
+                            />
+                            <Row
+                                label="School"
+                                value={data.school}
+                            />
+ <Row
+                                label="Phone"
+                                value={data.phone}
+                            />
                             <p className="">Phone:</p>
-                            <p className="">{studentDetail.phone}</p>
+                            <p className="">{data.phone}</p>
 
                             <p className="">Country:</p>
-                            <p className="">{studentDetail.country}</p>
+                            <p className="">{data.country}</p>
 
                             <p className="">Year Joined:</p>
-                            <p className="">{studentDetail.yearJoined}</p>
+                            <p className="">{data.yearJoined}</p>
                         </div>
                     </div>
                 </div>

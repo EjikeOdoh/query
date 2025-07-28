@@ -92,17 +92,6 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
                                         </NavLink>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
-
-                                <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className={pathname === '/participation' ? activeLink : normalLink} asChild>
-                                        <NavLink to='/participation'>
-                                            <ShieldUser />
-                                            <span>
-                                                Participation
-                                            </span>
-                                        </NavLink>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
                             </>
                         )
                     }

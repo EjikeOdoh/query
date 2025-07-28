@@ -24,7 +24,6 @@ import {
 import StudentTable from "@/components/Table"
 import { SearchForm } from "@/components/SearchForm"
 import { useNavigate } from "react-router"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useGetAllStudents } from "@/hooks/use-students"
 import Header from "@/components/Header"
 
@@ -45,7 +44,7 @@ export default function Students() {
 
   const [meta, setMeta] = useState<StudentPagination>({
     page: 1,
-    limit: 20
+    limit: 10
   })
 
   const { isPending, isError, data, error } = useGetAllStudents(meta, token)
@@ -66,9 +65,8 @@ export default function Students() {
   return (
     <>
       <Header />
-      <div className="p-8">
-        <div className="flex gap-5 items-center justify-between">
-          <p className="text-sm font-light">Page {meta.page} of {info.totalPages}</p>
+      <div className="p-8 flex flex-col gap-10">
+        <div className="flex gap-5 items-baseline justify-end">
           <SearchForm action={logInput} />
         </div>
 
@@ -96,32 +94,45 @@ export default function Students() {
         <StudentTable data={students} />
         {/* {StudentTable(students)} */}
 
-        <div>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  isActive={info.hasPreviousPage}
-                  onClick={() => {
-                    if (info.hasPreviousPage) {
-                      setMeta({ ...meta, page: meta.page - 1 })
-                    }
-                  }}
-                />
-              </PaginationItem>
-              {
+        <div className="flex justify-between items-baseline">
+          <p className="text-sm font-light">Page {meta.page} of {info.totalPages}</p>
+          <div className="w-fit">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem className={`text-[#808080]`}>
+                  <PaginationPrevious
+                    isActive={info.hasPreviousPage}
+                    onClick={() => {
+                      if (info.hasPreviousPage) {
+                        setMeta({ ...meta, page: meta.page - 1 })
+                      }
+                    }}
+                  />
+                </PaginationItem>
+                {
+                  [1, 2, 3].map(x => (<PaginationItem
+                    key={x}>
+                    <PaginationLink
+                      className={`text-[#808080] ${x === meta.page ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
+                      isActive={x === meta.page}
+                      onClick={() => setMeta({ ...meta, page: x })}
+                    >{x}</PaginationLink>
+                  </PaginationItem>))
+                }
+                {/* {
                 info.totalPages > 5 ? (<>
                   {
                     [1, 2, 3].map(x => (<PaginationItem
                       key={x}>
                       <PaginationLink
+                        className="text-[#808080]"
                         isActive={x === meta.page}
                         onClick={() => setMeta({ ...meta, page: x })}
                       >{x}</PaginationLink>
                     </PaginationItem>))
                   }
 
-                  <PaginationItem>
+                  <PaginationItem className="text-[#808080]">
                     <PaginationEllipsis />
                   </PaginationItem>
                 </>
@@ -132,20 +143,28 @@ export default function Students() {
                     onClick={() => setMeta({ ...meta, page: x })}
                   >{x}</PaginationLink>
                 </PaginationItem>))
-              }
-
-              <PaginationItem>
-                <PaginationNext
-                  isActive={info.hasNextPage}
-                  onClick={() => {
-                    if (info.hasNextPage) {
-                      setMeta({ ...meta, page: meta.page + 1 })
-                    }
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+              } */}
+                <PaginationItem
+                >
+                  <PaginationLink
+                    className={`text-[#808080]  ${!info.hasNextPage ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
+                    // isActive={x === meta.page}
+                    onClick={() => setMeta({ ...meta, page: info.totalPages })}
+                  >{info.totalPages}</PaginationLink>
+                </PaginationItem>
+                <PaginationItem className="text-[#808080]">
+                  <PaginationNext
+                    isActive={info.hasNextPage}
+                    onClick={() => {
+                      if (info.hasNextPage) {
+                        setMeta({ ...meta, page: meta.page + 1 })
+                      }
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
 
       </div>

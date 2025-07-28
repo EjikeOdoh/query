@@ -48,7 +48,7 @@ export default function Navigation() {
                         {
                             (accountType.role === "editor" || accountType.role === "admin") && <>
                                 {/* Routes for students */}
-                                <Route path='/students' element={<Students />} />
+                                <Route path='/students' element={accountType.role === "admin" ? <Participation /> : <Students />} />
                                 <Route path='/students/search' element={<Search />} />
                                 <Route path='/add-student' element={<AddStudent />} />
                                 <Route path='/students/:studentId' element={<Student />} />
@@ -73,7 +73,6 @@ export default function Navigation() {
                                 <Route path='/staff/:partnerId' element={<Student />} />
 
                                 {/* Admin routes */}
-                                <Route path='/participation' element={<Participation />} />
                                 <Route path='/students/upload' element={<Students />} />
 
                             </>
