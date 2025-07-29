@@ -26,6 +26,8 @@ import { SearchForm } from "@/components/SearchForm"
 import { useNavigate } from "react-router"
 import { useGetAllStudents } from "@/hooks/use-students"
 import Header from "@/components/Header"
+import { Button } from "@/components/ui/button"
+import { CircleFadingPlus, PlusCircle } from "lucide-react"
 
 export default function Students() {
 
@@ -64,10 +66,19 @@ export default function Students() {
 
   return (
     <>
-      <Header />
+      <Header
+      label="Students"
+      />
       <div className="p-8 flex flex-col gap-10">
-        <div className="flex gap-5 items-baseline justify-end">
+        <div className="flex gap-5 items-center justify-between">
           <SearchForm action={logInput} />
+          <Button
+            className="bg-[#00AEFF] text-white text-sm"
+            onClick={() => navigate('/add-student')}
+          >
+            <CircleFadingPlus />
+            <span>Add Student</span>
+          </Button>
         </div>
 
         {/* <div className="">

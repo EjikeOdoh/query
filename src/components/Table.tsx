@@ -13,7 +13,7 @@ export default function StudentTable({ data }: StudentTableProps) {
 
   return (
     <Table className="rounded-xl overflow-hidden">
-      <TableHeader className="[ overflow-hidden">
+      <TableHeader className="">
         <TableRow className="bg-[#FEF7E6]">
           <TableHead className="text-[#808080] text-sm font-light min-w-28">First Name</TableHead>
           <TableHead className="text-[#808080] text-sm font-light min-w-28">Last Name</TableHead>
@@ -43,25 +43,6 @@ export default function StudentTable({ data }: StudentTableProps) {
               <Button variant="ghost" size="icon">
                 <Trash2 color="#171717" />
               </Button>
-              {/* <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-white">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem
-                    onClick={() => navigate(`/students/${student.id}`)}
-                  >
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu> */}
             </TableCell>
           </TableRow>
         ))}

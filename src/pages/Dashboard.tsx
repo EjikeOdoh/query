@@ -24,7 +24,9 @@ export default function Dashboard() {
     const years: number[] = data!.countByYear.map(x => x.year)
     return (
         <div className="text-left">
-            <Header />
+            <Header
+                label="Dashboard"
+            />
             <div>
                 <div>
 

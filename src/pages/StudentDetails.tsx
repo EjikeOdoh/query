@@ -47,8 +47,8 @@ export default function Student() {
                     </div>
                 </div>
 
-                <div className="profile-section">
-                    <div className="section">
+                <div className="flex">
+                    <div className="flex-1">
                         <Heading
                             text="Personal Details"
                         />
@@ -57,6 +57,11 @@ export default function Student() {
                             <Row
                                 label="Date of Birth"
                                 value={String(dob)}
+                            />
+
+                            <Row
+                                label="Country"
+                                value={country}
                             />
 
                             <Row
@@ -69,59 +74,57 @@ export default function Student() {
                                 value={currentClass}
                             />
 
-                            {
-                                !!(favSubject) && <Row label="Favorite Subject" value={favSubject} />
-                            }
+                            <Row label="Favorite Subject" value={favSubject} />
 
-                            {
-                                !!(difficultSubject) && <Row label="Most Difficult Subject" value={difficultSubject} />
-                            }
+
+                            <Row label="Most Difficult Subject" value={difficultSubject} />
+
 
                         </div>
                     </div>
+                        <div className="flex-1">
+                            <div className="section">
+                                <Heading
+                                    text="Parents Details"
+                                />
+                                <div className="info-grid">
 
-                    <div className="section">
-                        <Heading
-                            text="Parents Details"
-                        />
-                        <div className="info-grid">
+                                    <Row
+                                        label="Father's Name"
+                                        value={fatherLastName}
+                                    />
 
-                            <Row
-                                label="Father's Name"
-                                value={fatherLastName}
-                            />
+                                    <Row
+                                        label="Mother's Name"
+                                        value={motherFirstName}
+                                    />
+                                </div>
+                            </div>
+                            <div className="section">
+                                <Heading
+                                    text="Contacts"
+                                />
+                                <div className="info-grid">
 
-                            <Row
-                                label="Mother's Name"
-                                value={motherFirstName}
-                            />
+                                    <Row
+                                        label="Email Address"
+                                        value={email}
+                                    />
+
+                                    <Row
+                                        label="Phone Number"
+                                        value={phone}
+                                    />
+
+
+                                    <Row
+                                        label="House Address"
+                                        value={address}
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-
-                    <div className="section">
-                        <Heading
-                            text="Contacts"
-                        />
-                        <div className="info-grid">
-
-                            <Row
-                                label="Email Address"
-                                value={email}
-                            />
-
-                            <Row
-                                label="Phone Number"
-                                value={phone}
-                            />
-
-
-                            <Row
-                                label="House Address"
-                                value={address}
-                            />
-                        </div>
-                    </div>
 
                 </div>
             </div>
