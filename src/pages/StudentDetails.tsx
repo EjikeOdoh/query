@@ -1,10 +1,13 @@
+import Modal from "@/components/Dialog";
 import Header from "@/components/Header";
 import Heading from "@/components/Heading";
 import Row from "@/components/Row";
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetStudentDetails } from "@/hooks/use-students";
+import { updateData } from "@/utils/fn";
 import type { EditStudentPayload } from "@/utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -12,34 +15,47 @@ import { useParams } from "react-router";
 
 export default function Student() {
     const { studentId } = useParams();
-    const [editData, setEditData] = useState<EditStudentPayload>();
-    
+    const [editData, setEditData] = useState<any>();
+    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
+
+    function openEditModal() {
+        setIsEditModalOpen(true)
+    }
+
+    function closeEditModal(
+
+    ) {
+        setIsEditModalOpen(false)
+    }
+
     const { isLoading, isError, error, data } = useGetStudentDetails(studentId ?? "");
-    
+
     useEffect(() => {
         if (data) {
             const { participations, grades, ...profile } = data;
             setEditData(profile);
         }
     }, [data]);
-    
+
     if (!studentId) {
         return <div>No student ID provided</div>;
     }
-    
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
-    
+
     if (isError) {
         return <div>Error: {error.message}</div>;
     }
-    
+
     if (!data) {
         return <div>No student data found</div>;
     }
-    
-    const { firstName, lastName, class: currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, fatherLastName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades, } = data
+
+    console.log(data)
+
+    const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, fatherLastName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades, } = data
 
 
     return (
@@ -48,6 +64,11 @@ export default function Student() {
                 label="Student Information"
             />
             <div className="p-5">
+                <Button
+                    onClick={openEditModal}
+                    variant="ghost" size="icon">
+                    <Pencil color="#171717" />
+                </Button>
                 <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
                         <p className="text-3xl font-semibold text-[#008BCC]">{firstName[0]}{lastName[0]}</p>
@@ -224,7 +245,275 @@ export default function Student() {
 
             </div>
 
-            
+            <Modal
+                isOpen={isEditModalOpen}
+                onClose={closeEditModal}
+            >
+
+                <form>
+                    <div className="flex flex-col gap-4 py-5">
+
+                        <Input
+                            name="year"
+                            type="number"
+                            placeholder="Year of Participation"
+                            maxLength={4}
+                            value={editData?.yearJoined}
+                            onChange={e => updateData(e, setEditData)}
+                        />
+
+                        <Input name="school"
+                            placeholder="School"
+                            value={editData?.school}
+                            onChange={(e) => updateData(e, setEditData)}
+                            required />
+
+                        <Input
+                            name="currentClass"
+                            placeholder="Current Class"
+                            value={editData?.currentClass ?? undefined}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+                        <Input
+                            name="lastName"
+                            placeholder="Last Name"
+                            required
+                            value={editData?.lastName}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="firstName"
+                            placeholder="First Name"
+                            required
+                            value={editData?.firstName}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            name="dob"
+                            placeholder="Date of Birth"
+                            type="date"
+                            required
+                            value={String(editData?.dob)}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="phone"
+                            placeholder="Phone Number"
+                            type="tel"
+                            value={editData?.phone}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            type="email"
+                            name="email"
+                            placeholder="Email Address"
+                            value={editData?.email!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="country"
+                            placeholder="Country"
+                            value={editData?.country}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            type="text"
+                            name="address"
+                            placeholder="House Address"
+                            value={editData?.address!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            name="fatherLastName"
+                            placeholder="Father's Last Name"
+                            value={editData?.fatherLastName!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="fatherFirstName"
+                            placeholder="Father's First Name"
+                            value={editData?.fatherFirstName!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            name="fatherEducation"
+                            placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
+                            value={editData?.fatherEducation!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+                        <Input
+                            name="fatherLastName"
+                            placeholder="Father's Last Name"
+                            value={editData?.fatherLastName!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="fatherFirstName"
+                            placeholder="Father's First Name"
+                            value={editData?.fatherFirstName!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            name="fatherEducation"
+                            placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
+                            value={editData?.fatherEducation!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="fatherPhone"
+                            placeholder="Father's Phone Number"
+                            value={editData?.fatherPhone!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+                        <Input
+                            name="fatherJob"
+                            placeholder="Father's Job"
+                            value={editData?.fatherJob!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            name="motherLastName"
+                            placeholder="Mother's Last Name"
+                            value={editData?.motherLastName!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="motherFirstName"
+                            placeholder="Mother's First Name"
+                            value={editData?.motherFirstName!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            name="motherEducation"
+                            placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
+                            value={editData?.motherEducation!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="motherPhone"
+                            placeholder="Mother's Phone Number"
+                            value={editData?.motherPhone!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+                        <Input
+                            name="motherJob"
+                            placeholder="Mother's Job"
+                            value={editData?.motherJob!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+                        <Input
+                            name="fatherPhone"
+                            placeholder="Father's Phone Number"
+                            value={editData?.fatherPhone!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+                        <Input
+                            name="fatherJob"
+                            placeholder="Father's Job"
+                            value={editData?.fatherJob!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            name="motherLastName"
+                            placeholder="Mother's Last Name"
+                            value={editData?.motherLastName!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="motherFirstName"
+                            placeholder="Mother's First Name"
+                            value={editData?.motherFirstName!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            name="motherEducation"
+                            placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
+                            value={editData?.motherEducation!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="motherPhone"
+                            placeholder="Mother's Phone Number"
+                            value={editData?.motherPhone!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+                        <Input
+                            name="motherJob"
+                            placeholder="Mother's Job"
+                            value={editData?.motherJob!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+
+
+                        <Input
+                            name="noOfSisters"
+                            placeholder="Number of Sisters"
+                            value={editData?.noOfSisters!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="noOfBrothers"
+                            placeholder="Number of Brothers"
+                            value={editData?.noOfBrothers!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Input
+                            name="position"
+                            placeholder="Position i.e Oldest, Second, Third, Youngest"
+                            value={editData?.position!}
+                            onChange={(e) => updateData(e, setEditData)}
+                        />
+                        <Select
+                            name="focus"
+                            value={editData?.focus!}
+                            onValueChange={(x) => setEditData({
+                                ...editData, focus: x
+                            })}
+                        >
+                            <SelectTrigger className="flex-1 min-w-1/2">
+                                <SelectValue placeholder="Focus i.e Science, Art, Technology, Commercial" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white">
+                                <SelectGroup>
+                                    <SelectItem value="Science">Science</SelectItem>
+                                    <SelectItem value="Arts">Arts</SelectItem>
+                                    <SelectItem value="Commerce">Commerce</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+
+                    </div>
+                </form>
+
+            </Modal>
+
         </div>
     );
 }

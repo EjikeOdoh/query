@@ -58,7 +58,7 @@ export interface Participation {
 export interface StudentDetail {
   id: number;
   school: string;
-  class: string;
+  currentClass: string;
   firstName: string;
   lastName: string;
   dob: Date
