@@ -2,40 +2,51 @@ import Header from "@/components/Header";
 import Heading from "@/components/Heading";
 import Row from "@/components/Row";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetStudentDetails } from "@/hooks/use-students";
+import type { EditStudentPayload } from "@/utils/types";
 import { Pencil, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 export default function Student() {
     const { studentId } = useParams();
-
+    const [editData, setEditData] = useState<EditStudentPayload>();
+    
+    const { isLoading, isError, error, data } = useGetStudentDetails(studentId ?? "");
+    
+    useEffect(() => {
+        if (data) {
+            const { participations, grades, ...profile } = data;
+            setEditData(profile);
+        }
+    }, [data]);
+    
     if (!studentId) {
-        return <div>No student ID provided</div>
+        return <div>No student ID provided</div>;
     }
-
-    const { isLoading, isError, error, data } = useGetStudentDetails(studentId);
-
+    
     if (isLoading) {
         return <div>Loading...</div>;
     }
-
+    
     if (isError) {
         return <div>Error: {error.message}</div>;
     }
-
-
+    
     if (!data) {
         return <div>No student data found</div>;
     }
+    
+    const { firstName, lastName, class: currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, fatherLastName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades, } = data
 
-    console.log(data)
-
-    const { firstName, lastName, class: currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, fatherLastName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, grades, participations } = data
 
     return (
         <div>
-            <Header />
+            <Header
+                label="Student Information"
+            />
             <div className="p-5">
                 <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
@@ -82,48 +93,48 @@ export default function Student() {
 
                         </div>
                     </div>
-                        <div className="flex-1">
-                            <div className="section">
-                                <Heading
-                                    text="Parents Details"
+                    <div className="flex-1">
+                        <div className="section">
+                            <Heading
+                                text="Parents Details"
+                            />
+                            <div className="info-grid">
+
+                                <Row
+                                    label="Father's Name"
+                                    value={fatherLastName}
                                 />
-                                <div className="info-grid">
 
-                                    <Row
-                                        label="Father's Name"
-                                        value={fatherLastName}
-                                    />
-
-                                    <Row
-                                        label="Mother's Name"
-                                        value={motherFirstName}
-                                    />
-                                </div>
-                            </div>
-                            <div className="section">
-                                <Heading
-                                    text="Contacts"
+                                <Row
+                                    label="Mother's Name"
+                                    value={motherFirstName}
                                 />
-                                <div className="info-grid">
-
-                                    <Row
-                                        label="Email Address"
-                                        value={email}
-                                    />
-
-                                    <Row
-                                        label="Phone Number"
-                                        value={phone}
-                                    />
-
-
-                                    <Row
-                                        label="House Address"
-                                        value={address}
-                                    />
-                                </div>
                             </div>
                         </div>
+                        <div className="section">
+                            <Heading
+                                text="Contacts"
+                            />
+                            <div className="info-grid">
+
+                                <Row
+                                    label="Email Address"
+                                    value={email}
+                                />
+
+                                <Row
+                                    label="Phone Number"
+                                    value={phone}
+                                />
+
+
+                                <Row
+                                    label="House Address"
+                                    value={address}
+                                />
+                            </div>
+                        </div>
+                    </div>
 
 
                 </div>
@@ -179,7 +190,6 @@ export default function Student() {
 
             </div>
 
-
             <div className="p-5">
                 <h3>Participations</h3>
 
@@ -213,6 +223,8 @@ export default function Student() {
                 </Table>
 
             </div>
+
+            
         </div>
     );
 }

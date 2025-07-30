@@ -1,5 +1,6 @@
+import type React from "react"
 import client from "./api"
-import type { DashStats, LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
+import type { CreateStudentData, CreateStudentPayload, DashStats, LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
 
 
 // Fetchers
@@ -44,6 +45,55 @@ export async function getStats(year: number): Promise<DashStats> {
 }
 
 
+// Post functions
+
+export async function createStudent(data: CreateStudentData) {
+    const {
+        english,
+        math,
+        chemistry,
+        physics,
+        government,
+        economics,
+        biology,
+        commerce,
+        literature,
+        accounting,
+        quarter,
+        year,
+        noOfBrothers,
+        noOfSisters,
+        ...rest
+
+    } = data
+
+    const payload:CreateStudentPayload = {
+        ...rest,
+        noOfBrothers: Number(noOfBrothers),
+        noOfSisters: Number(noOfSisters),
+        year: Number(year),
+        quarter: Number(quarter),
+        grades: {
+           english,
+           math,
+           chemistry,
+           physics,
+           government,
+           biology,
+           commerce,
+           literature,
+           accounting
+        }
+    }
+    try {
+        const res = await client.post('/students', payload)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 // Auth functions
 export async function login(payload: LoginForm) {
     try {
@@ -60,4 +110,19 @@ export function logout() {
     window.location.reload();
 }
 
+
+// utility functions
+
+
+export function updateData<T extends Record<string, any>>(
+    e: React.ChangeEvent<HTMLInputElement>,
+    setData: React.Dispatch<React.SetStateAction<T>>
+  ) {
+    const { name, value } = e.target;
+    setData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+  
 

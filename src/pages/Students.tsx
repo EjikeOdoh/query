@@ -14,7 +14,6 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -27,7 +26,7 @@ import { useNavigate } from "react-router"
 import { useGetAllStudents } from "@/hooks/use-students"
 import Header from "@/components/Header"
 import { Button } from "@/components/ui/button"
-import { CircleFadingPlus, PlusCircle } from "lucide-react"
+import { CircleFadingPlus } from "lucide-react"
 
 export default function Students() {
 

@@ -41,14 +41,12 @@ export default function Navigation() {
         <BrowserRouter>
             <Routes>
                 {token ? (
-
                     <Route path="/" element={<Protected />} >
                         <Route index element={<Dashboard />} />
-
                         {
                             (accountType.role === "editor" || accountType.role === "admin") && <>
                                 {/* Routes for students */}
-                                <Route path='/students' element={accountType.role === "admin" ? <Participation /> : <Students />} />
+                                <Route path='/students' element={accountType.role === "admin" ? <Students /> : <Students />} />
                                 <Route path='/students/search' element={<Search />} />
                                 <Route path='/add-student' element={<AddStudent />} />
                                 <Route path='/students/:studentId' element={<Student />} />

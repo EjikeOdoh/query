@@ -89,6 +89,8 @@ export interface StudentDetail {
   participations: Participation[];
 }
 
+export type EditStudentPayload = Omit<StudentDetail, 'grades'|'participations'> & {}
+
 export interface SearchResult {
   count: number
   students: Student[]
@@ -132,4 +134,92 @@ export interface ParticipationData {
   dob: any
   country: any
   program: any
+}
+
+export interface CreateStudentData {
+  school: string;
+  currentClass: string;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  address?: string;
+  country: string;
+  phone?: string;
+  email?: string;
+  fatherLastName?: string;
+  fatherFirstName?: string;
+  fatherPhone?: string;
+  fatherEducation?: string;
+  fatherJob?: string;
+  motherLastName?: string;
+  motherFirstName?: string;
+  motherPhone?: string;
+  motherEducation?: string;
+  motherJob?: string;
+  noOfSisters?: string;
+  noOfBrothers?: string;
+  position?: string;
+  focus?: string;
+  favSubject?: string;
+  difficultSubject?: string;
+  careerChoice1?: string;
+  careerChoice2?: string;
+  program: string;
+  year: string;
+  quarter: string;
+  english?: string;
+  math?: string;
+  chemistry?: string;
+  physics?: string;
+  government?: string;
+  economics?: string;
+  biology?: string;
+  commerce?: string;
+  literature?: string;
+  accounting?: string;
+}
+
+export interface CreateStudentPayload {
+  school: string;
+  currentClass: string;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  address?: string;
+  country: string;
+  phone?: string;
+  email?: string;
+  fatherLastName?: string;
+  fatherFirstName?: string;
+  fatherPhone?: string;
+  fatherEducation?: string;
+  fatherJob?: string;
+  motherLastName?: string;
+  motherFirstName?: string;
+  motherPhone?: string;
+  motherEducation?: string;
+  motherJob?: string;
+  noOfSisters?: number;
+  noOfBrothers?: number;
+  position?: string;
+  focus?: string;
+  favSubject?: string;
+  difficultSubject?: string;
+  careerChoice1?: string;
+  careerChoice2?: string;
+  program: string;
+  year: number;
+  quarter: number;
+  grades: {
+    english?: string;
+    math?: string;
+    chemistry?: string;
+    physics?: string;
+    government?: string;
+    economics?: string;
+    biology?: string;
+    commerce?: string;
+    literature?: string;
+    accounting?: string;
+  }
 }
