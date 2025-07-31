@@ -90,7 +90,7 @@ export default function AddStudent() {
     useEffect(() => {
         if (step === 7) {
             console.log(data)
-            // mutateAsync()
+            mutateAsync()
         }
     }, [step])
 

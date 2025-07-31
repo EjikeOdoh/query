@@ -19,14 +19,14 @@ export async function getAllStudents(meta: StudentPagination) {
         .then(res => res.data)
 }
 
-export async function getAllParticipation(filterOptions: Participation):Promise<ParticipationData[]> {
+export async function getAllParticipation(filterOptions: Participation): Promise<ParticipationData[]> {
     const query = Object.entries(filterOptions)
-    .filter(([_, value]) => value !== undefined && value !== null && value !== '')
-    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
-    .join('&');
+        .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
+        .join('&');
 
     console.log(query)
-    return client.get('/participation/filter').then(res=>res.data)
+    return client.get('/participation/filter').then(res => res.data)
 }
 
 export async function getProfile() {
@@ -46,7 +46,6 @@ export async function getStats(year: number): Promise<DashStats> {
 
 
 // Post functions
-
 export async function createStudent(data: CreateStudentData) {
     const {
         english,
@@ -67,24 +66,25 @@ export async function createStudent(data: CreateStudentData) {
 
     } = data
 
-    const payload:CreateStudentPayload = {
+    const payload: CreateStudentPayload = {
         ...rest,
         noOfBrothers: Number(noOfBrothers),
         noOfSisters: Number(noOfSisters),
         year: Number(year),
         quarter: Number(quarter),
         grades: {
-           english,
-           math,
-           chemistry,
-           physics,
-           government,
-           biology,
-           commerce,
-           literature,
-           accounting
+            english,
+            math,
+            chemistry,
+            physics,
+            government,
+            biology,
+            commerce,
+            literature,
+            accounting
         }
     }
+
     try {
         const res = await client.post('/students', payload)
         return res.data
@@ -93,6 +93,14 @@ export async function createStudent(data: CreateStudentData) {
     }
 }
 
+export async function updateStudent(id: string, data: any) {
+    try {
+        const res = await client.patch(`/students/${id}`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 // Auth functions
 export async function login(payload: LoginForm) {
@@ -117,12 +125,12 @@ export function logout() {
 export function updateData<T extends Record<string, any>>(
     e: React.ChangeEvent<HTMLInputElement>,
     setData: React.Dispatch<React.SetStateAction<T>>
-  ) {
+) {
     const { name, value } = e.target;
     setData(prev => ({
-      ...prev,
-      [name]: value,
+        ...prev,
+        [name]: value,
     }));
-  }
-  
+}
+
 

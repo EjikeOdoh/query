@@ -1,9 +1,9 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { StudentPagination } from "../utils/types";
-import { getAllStudents, getStudentDetails } from "@/utils/fn";
+import { getAllStudents, getStudentDetails, updateStudent } from "@/utils/fn";
+import { useMutation } from "@tanstack/react-query";
 
-
-export  function useGetAllStudents(meta: StudentPagination, token: string | null) {
+export function useGetAllStudents(meta: StudentPagination, token: string | null) {
    return useQuery({
       queryKey: ['students', meta.page, meta.limit],
       queryFn: () => getAllStudents(meta),
@@ -13,10 +13,18 @@ export  function useGetAllStudents(meta: StudentPagination, token: string | null
    })
 }
 
-export  function useGetStudentDetails(id: any) {
+export function useGetStudentDetails(id: any) {
    return useQuery({
         queryKey:['student', id],
         queryFn: () => getStudentDetails(id),
         placeholderData: keepPreviousData
     })
+}
+
+
+export function useUpdateStudent(id: any, data:any, refetch: any) {
+   return useMutation({
+      mutationFn: () => updateStudent(id, data),
+      onSuccess: refetch
+   })
 }

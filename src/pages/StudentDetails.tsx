@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useGetStudentDetails } from "@/hooks/use-students";
+import { useGetStudentDetails, useUpdateStudent } from "@/hooks/use-students";
 import { updateData } from "@/utils/fn";
-import type { EditStudentPayload } from "@/utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
@@ -28,7 +27,8 @@ export default function Student() {
         setIsEditModalOpen(false)
     }
 
-    const { isLoading, isError, error, data } = useGetStudentDetails(studentId ?? "");
+    const { isLoading, isError, error, data, refetch } = useGetStudentDetails(studentId ?? "");
+    const { isPending, mutate } = useUpdateStudent(studentId, editData, refetch)
 
     useEffect(() => {
         if (data) {
@@ -53,7 +53,14 @@ export default function Student() {
         return <div>No student data found</div>;
     }
 
-    console.log(data)
+    if (isPending) {
+        return <div>Update Loading...</div>;
+    }
+
+    function handleSubmitStudentData() {
+        setIsEditModalOpen(false)
+        mutate()
+    }
 
     const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, fatherLastName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades, } = data
 
@@ -250,154 +257,174 @@ export default function Student() {
                 onClose={closeEditModal}
             >
 
-                <form>
-                    <div className="flex flex-col gap-4 py-5">
+                <Heading
+                    text="Edit Student's Details"
+                />
 
+                <form action={handleSubmitStudentData}>
+                    <div className="flex flex-col gap-4 py-5">
                         <Input
-                            name="year"
+                            name="yearJoined"
+                            placeholder="Year Joined"
                             type="number"
-                            placeholder="Year of Participation"
                             maxLength={4}
-                            value={editData?.yearJoined}
+                            value={editData?.yearJoined ? String(editData?.yearJoined) : ""}
                             onChange={e => updateData(e, setEditData)}
+                            showLabel={true}
                         />
 
-                        <Input name="school"
+                        <Input
+                            name="school"
                             placeholder="School"
-                            value={editData?.school}
+                            value={editData?.school ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
-                            required />
+                            showLabel={true}
+                        />
 
                         <Input
                             name="currentClass"
                             placeholder="Current Class"
-                            value={editData?.currentClass ?? undefined}
+                            value={editData?.currentClass ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
 
                         <Input
                             name="lastName"
                             placeholder="Last Name"
-                            required
-                            value={editData?.lastName}
+                            value={editData?.lastName ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
+
                         <Input
                             name="firstName"
                             placeholder="First Name"
-                            required
-                            value={editData?.firstName}
+                            value={editData?.firstName ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
-
 
                         <Input
                             name="dob"
                             placeholder="Date of Birth"
                             type="date"
-                            required
-                            value={String(editData?.dob)}
+                            value={editData?.dob ? new Date(editData?.dob).toISOString().split("T")[0] : ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
+
                         <Input
                             name="phone"
                             placeholder="Phone Number"
                             type="tel"
-                            value={editData?.phone}
+                            value={editData?.phone ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
-
 
                         <Input
                             type="email"
                             name="email"
                             placeholder="Email Address"
-                            value={editData?.email!}
+                            value={editData?.email! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
+
                         <Input
                             name="country"
                             placeholder="Country"
-                            value={editData?.country}
+                            value={editData?.country ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
-
 
                         <Input
                             type="text"
                             name="address"
                             placeholder="House Address"
-                            value={editData?.address!}
+                            value={editData?.address! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
-                        />
-
-
-                        <Input
-                            name="fatherLastName"
-                            placeholder="Father's Last Name"
-                            value={editData?.fatherLastName!}
-                            onChange={(e) => updateData(e, setEditData)}
-                        />
-                        <Input
-                            name="fatherFirstName"
-                            placeholder="Father's First Name"
-                            value={editData?.fatherFirstName!}
-                            onChange={(e) => updateData(e, setEditData)}
-                        />
-
-
-                        <Input
-                            name="fatherEducation"
-                            placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.fatherEducation!}
-                            onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
 
                         <Input
                             name="fatherLastName"
                             placeholder="Father's Last Name"
-                            value={editData?.fatherLastName!}
+                            value={editData?.fatherLastName! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
+
                         <Input
                             name="fatherFirstName"
                             placeholder="Father's First Name"
-                            value={editData?.fatherFirstName!}
+                            value={editData?.fatherFirstName! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
-
 
                         <Input
                             name="fatherEducation"
                             placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.fatherEducation!}
+                            value={editData?.fatherEducation! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
+
+                        <Input
+                            name="fatherLastName"
+                            placeholder="Father's Last Name"
+                            value={editData?.fatherLastName! ?? ""}
+                            onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
+                        />
+
+                        <Input
+                            name="fatherFirstName"
+                            placeholder="Father's First Name"
+                            value={editData?.fatherFirstName! ?? ""}
+                            onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
+                        />
+
+                        <Input
+                            name="fatherEducation"
+                            placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
+                            value={editData?.fatherEducation! ?? ""}
+                            onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
+                        />
+
                         <Input
                             name="fatherPhone"
                             placeholder="Father's Phone Number"
-                            value={editData?.fatherPhone!}
+                            value={editData?.fatherPhone! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
 
                         <Input
                             name="fatherJob"
                             placeholder="Father's Job"
-                            value={editData?.fatherJob!}
+                            value={editData?.fatherJob! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
-
 
                         <Input
                             name="motherLastName"
                             placeholder="Mother's Last Name"
-                            value={editData?.motherLastName!}
+                            value={editData?.motherLastName! ?? ""}
+                            showLabel={true}
                             onChange={(e) => updateData(e, setEditData)}
                         />
                         <Input
                             name="motherFirstName"
                             placeholder="Mother's First Name"
-                            value={editData?.motherFirstName!}
+                            value={editData?.motherFirstName! ?? ""}
+                            showLabel={true}
                             onChange={(e) => updateData(e, setEditData)}
                         />
 
@@ -405,111 +432,159 @@ export default function Student() {
                         <Input
                             name="motherEducation"
                             placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.motherEducation!}
+                            value={editData?.motherEducation! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
+
                         <Input
                             name="motherPhone"
                             placeholder="Mother's Phone Number"
-                            value={editData?.motherPhone!}
+                            value={editData?.motherPhone! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
 
                         <Input
                             name="motherJob"
                             placeholder="Mother's Job"
-                            value={editData?.motherJob!}
+                            value={editData?.motherJob! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
 
                         <Input
                             name="fatherPhone"
                             placeholder="Father's Phone Number"
-                            value={editData?.fatherPhone!}
+                            value={editData?.fatherPhone! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
 
                         <Input
                             name="fatherJob"
                             placeholder="Father's Job"
-                            value={editData?.fatherJob!}
+                            value={editData?.fatherJob! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
-
 
                         <Input
                             name="motherLastName"
                             placeholder="Mother's Last Name"
-                            value={editData?.motherLastName!}
+                            value={editData?.motherLastName! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
+
                         <Input
                             name="motherFirstName"
                             placeholder="Mother's First Name"
-                            value={editData?.motherFirstName!}
+                            value={editData?.motherFirstName! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
-
 
                         <Input
                             name="motherEducation"
                             placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.motherEducation!}
+                            value={editData?.motherEducation! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
+
                         <Input
                             name="motherPhone"
                             placeholder="Mother's Phone Number"
-                            value={editData?.motherPhone!}
+                            value={editData?.motherPhone! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
 
                         <Input
                             name="motherJob"
                             placeholder="Mother's Job"
-                            value={editData?.motherJob!}
+                            value={editData?.motherJob! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
 
 
                         <Input
                             name="noOfSisters"
                             placeholder="Number of Sisters"
-                            value={editData?.noOfSisters!}
+                            value={editData?.noOfSisters! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
                         <Input
                             name="noOfBrothers"
                             placeholder="Number of Brothers"
-                            value={editData?.noOfBrothers!}
+                            value={editData?.noOfBrothers! ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
                         />
                         <Input
                             name="position"
                             placeholder="Position i.e Oldest, Second, Third, Youngest"
-                            value={editData?.position!}
+                            value={editData?.position! ?? ""}
+                            onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
+                        />
+
+                        <div>
+                            <label className="text-sm font-light">Focus i.e Science, Art, Technology, Commercial</label>
+                            <Select
+                                name="focus"
+                                value={editData?.focus!}
+                                onValueChange={(x) => setEditData({
+                                    ...editData, focus: x
+                                })}
+                            >
+                                <SelectTrigger className="flex-1 min-w-1/2 w-full">
+                                    <SelectValue placeholder="Focus i.e Science, Art, Technology, Commercial" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white">
+                                    <SelectGroup>
+                                        <SelectItem value="Science">Science</SelectItem>
+                                        <SelectItem value="Arts">Arts</SelectItem>
+                                        <SelectItem value="Commerce">Commerce</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <Input
+                            name="favSubject"
+                            placeholder="Favorite Subject"
+                            value={editData?.favSubject ?? ""}
+                            onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
+                        />
+                        <Input
+                            name="difficultSubject"
+                            placeholder="Most Difficult Subject"
+                            value={editData?.difficultSubject ?? ""}
+                            showLabel={true}
                             onChange={(e) => updateData(e, setEditData)}
                         />
-                        <Select
-                            name="focus"
-                            value={editData?.focus!}
-                            onValueChange={(x) => setEditData({
-                                ...editData, focus: x
-                            })}
-                        >
-                            <SelectTrigger className="flex-1 min-w-1/2">
-                                <SelectValue placeholder="Focus i.e Science, Art, Technology, Commercial" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white">
-                                <SelectGroup>
-                                    <SelectItem value="Science">Science</SelectItem>
-                                    <SelectItem value="Arts">Arts</SelectItem>
-                                    <SelectItem value="Commerce">Commerce</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-
+                        <Input
+                            name="careerChoice1"
+                            placeholder="Career Choice 1"
+                            value={editData?.careerChoice1 ?? ""}
+                            onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
+                        />
+                        <Input
+                            name="careerChoice2"
+                            placeholder="Career Choice 2"
+                            value={editData?.careerChoice2 ?? ""}
+                            onChange={(e) => updateData(e, setEditData)}
+                            showLabel={true}
+                        />
                     </div>
+
+                    <Button className="w-full">Submit</Button>
                 </form>
 
             </Modal>
