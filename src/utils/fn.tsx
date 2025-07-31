@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStudentData, CreateStudentPayload, DashStats, GradeEditData, LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
+import type { CreateStudentData, CreateStudentPayload, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -91,6 +91,15 @@ export async function createStudent(data: CreateStudentData) {
     }
 }
 
+export async function createGrade(studentId:number ,data: GradeAddData) {
+    const payload = {studentId, ...data}
+    try {
+        const res = await client.post('/grades', payload)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 // Patch functions
 export async function updateStudent(id: string, data: any) {
@@ -135,10 +144,10 @@ export function updateData<T extends Record<string, any>>(
     e: React.ChangeEvent<HTMLInputElement>,
     setData: React.Dispatch<React.SetStateAction<T>>
 ) {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setData(prev => ({
         ...prev,
-        [name]: value,
+        [name]: type === "number" ? Number(value) : value,
     }));
 }
 

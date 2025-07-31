@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useAddGrades, useUpdateGrades } from "@/hooks/use-grades";
 import { useGetStudentDetails, useUpdateStudent } from "@/hooks/use-students";
 import { updateData } from "@/utils/fn";
-import type { GradeEditData } from "@/utils/types";
+import type { Grade, GradeAddData, GradeEditData } from "@/utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router";
@@ -18,15 +19,21 @@ export default function Student() {
     const { state } = useLocation()
 
     const [editData, setEditData] = useState<any>();
+    const [addGradesData, setAddGradesData] = useState<GradeAddData>({
+        year: 0,
+    })
     const [editGradesData, setEditGradesData] = useState<GradeEditData>({
 
     })
 
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state ?? false)
     const [isEditGradeModalOpen, setIsEditGradeModalOpen] = useState<boolean>(false)
+    const [isAddGradeModalOpen, setIsAddGradeModalOpen] = useState<boolean>(false)
 
     const { isLoading, isError, error, data, refetch } = useGetStudentDetails(studentId ?? "");
     const { isPending, mutate } = useUpdateStudent(studentId, editData, refetch)
+    const updateGradeMutation = useUpdateGrades(String(editGradesData.id), editGradesData, refetch)
+    const addGradeMutation = useAddGrades(Number(studentId),addGradesData, refetch)
 
     function openEditModal() {
         setIsEditModalOpen(true)
@@ -39,9 +46,29 @@ export default function Student() {
         setIsEditGradeModalOpen(true)
     }
 
+    function openAddGradeModal() {
+        setIsAddGradeModalOpen(true)
+    }
+
     function closeEditModal() {
         setIsEditModalOpen(false)
         setIsEditGradeModalOpen(false)
+        setIsAddGradeModalOpen(false)
+    }
+
+    function handleSubmitStudentData() {
+        setIsEditModalOpen(false)
+        mutate()
+    }
+
+    function handleAddGrade() {
+        closeEditModal()
+        addGradeMutation.mutate()
+    }
+
+    function handleUpdateGrade() {
+        closeEditModal()
+        updateGradeMutation.mutate()
     }
 
 
@@ -69,13 +96,8 @@ export default function Student() {
         return <div>No student data found</div>;
     }
 
-    if (isPending) {
+    if (isPending || updateGradeMutation.isPending || addGradeMutation.isPending) {
         return <div>Update Loading...</div>;
-    }
-
-    function handleSubmitStudentData() {
-        setIsEditModalOpen(false)
-        mutate()
     }
 
     const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, fatherLastName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades, } = data
@@ -195,7 +217,7 @@ export default function Student() {
             <div className="p-5">
                 <div className="flex justify-between items-center">
                     <Heading text="Grades" />
-                    <Button>
+                    <Button onClick={openAddGradeModal}>
                         Add Grades
                     </Button>
 
@@ -621,16 +643,25 @@ export default function Student() {
             </Modal>
 
             {/* Edit grade modal */}
-
             <Modal isOpen={isEditGradeModalOpen} onClose={closeEditModal}>
                 <form
                     className="flex flex-col gap-5"
+                    action={handleUpdateGrade}
                 >
                     <Heading
                         text="Edit Grades"
 
                     />
                     <div className="flex flex-col gap-4">
+                        <Input
+                            name="year"
+                            placeholder="Year"
+                            type="number"
+                            maxLength={4}
+                            value={editGradesData.year! ?? ""}
+                            onChange={(e) => updateData(e, setEditGradesData)}
+                            showLabel={true}
+                        />
                         <div className="flex gap-4">
                             <Input
                                 name="math"
@@ -711,7 +742,7 @@ export default function Student() {
                             />
                         </div>
                     </div>
-<Button className="w-full">Submit</Button>
+                    <Button className="w-full">Submit</Button>
                 </form>
             </Modal>
 
@@ -719,6 +750,109 @@ export default function Student() {
 
 
             {/* Add grade modal */}
+
+            <Modal isOpen={isAddGradeModalOpen} onClose={closeEditModal} >
+                <form
+                    className="flex flex-col gap-5"
+                    action={handleAddGrade}
+                >
+                    <Heading
+                        text="Add Grades"
+
+                    />
+                    <div className="flex flex-col gap-4">
+                        <Input
+                            name="year"
+                            placeholder="Year"
+                            type="number"
+                            maxLength={4}
+                            value={addGradesData.year! ?? ""}
+                            onChange={(e) => updateData(e, setAddGradesData)}
+                            showLabel={true}
+                        />
+                        <div className="flex gap-4">
+                            <Input
+                                name="math"
+                                placeholder="Math Grade"
+                                value={addGradesData.math! ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="english"
+                                placeholder="English Grade"
+                                value={addGradesData.english ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                        <div className="flex gap-4">
+                            <Input
+                                name="chemistry"
+                                placeholder="Chemistry Grade"
+                                value={addGradesData.chemistry ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="physics"
+                                placeholder="Physics Grade"
+                                value={addGradesData.physics ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                        <div className="flex gap-4">
+                            <Input
+                                name="government"
+                                placeholder="Government Grade"
+                                value={addGradesData.government ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="economics"
+                                placeholder="Economics Grade"
+                                value={addGradesData.economics ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                        <div className="flex gap-4">
+                            <Input
+                                name="biology"
+                                placeholder="Biology Grade"
+                                value={addGradesData.biology ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="literature"
+                                placeholder="Literature in English Grade" value={addGradesData.literature ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                        <div className="flex gap-4">
+                            <Input
+                                name="accounting"
+                                placeholder="Accounting Grade"
+                                value={addGradesData.accounting ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="commerce"
+                                placeholder="Commerce Grade"
+                                value={addGradesData.commerce ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                    </div>
+                    <Button className="w-full">Submit</Button>
+                </form>
+            </Modal>
 
             {/* Add participation modal */}
         </div>

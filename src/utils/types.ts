@@ -47,7 +47,7 @@ export interface Grade {
   accounting?: string | null;
   year: number;
 }
-
+export interface GradeAddData extends Omit<Grade, 'id'> {}
 export interface GradeEditData extends Partial<Grade> {
 
 }
