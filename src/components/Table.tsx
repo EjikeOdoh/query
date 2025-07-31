@@ -33,11 +33,13 @@ export default function StudentTable({ data }: StudentTableProps) {
             <TableCell className="text-[#171717] text-sm font-light">{student.country}</TableCell>
             <TableCell className="flex items-center justify-center gap-2">
               <Button variant="ghost" size='icon'
-              onClick={() => navigate(`/students/${student.id}`)}
+                onClick={() => navigate(`/students/${student.id}`)}
               >
                 <Eye color="#171717" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon"
+                onClick={() => navigate(`/students/${student.id}`, { state: true })}
+              >
                 <Pencil color="#171717" />
               </Button>
               <Button variant="ghost" size="icon">

@@ -28,3 +28,5 @@ export function useUpdateStudent(id: any, data:any, refetch: any) {
       onSuccess: refetch
    })
 }
+
+

@@ -8,27 +8,43 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetStudentDetails, useUpdateStudent } from "@/hooks/use-students";
 import { updateData } from "@/utils/fn";
+import type { GradeEditData } from "@/utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useLocation } from "react-router";
 
 export default function Student() {
-    const { studentId } = useParams();
+    const { studentId, } = useParams();
+    const { state } = useLocation()
+
     const [editData, setEditData] = useState<any>();
-    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
+    const [editGradesData, setEditGradesData] = useState<GradeEditData>({
+
+    })
+
+    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state ?? false)
+    const [isEditGradeModalOpen, setIsEditGradeModalOpen] = useState<boolean>(false)
+
+    const { isLoading, isError, error, data, refetch } = useGetStudentDetails(studentId ?? "");
+    const { isPending, mutate } = useUpdateStudent(studentId, editData, refetch)
 
     function openEditModal() {
         setIsEditModalOpen(true)
     }
 
-    function closeEditModal(
-
-    ) {
-        setIsEditModalOpen(false)
+    function openEditGradeModal(id: any) {
+        setEditGradesData(() => {
+            return data!.grades!.find(x => x.id === id) as GradeEditData
+        })
+        setIsEditGradeModalOpen(true)
     }
 
-    const { isLoading, isError, error, data, refetch } = useGetStudentDetails(studentId ?? "");
-    const { isPending, mutate } = useUpdateStudent(studentId, editData, refetch)
+    function closeEditModal() {
+        setIsEditModalOpen(false)
+        setIsEditGradeModalOpen(false)
+    }
+
+
 
     useEffect(() => {
         if (data) {
@@ -71,19 +87,27 @@ export default function Student() {
                 label="Student Information"
             />
             <div className="p-5">
-                <Button
-                    onClick={openEditModal}
-                    variant="ghost" size="icon">
-                    <Pencil color="#171717" />
-                </Button>
-                <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
-                        <p className="text-3xl font-semibold text-[#008BCC]">{firstName[0]}{lastName[0]}</p>
+
+                <div className="flex justify-between items-start mb-10">
+                    <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
+                            <p className="text-3xl font-semibold text-[#008BCC]">{firstName[0]}{lastName[0]}</p>
+                        </div>
+                        <div>
+                            <h1 className="font-bold text-lg text-black">{firstName} {lastName}</h1>
+                            <small>Since {yearJoined}</small>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="font-bold text-lg text-black">{firstName} {lastName}</h1>
-                        <small>Since {yearJoined}</small>
+
+                    <div className="flex items-center justify-center gap-2">
+                        <Button variant="ghost" size="icon" onClick={openEditModal}>
+                            <Pencil color="#171717" />
+                        </Button>
+                        <Button variant="ghost" size="icon">
+                            <Trash2 color="#171717" />
+                        </Button>
                     </div>
+
                 </div>
 
                 <div className="flex">
@@ -169,7 +193,13 @@ export default function Student() {
             </div>
 
             <div className="p-5">
-                <h3>Grades</h3>
+                <div className="flex justify-between items-center">
+                    <Heading text="Grades" />
+                    <Button>
+                        Add Grades
+                    </Button>
+
+                </div>
 
                 <Table className="rounded-xl overflow-hidden">
                     <TableHeader className="">
@@ -204,7 +234,7 @@ export default function Student() {
                                 <TableCell className="text-[#171717] text-sm font-light">{grade.commerce}</TableCell>
                                 <TableCell className="flex items-center justify-center gap-2">
 
-                                    <Button variant="ghost" size="icon">
+                                    <Button variant="ghost" size="icon" onClick={() => openEditGradeModal(grade.id)}>
                                         <Pencil color="#171717" />
                                     </Button>
                                     <Button variant="ghost" size="icon">
@@ -219,7 +249,7 @@ export default function Student() {
             </div>
 
             <div className="p-5">
-                <h3>Participations</h3>
+                <Heading text="Participations" />
 
                 <Table className="rounded-xl overflow-hidden">
                     <TableHeader className="">
@@ -238,7 +268,7 @@ export default function Student() {
                                 <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_quarter}</TableCell>
                                 <TableCell className="flex items-center justify-center gap-2">
 
-                                    <Button variant="ghost" size="icon">
+                                    <Button variant="ghost" size="icon" >
                                         <Pencil color="#171717" />
                                     </Button>
                                     <Button variant="ghost" size="icon">
@@ -252,6 +282,7 @@ export default function Student() {
 
             </div>
 
+            {/* Edit student modal */}
             <Modal
                 isOpen={isEditModalOpen}
                 onClose={closeEditModal}
@@ -589,6 +620,107 @@ export default function Student() {
 
             </Modal>
 
+            {/* Edit grade modal */}
+
+            <Modal isOpen={isEditGradeModalOpen} onClose={closeEditModal}>
+                <form
+                    className="flex flex-col gap-5"
+                >
+                    <Heading
+                        text="Edit Grades"
+
+                    />
+                    <div className="flex flex-col gap-4">
+                        <div className="flex gap-4">
+                            <Input
+                                name="math"
+                                placeholder="Math Grade"
+                                value={editGradesData.math! ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="english"
+                                placeholder="English Grade"
+                                value={editGradesData.english ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                        <div className="flex gap-4">
+                            <Input
+                                name="chemistry"
+                                placeholder="Chemistry Grade"
+                                value={editGradesData.chemistry ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="physics"
+                                placeholder="Physics Grade"
+                                value={editGradesData.physics ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                        <div className="flex gap-4">
+                            <Input
+                                name="government"
+                                placeholder="Government Grade"
+                                value={editGradesData.government ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="economics"
+                                placeholder="Economics Grade"
+                                value={editGradesData.economics ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                        <div className="flex gap-4">
+                            <Input
+                                name="biology"
+                                placeholder="Biology Grade"
+                                value={editGradesData.biology ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="literature"
+                                placeholder="Literature in English Grade" value={editGradesData.literature ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                        <div className="flex gap-4">
+                            <Input
+                                name="accounting"
+                                placeholder="Accounting Grade"
+                                value={editGradesData.accounting ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="commerce"
+                                placeholder="Commerce Grade"
+                                value={editGradesData.commerce ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                        </div>
+                    </div>
+<Button className="w-full">Submit</Button>
+                </form>
+            </Modal>
+
+            {/* Edit participation modal */}
+
+
+            {/* Add grade modal */}
+
+            {/* Add participation modal */}
         </div>
     );
 }

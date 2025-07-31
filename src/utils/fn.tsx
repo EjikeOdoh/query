@@ -1,7 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStudentData, CreateStudentPayload, DashStats, LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
-
+import type { CreateStudentData, CreateStudentPayload, DashStats, GradeEditData, LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -43,7 +42,6 @@ export async function getStats(year: number): Promise<DashStats> {
     }
     return res.data
 }
-
 
 // Post functions
 export async function createStudent(data: CreateStudentData) {
@@ -93,9 +91,20 @@ export async function createStudent(data: CreateStudentData) {
     }
 }
 
+
+// Patch functions
 export async function updateStudent(id: string, data: any) {
     try {
         const res = await client.patch(`/students/${id}`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function updateGrade(id: string, data: GradeEditData) {
+    try {
+        const res = await client.patch(`/grades/${id}`, data)
         return res.data
     } catch (error) {
         console.log(error)

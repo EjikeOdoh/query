@@ -35,17 +35,21 @@ export interface StudentPagination {
 
 export interface Grade {
   id: number;
-  english: number | null;
-  math: number | null;
-  chemistry: number | null;
-  physics: number | null;
-  government: number | null;
-  economics: number | null;
-  biology: number | null;
-  commerce: number | null;
-  literature: number | null;
-  accounting: number | null;
+  english?: string | null;
+  math?: string | null;
+  chemistry?: string | null;
+  physics?: string | null;
+  government?: string | null;
+  economics?: string | null;
+  biology?: string | null;
+  commerce?: string | null;
+  literature?: string | null;
+  accounting?: string | null;
   year: number;
+}
+
+export interface GradeEditData extends Partial<Grade> {
+
 }
 
 export interface Participation {
