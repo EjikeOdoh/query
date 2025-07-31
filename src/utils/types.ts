@@ -56,8 +56,10 @@ export interface Participation {
   participation_id: number
   participation_year: number;
   participation_quarter: number;
-  program_program: string;
+  program_program: string | number;
 }
+export interface ParticipationAddData extends Omit<Participation, 'participation_id'> {}
+export interface ParticipationEditData extends Partial<Participation> {}
 
 export interface StudentDetail {
   id: number;
@@ -226,4 +228,9 @@ export interface CreateStudentPayload {
     literature?: string;
     accounting?: string;
   }
+}
+
+export interface ProgramStat {
+  id: number
+  program: Program
 }

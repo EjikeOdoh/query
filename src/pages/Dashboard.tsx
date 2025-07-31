@@ -3,12 +3,13 @@ import Header from "@/components/Header"
 import LineGraph from "@/components/LineChart"
 import Map from "@/components/Map"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getDashboardStats } from "@/hooks/use-dashboard"
+import { getDashboardStats, useGetPrograms } from "@/hooks/use-dashboard"
 import { useState } from "react"
 
 export default function Dashboard() {
     const [filterYear, setFilterYear] = useState<number>(0)
     const { isLoading, isError, error, data } = getDashboardStats(filterYear)
+    useGetPrograms()
 
     if (isLoading) {
         return (
@@ -20,6 +21,7 @@ export default function Dashboard() {
         return <div>Error: {error.message}</div>
     }
 
+    console.log(data)
 
     const years: number[] = data!.countByYear.map(x => x.year)
     return (

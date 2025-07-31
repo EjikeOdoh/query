@@ -9,31 +9,36 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useAddGrades, useUpdateGrades } from "@/hooks/use-grades";
 import { useGetStudentDetails, useUpdateStudent } from "@/hooks/use-students";
 import { updateData } from "@/utils/fn";
-import type { Grade, GradeAddData, GradeEditData } from "@/utils/types";
+import type { GradeAddData, GradeEditData, ParticipationEditData, ProgramStat } from "@/utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { useGetPrograms } from "@/hooks/use-dashboard";
+
 
 export default function Student() {
     const { studentId, } = useParams();
     const { state } = useLocation()
 
+    const programs = useGetPrograms()
+
     const [editData, setEditData] = useState<any>();
     const [addGradesData, setAddGradesData] = useState<GradeAddData>({
         year: 0,
     })
-    const [editGradesData, setEditGradesData] = useState<GradeEditData>({
-
-    })
+    const [editGradesData, setEditGradesData] = useState<GradeEditData>({})
+    const [editParticipationData, setEditParticipationData] = useState<ParticipationEditData>({})
 
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state ?? false)
     const [isEditGradeModalOpen, setIsEditGradeModalOpen] = useState<boolean>(false)
     const [isAddGradeModalOpen, setIsAddGradeModalOpen] = useState<boolean>(false)
+    const [isEditParticipationModalOpen, setIsParticipationModalOpen] = useState<boolean>(false)
 
     const { isLoading, isError, error, data, refetch } = useGetStudentDetails(studentId ?? "");
     const { isPending, mutate } = useUpdateStudent(studentId, editData, refetch)
     const updateGradeMutation = useUpdateGrades(String(editGradesData.id), editGradesData, refetch)
-    const addGradeMutation = useAddGrades(Number(studentId),addGradesData, refetch)
+    const addGradeMutation = useAddGrades(Number(studentId), addGradesData, refetch)
 
     function openEditModal() {
         setIsEditModalOpen(true)
@@ -47,13 +52,22 @@ export default function Student() {
     }
 
     function openAddGradeModal() {
+        addGradeMutation.mutate()
         setIsAddGradeModalOpen(true)
+    }
+
+    function openEditParticipationModal(id: any) {
+        setEditParticipationData(() => data!.participations!.find(x => x.participation_id === id) as ParticipationEditData)
+        setIsParticipationModalOpen(true)
+        console.log(editParticipationData)
     }
 
     function closeEditModal() {
         setIsEditModalOpen(false)
         setIsEditGradeModalOpen(false)
         setIsAddGradeModalOpen(false)
+        setIsParticipationModalOpen(false)
+
     }
 
     function handleSubmitStudentData() {
@@ -71,6 +85,10 @@ export default function Student() {
         updateGradeMutation.mutate()
     }
 
+    function handleEditParticipation() {
+        closeEditModal()
+        console.log(editParticipationData)
+    }
 
 
     useEffect(() => {
@@ -84,7 +102,7 @@ export default function Student() {
         return <div>No student ID provided</div>;
     }
 
-    if (isLoading) {
+    if (isLoading || programs.isLoading) {
         return <div>Loading...</div>;
     }
 
@@ -290,7 +308,7 @@ export default function Student() {
                                 <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_quarter}</TableCell>
                                 <TableCell className="flex items-center justify-center gap-2">
 
-                                    <Button variant="ghost" size="icon" >
+                                    <Button variant="ghost" size="icon" onClick={openEditParticipationModal} >
                                         <Pencil color="#171717" />
                                     </Button>
                                     <Button variant="ghost" size="icon">
@@ -747,7 +765,58 @@ export default function Student() {
             </Modal>
 
             {/* Edit participation modal */}
-
+            <Modal isOpen={isEditParticipationModalOpen} onClose={closeEditModal}>
+                <form action={handleEditParticipation}
+                    className="flex flex-col gap-10"
+                >
+                    <Heading
+                        text="Edit Participation"
+                    />
+                    <div className="flex flex-col gap-4">
+                        <Select
+                            name="program"
+                            required
+                            value={String(editParticipationData.program_program) ?? ""}
+                            onValueChange={x => setEditParticipationData(prev => ({ ...prev, program_program: x }))}
+                        >
+                            <SelectTrigger className="w-full px-6">
+                                <SelectValue placeholder="Select program" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white py-4">
+                                <SelectGroup>
+                                    {programs.data?.map(program => (<SelectItem value={String(program.id)}>{program.program}</SelectItem>))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <Input
+                            name="year"
+                            type="number"
+                            placeholder="Year of Participation"
+                            required
+                            maxLength={4}
+                            value={editParticipationData.participation_year}
+                            onChange={(e) => setEditParticipationData(prev => ({ ...prev, participation_year: Number(e.target.value) }))}
+                        />
+                        <Select
+                            name="quarter"
+                            onValueChange={x => setEditParticipationData(prev => ({ ...prev, participation_quarter: Number(x) }))}
+                        >
+                            <SelectTrigger className="w-full px-6">
+                                <SelectValue placeholder="Select Quarter" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white">
+                                <SelectGroup>
+                                    <SelectItem value="1">First</SelectItem>
+                                    <SelectItem value="2">Second</SelectItem>
+                                    <SelectItem value="3">Third</SelectItem>
+                                    <SelectItem value="4">Fourth</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <Button className="w-full">Submit</Button>
+                </form>
+            </Modal>
 
             {/* Add grade modal */}
 
@@ -855,6 +924,6 @@ export default function Student() {
             </Modal>
 
             {/* Add participation modal */}
-        </div>
+        </div >
     );
 }

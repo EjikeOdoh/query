@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStudentData, CreateStudentPayload, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationData, StudentDetail, StudentPagination } from "./types"
+import type { CreateStudentData, CreateStudentPayload, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationData, ProgramStat, StudentDetail, StudentPagination } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -23,8 +23,6 @@ export async function getAllParticipation(filterOptions: Participation): Promise
         .filter(([_, value]) => value !== undefined && value !== null && value !== '')
         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
         .join('&');
-
-    console.log(query)
     return client.get('/participation/filter').then(res => res.data)
 }
 
@@ -40,6 +38,11 @@ export async function getStats(year: number): Promise<DashStats> {
     } else {
         res = await client.get(`/participation?year=${year}`)
     }
+    return res.data
+}
+
+export async function getPrograms(): Promise<ProgramStat[]> {
+    const res = await client.get('/programs')
     return res.data
 }
 
@@ -91,8 +94,8 @@ export async function createStudent(data: CreateStudentData) {
     }
 }
 
-export async function createGrade(studentId:number ,data: GradeAddData) {
-    const payload = {studentId, ...data}
+export async function createGrade(studentId: number, data: GradeAddData) {
+    const payload = { studentId, ...data }
     try {
         const res = await client.post('/grades', payload)
         return res.data
@@ -138,8 +141,6 @@ export function logout() {
 
 
 // utility functions
-
-
 export function updateData<T extends Record<string, any>>(
     e: React.ChangeEvent<HTMLInputElement>,
     setData: React.Dispatch<React.SetStateAction<T>>
