@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStudentData, CreateStudentPayload, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationData, ProgramStat, StudentDetail, StudentPagination } from "./types"
+import type { CreateStudentData, CreateStudentPayload, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StudentDetail, StudentPagination } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -104,6 +104,22 @@ export async function createGrade(studentId: number, data: GradeAddData) {
     }
 }
 
+export async function addParticipation(data: ParticipationAddData) {
+    const payload = {
+        studentId: data.studentId,
+        programId: data.participation_year,
+        quarter: data.participation_quarter,
+        year: data.participation_year
+    }
+
+    try {
+        const res = await client.post('/participation', payload)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Patch functions
 export async function updateStudent(id: string, data: any) {
     try {
@@ -121,6 +137,22 @@ export async function updateGrade(id: string, data: GradeEditData) {
     } catch (error) {
         console.log(error)
     }
+}
+
+export async function updateParticipation(id: string, data: ParticipationEditData ) {
+    const payload = {
+        // programId: Number(data.program_program),
+        quarter: Number(data.participation_quarter),
+        year: Number(data.participation_year)
+    }
+
+    try {
+        const res = await client.patch(`/participation/${data.participation_id}`, payload)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 // Auth functions

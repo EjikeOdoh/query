@@ -58,7 +58,9 @@ export interface Participation {
   participation_quarter: number;
   program_program: string | number;
 }
-export interface ParticipationAddData extends Omit<Participation, 'participation_id'> {}
+export interface ParticipationAddData extends Partial<Omit<Participation, 'participation_id'>> {
+  studentId: number
+}
 export interface ParticipationEditData extends Partial<Participation> {}
 
 export interface StudentDetail {

@@ -8,7 +8,7 @@ interface InputProps extends React.ComponentProps<"input"> {
 function Input({ showLabel = false, className, type, ...props }: InputProps) {
   return (
     <div>
-      {showLabel && <label htmlFor={props.name} className="text-xs text-[#3d3d3d]">{props.placeholder}</label>}
+      {showLabel && <label htmlFor={props.name} className="text-sm text-[#3d3d3d]">{props.placeholder}</label>}
       <input
         type={type}
         id={props.name}
