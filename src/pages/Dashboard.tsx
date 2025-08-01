@@ -21,8 +21,6 @@ export default function Dashboard() {
         return <div>Error: {error.message}</div>
     }
 
-    console.log(data)
-
     const years: number[] = data!.countByYear.map(x => x.year)
     return (
         <div className="text-left">

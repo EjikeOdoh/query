@@ -100,6 +100,7 @@ export default function Student() {
     }
 
     function handleAddParticipation(formData:FormData) {
+        console.log(addParticipationData)
        closeEditModal()
        addPartipationMutation.mutate()
     }

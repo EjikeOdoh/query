@@ -107,7 +107,7 @@ export async function createGrade(studentId: number, data: GradeAddData) {
 export async function addParticipation(data: ParticipationAddData) {
     const payload = {
         studentId: data.studentId,
-        programId: data.participation_year,
+        programId: data.program_program,
         quarter: data.participation_quarter,
         year: data.participation_year
     }
