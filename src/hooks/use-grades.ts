@@ -1,4 +1,4 @@
-import { createGrade, updateGrade } from "@/utils/fn";
+import { createGrade, deleteGrade, updateGrade } from "@/utils/fn";
 import type { GradeAddData, GradeEditData } from "@/utils/types";
 import { useMutation } from "@tanstack/react-query";
 
@@ -14,4 +14,12 @@ export function useUpdateGrades(id: string, data: GradeEditData, refetch: any) {
         mutationFn: () => updateGrade(id, data),
         onSuccess: refetch
     })
+}
+
+
+export function useDeleteGrades(id: number, refetch: any) {
+   return useMutation({
+      mutationFn: () =>deleteGrade(id),
+      onSuccess: refetch
+   })
 }

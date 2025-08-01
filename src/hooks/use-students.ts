@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { ParticipationAddData, ParticipationEditData, StudentPagination } from "../utils/types";
-import { addParticipation, getAllStudents, getStudentDetails, updateParticipation, updateStudent } from "@/utils/fn";
+import { addParticipation, deleteParticipation, deleteStudent, getAllStudents, getStudentDetails, updateParticipation, updateStudent } from "@/utils/fn";
 import { useMutation } from "@tanstack/react-query";
 
 export function useGetAllStudents(meta: StudentPagination, token: string | null) {
@@ -39,6 +39,20 @@ export function useAddStudentParticipation(data: ParticipationAddData, refetch: 
 export function useUpdateStudentParticipation(id:any, data: ParticipationEditData, refetch: any) {
    return useMutation({
       mutationFn: () => updateParticipation(id, data),
+      onSuccess: refetch
+   })
+}
+
+export function useDeleteStudentParticipation(id: number, refetch: any) {
+   return useMutation({
+      mutationFn: () =>deleteParticipation(id),
+      onSuccess: refetch
+   })
+}
+
+export function useDeleteStudent(id:number, refetch: any) {
+   return useMutation({
+      mutationFn: () =>deleteStudent(id),
       onSuccess: refetch
    })
 }

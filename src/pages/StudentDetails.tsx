@@ -6,19 +6,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useAddGrades, useUpdateGrades } from "@/hooks/use-grades";
-import { useAddStudentParticipation, useGetStudentDetails, useUpdateStudent, useUpdateStudentParticipation } from "@/hooks/use-students";
+import { useAddGrades, useDeleteGrades, useUpdateGrades } from "@/hooks/use-grades";
+import { useAddStudentParticipation, useDeleteStudent, useDeleteStudentParticipation, useGetStudentDetails, useUpdateStudent, useUpdateStudentParticipation } from "@/hooks/use-students";
 import { updateData } from "@/utils/fn";
 import { type ParticipationAddData, type GradeAddData, type GradeEditData, type ParticipationEditData } from "@/utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router";
+import { useParams, useLocation, useNavigate } from "react-router";
 import { useGetPrograms } from "@/hooks/use-dashboard";
 
 
 export default function Student() {
     const { studentId, } = useParams();
     const { state } = useLocation()
+    const navigate = useNavigate()
 
     const programs = useGetPrograms()
 
@@ -31,6 +32,8 @@ export default function Student() {
     const [addParticipationData, setAddParticipationData] = useState<ParticipationAddData>({
         studentId: Number(studentId)
     })
+    const [pId, setPId] = useState<number>()
+    const [gradeId, setGradeId] = useState<number>()
 
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state ?? false)
     const [isEditGradeModalOpen, setIsEditGradeModalOpen] = useState<boolean>(false)
@@ -40,11 +43,18 @@ export default function Student() {
 
     const { isLoading, isError, error, data, refetch } = useGetStudentDetails(studentId ?? "");
     const { isPending, mutate } = useUpdateStudent(studentId, editData, refetch)
+    const deleteStudentMutation = useDeleteStudent(Number(studentId), () => navigate('/students', { replace: true }))
+
+
     const updateGradeMutation = useUpdateGrades(String(editGradesData.id), editGradesData, refetch)
     const addGradeMutation = useAddGrades(Number(studentId), addGradesData, refetch)
+    const deleteGradeMutation = useDeleteGrades(gradeId!, refetch)
 
     const updateParticipationMutation = useUpdateStudentParticipation(Number(studentId), editParticipationData, refetch)
     const addPartipationMutation = useAddStudentParticipation(addParticipationData, refetch)
+    const deleteParticipationMutation = useDeleteStudentParticipation(pId!, refetch)
+
+
 
     function openEditModal() {
         setIsEditModalOpen(true)
@@ -99,10 +109,19 @@ export default function Student() {
         updateParticipationMutation.mutate()
     }
 
-    function handleAddParticipation(formData:FormData) {
-        console.log(addParticipationData)
-       closeEditModal()
-       addPartipationMutation.mutate()
+    function handleAddParticipation(formData: FormData) {
+        closeEditModal()
+        addPartipationMutation.mutate()
+    }
+
+    function handleDeleteParticipation(id: number) {
+        setPId(id)
+        deleteParticipationMutation.mutate()
+    }
+
+    function handleDeleteGrade(id: number) {
+        setGradeId(id)
+        deleteGradeMutation.mutate()
     }
 
     useEffect(() => {
@@ -128,7 +147,7 @@ export default function Student() {
         return <div>No student data found</div>;
     }
 
-    if (isPending || updateGradeMutation.isPending || addGradeMutation.isPending || updateParticipationMutation.isPending || addPartipationMutation.isPending) {
+    if (isPending || updateGradeMutation.isPending || addGradeMutation.isPending || updateParticipationMutation.isPending || addPartipationMutation.isPending || deleteParticipationMutation.isPending || deleteGradeMutation.isPending || deleteStudentMutation.isPending) {
         return <div>Update Loading...</div>;
     }
 
@@ -157,7 +176,7 @@ export default function Student() {
                         <Button variant="ghost" size="icon" onClick={openEditModal}>
                             <Pencil color="#171717" />
                         </Button>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" onClick={() => deleteStudentMutation.mutate()}>
                             <Trash2 color="#171717" />
                         </Button>
                     </div>
@@ -246,15 +265,15 @@ export default function Student() {
                 </div>
             </div>
 
+            {/* Grades table */}
+
             <div className="p-5">
                 <div className="flex justify-between items-center">
                     <Heading text="Grades" />
                     <Button onClick={openAddGradeModal}>
                         Add Grades
                     </Button>
-
                 </div>
-
                 <Table className="rounded-xl overflow-hidden">
                     <TableHeader className="">
                         <TableRow className="bg-[#E6F7FF]">
@@ -287,11 +306,12 @@ export default function Student() {
                                 <TableCell className="text-[#171717] text-sm font-light">{grade.accounting}</TableCell>
                                 <TableCell className="text-[#171717] text-sm font-light">{grade.commerce}</TableCell>
                                 <TableCell className="flex items-center justify-center gap-2">
-
                                     <Button variant="ghost" size="icon" onClick={() => openEditGradeModal(grade.id)}>
                                         <Pencil color="#171717" />
                                     </Button>
-                                    <Button variant="ghost" size="icon">
+                                    <Button variant="ghost" size="icon"
+                                        onClick={() => handleDeleteGrade(grade.id)}
+                                    >
                                         <Trash2 color="#171717" />
                                     </Button>
                                 </TableCell>
@@ -299,9 +319,9 @@ export default function Student() {
                         ))}
                     </TableBody>
                 </Table>
-
             </div>
 
+            {/* Participation table */}
             <div className="p-5">
                 <div className="flex justify-between items-center">
                     <Heading text="Participations" />
@@ -329,7 +349,9 @@ export default function Student() {
                                         onClick={() => openEditParticipationModal(particpation.participation_id)} >
                                         <Pencil color="#171717" />
                                     </Button>
-                                    <Button variant="ghost" size="icon">
+                                    <Button variant="ghost" size="icon"
+                                        onClick={() => handleDeleteParticipation(particpation.participation_id)}
+                                    >
                                         <Trash2 color="#171717" />
                                     </Button>
                                 </TableCell>
@@ -981,24 +1003,24 @@ export default function Student() {
                             showLabel={true}
                         />
                         <div>
-                        <label htmlFor="program" className="text-sm font-light">Select Quarter</label>
-                        <Select
-                            name="quarter"
-                            value={String(addParticipationData.participation_quarter)}
-                            onValueChange={x => setAddParticipationData(prev => ({ ...prev, participation_quarter: Number(x) }))}
-                        >
-                            <SelectTrigger className="w-full px-6">
-                                <SelectValue placeholder="Select Quarter" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white">
-                                <SelectGroup>
-                                    <SelectItem value="1">First</SelectItem>
-                                    <SelectItem value="2">Second</SelectItem>
-                                    <SelectItem value="3">Third</SelectItem>
-                                    <SelectItem value="4">Fourth</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                            <label htmlFor="program" className="text-sm font-light">Select Quarter</label>
+                            <Select
+                                name="quarter"
+                                value={String(addParticipationData.participation_quarter)}
+                                onValueChange={x => setAddParticipationData(prev => ({ ...prev, participation_quarter: Number(x) }))}
+                            >
+                                <SelectTrigger className="w-full px-6">
+                                    <SelectValue placeholder="Select Quarter" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white">
+                                    <SelectGroup>
+                                        <SelectItem value="1">First</SelectItem>
+                                        <SelectItem value="2">Second</SelectItem>
+                                        <SelectItem value="3">Third</SelectItem>
+                                        <SelectItem value="4">Fourth</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                     <Button className="w-full">Submit</Button>

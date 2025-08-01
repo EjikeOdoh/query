@@ -155,6 +155,24 @@ export async function updateParticipation(id: string, data: ParticipationEditDat
 
 }
 
+
+// Delete functions
+
+export async function deleteParticipation(id: number) {
+    const res = await client.delete(`/participation/${id}`)
+    return res.data
+}
+
+export async function deleteGrade(id: number) {
+    const res = await client.delete(`/grades/${id}`)
+    return res.data
+}
+
+export async function deleteStudent(id: number) {
+    const res = await client.delete(`/students/${id}`)
+    return res.data
+}
+
 // Auth functions
 export async function login(payload: LoginForm) {
     try {
