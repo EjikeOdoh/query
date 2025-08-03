@@ -14,6 +14,10 @@ import Dashboard from "./Dashboard";
 import Volunteers from "./Volunteers";
 import Partners from "./Partners";
 import Participation from "./Participation";
+import AddStaff from "./AddStaff";
+import StaffDetails from "./StaffDetails";
+import VolunteerDetails from "./VolunteerDetails";
+import AddVolunteer from "./AddVolunteer";
 
 export default function Navigation() {
 
@@ -46,7 +50,7 @@ export default function Navigation() {
                         {
                             (accountType.role === "editor" || accountType.role === "admin") && <>
                                 {/* Routes for students */}
-                                <Route path='/students' element={accountType.role === "admin" ? <Students /> : <Students />} />
+                                <Route path='/students' element={<Students />} />
                                 <Route path='/students/search' element={<Search />} />
                                 <Route path='/add-student' element={<AddStudent />} />
                                 <Route path='/students/:studentId' element={<Student />} />
@@ -57,13 +61,13 @@ export default function Navigation() {
                             accountType.role === 'admin' && <>
                                 {/* Routes for volunteers */}
                                 <Route path='/volunteers' element={<Volunteers />} />
-                                <Route path='/add-volunteer' element={<AddStudent />} />
-                                <Route path='/staff/:volunteerId' element={<Student />} />
+                                <Route path='/add-volunteer' element={<AddVolunteer />} />
+                                <Route path='/volunteers/:volunteerId' element={<VolunteerDetails />} />
 
                                 {/* Routes for staff */}
                                 <Route path='/staff' element={<Staff />} />
-                                <Route path='/add-staff' element={<AddStudent />} />
-                                <Route path='/staff/:staffId' element={<Student />} />
+                                <Route path='/add-staff' element={<AddStaff />} />
+                                <Route path='/staff/:staffId' element={<StaffDetails />} />
 
                                 {/* Routes for partners */}
                                 <Route path='/partners' element={<Partners />} />

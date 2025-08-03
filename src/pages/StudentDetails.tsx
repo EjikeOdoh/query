@@ -10,9 +10,9 @@ import { useAddGrades, useDeleteGrades, useUpdateGrades } from "@/hooks/use-grad
 import { useAddStudentParticipation, useDeleteStudent, useDeleteStudentParticipation, useGetStudentDetails, useUpdateStudent, useUpdateStudentParticipation } from "@/hooks/use-students";
 import { updateData } from "@/utils/fn";
 import { type ParticipationAddData, type GradeAddData, type GradeEditData, type ParticipationEditData } from "@/utils/types";
-import { Pencil, Trash2 } from "lucide-react";
+import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams, useLocation, useNavigate } from "react-router";
+import { useParams, useLocation, useNavigate, NavLink } from "react-router";
 import { useGetPrograms } from "@/hooks/use-dashboard";
 
 
@@ -155,211 +155,218 @@ export default function Student() {
 
 
     return (
-        <div>
+        <div className="flex flex-col">
             <Header
                 label="Student Information"
             />
-            <div className="p-5">
+            <div className="pt-5 pb-20">
+                <div className="w-11/12 m-auto space-y-10">
+                    <div className="py-6 px-10 bg-white rounded-2xl space-y-10">
 
-                <div className="flex justify-between items-start mb-10">
-                    <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
-                            <p className="text-3xl font-semibold text-[#008BCC]">{firstName[0]}{lastName[0]}</p>
-                        </div>
                         <div>
-                            <h1 className="font-bold text-lg text-black">{firstName} {lastName}</h1>
-                            <small>Since {yearJoined}</small>
+                            <NavLink to="/students" className="flex items-center gap-2 text-[#171717] font-light text-xs">
+                                <ChevronLeft color="#171717" size={14} />
+                                Back to Dashboard
+                            </NavLink>
                         </div>
-                    </div>
 
-                    <div className="flex items-center justify-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={openEditModal}>
-                            <Pencil color="#171717" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => deleteStudentMutation.mutate()}>
-                            <Trash2 color="#171717" />
-                        </Button>
-                    </div>
+                        <div className="flex justify-between items-start">
+                            <div className="flex items-center gap-4">
+                                <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
+                                    <p className="text-3xl font-semibold text-[#008BCC]">{firstName[0]}{lastName[0]}</p>
+                                </div>
+                                <div>
+                                    <h1 className="font-bold text-lg text-black">{firstName} {lastName}</h1>
+                                    <small>Since {yearJoined}</small>
+                                </div>
+                            </div>
 
-                </div>
-
-                <div className="flex">
-                    <div className="flex-1">
-                        <Heading
-                            text="Personal Details"
-                        />
-                        <div className="info-grid">
-
-                            <Row
-                                label="Date of Birth"
-                                value={String(dob)}
-                            />
-
-                            <Row
-                                label="Country"
-                                value={country}
-                            />
-
-                            <Row
-                                label="School"
-                                value={school}
-                            />
-
-                            <Row
-                                label="Class"
-                                value={currentClass}
-                            />
-
-                            <Row label="Favorite Subject" value={favSubject} />
-
-
-                            <Row label="Most Difficult Subject" value={difficultSubject} />
-
+                            <div className="flex items-center justify-center gap-2">
+                                <Button variant="ghost" size="icon" onClick={openEditModal}>
+                                    <Pencil color="#171717" />
+                                </Button>
+                                <Button variant="ghost" size="icon" onClick={() => deleteStudentMutation.mutate()}>
+                                    <Trash2 color="#171717" />
+                                </Button>
+                            </div>
 
                         </div>
-                    </div>
-                    <div className="flex-1">
-                        <div className="section">
-                            <Heading
-                                text="Parents Details"
-                            />
-                            <div className="info-grid">
 
-                                <Row
-                                    label="Father's Name"
-                                    value={fatherLastName}
+                        <div className="flex">
+                            <div className="flex-1 space-y-5">
+                                <Heading
+                                    text="Personal Details"
                                 />
+                                <div className="space-y-2">
+                                    <Row
+                                        label="Date of Birth"
+                                        value={String(dob)}
+                                    />
 
-                                <Row
-                                    label="Mother's Name"
-                                    value={motherFirstName}
-                                />
+                                    <Row
+                                        label="Country"
+                                        value={country}
+                                    />
+
+                                    <Row
+                                        label="School"
+                                        value={school}
+                                    />
+
+                                    <Row
+                                        label="Class"
+                                        value={currentClass}
+                                    />
+
+                                    <Row label="Favorite Subject" value={favSubject} />
+
+
+                                    <Row label="Most Difficult Subject" value={difficultSubject} />
+
+
+                                </div>
+                            </div>
+                            <div className="flex-1 space-y-10">
+                                <div className="space-y-5">
+                                    <Heading
+                                        text="Parents Details"
+                                    />
+                                    <div className="space-y-2">
+                                        <Row
+                                            label="Father's Name"
+                                            value={fatherLastName}
+                                        />
+
+                                        <Row
+                                            label="Mother's Name"
+                                            value={motherFirstName}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-5">
+                                    <Heading
+                                        text="Contacts"
+                                    />
+                                    <div className="space-y-2">
+
+                                        <Row
+                                            label="Email Address"
+                                            value={email}
+                                        />
+
+                                        <Row
+                                            label="Phone Number"
+                                            value={phone}
+                                        />
+
+
+                                        <Row
+                                            label="House Address"
+                                            value={address}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div className="section">
-                            <Heading
-                                text="Contacts"
-                            />
-                            <div className="info-grid">
-
-                                <Row
-                                    label="Email Address"
-                                    value={email}
-                                />
-
-                                <Row
-                                    label="Phone Number"
-                                    value={phone}
-                                />
-
-
-                                <Row
-                                    label="House Address"
-                                    value={address}
-                                />
-                            </div>
-                        </div>
                     </div>
 
+                    {/* Grades table */}
 
+                    <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
+                        <div className="flex justify-between items-center">
+                            <Heading text="Grades" />
+                            <Button onClick={openAddGradeModal}>
+                                Add Grades
+                            </Button>
+                        </div>
+                        <Table className="rounded-xl overflow-hidden">
+                            <TableHeader className="">
+                                <TableRow className="bg-[#E6F7FF]">
+                                    <TableHead className="text-[#808080] text-sm font-light">Year</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Mth</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Eng</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Chm</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Phy</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Bio</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Gov</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Eco</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Lit</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Act</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Com</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light w-28">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody >
+                                {grades.map(grade => (
+                                    <TableRow key={grade.id}>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.year}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.math}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.english}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.chemistry}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.physics}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.biology}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.government}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.economics}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.literature}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.accounting}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{grade.commerce}</TableCell>
+                                        <TableCell className="flex items-center justify-center gap-2">
+                                            <Button variant="ghost" size="icon" onClick={() => openEditGradeModal(grade.id)}>
+                                                <Pencil color="#171717" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon"
+                                                onClick={() => handleDeleteGrade(grade.id)}
+                                            >
+                                                <Trash2 color="#171717" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+
+                    {/* Participation table */}
+                    <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
+                        <div className="flex justify-between items-center">
+                            <Heading text="Participations" />
+                            <Button onClick={openAddParticipationModal}>Add Participation</Button>
+                        </div>
+
+                        <Table className="rounded-xl overflow-hidden">
+                            <TableHeader className="">
+                                <TableRow className="bg-[#E6F7FF]">
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-28">Program</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-28">Year</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-28">Quarter</TableHead>
+                                    <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody >
+                                {participations.map(particpation => (
+                                    <TableRow key={particpation.participation_id}>
+                                        <TableCell className="text-[#171717] text-sm font-light">{particpation.program_program}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_year}</TableCell>
+                                        <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_quarter}</TableCell>
+                                        <TableCell className="flex items-center justify-center gap-2">
+
+                                            <Button variant="ghost" size="icon"
+                                                onClick={() => openEditParticipationModal(particpation.participation_id)} >
+                                                <Pencil color="#171717" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon"
+                                                onClick={() => handleDeleteParticipation(particpation.participation_id)}
+                                            >
+                                                <Trash2 color="#171717" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+
+                    </div>
                 </div>
-            </div>
-
-            {/* Grades table */}
-
-            <div className="p-5">
-                <div className="flex justify-between items-center">
-                    <Heading text="Grades" />
-                    <Button onClick={openAddGradeModal}>
-                        Add Grades
-                    </Button>
-                </div>
-                <Table className="rounded-xl overflow-hidden">
-                    <TableHeader className="">
-                        <TableRow className="bg-[#E6F7FF]">
-                            <TableHead className="text-[#808080] text-sm font-light">Year</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Mth</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Eng</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Chm</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Phy</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Bio</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Gov</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Eco</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Lit</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Act</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Com</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light w-28">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody >
-                        {grades.map(grade => (
-                            <TableRow key={grade.id}>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.year}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.math}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.english}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.chemistry}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.physics}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.biology}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.government}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.economics}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.literature}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.accounting}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{grade.commerce}</TableCell>
-                                <TableCell className="flex items-center justify-center gap-2">
-                                    <Button variant="ghost" size="icon" onClick={() => openEditGradeModal(grade.id)}>
-                                        <Pencil color="#171717" />
-                                    </Button>
-                                    <Button variant="ghost" size="icon"
-                                        onClick={() => handleDeleteGrade(grade.id)}
-                                    >
-                                        <Trash2 color="#171717" />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-
-            {/* Participation table */}
-            <div className="p-5">
-                <div className="flex justify-between items-center">
-                    <Heading text="Participations" />
-                    <Button onClick={openAddParticipationModal}>Add Participation</Button>
-                </div>
-
-                <Table className="rounded-xl overflow-hidden">
-                    <TableHeader className="">
-                        <TableRow className="bg-[#E6F7FF]">
-                            <TableHead className="text-[#808080] text-sm font-light min-w-28">Program</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-28">Year</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-28">Quarter</TableHead>
-                            <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody >
-                        {participations.map(particpation => (
-                            <TableRow key={particpation.participation_id}>
-                                <TableCell className="text-[#171717] text-sm font-light">{particpation.program_program}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_year}</TableCell>
-                                <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_quarter}</TableCell>
-                                <TableCell className="flex items-center justify-center gap-2">
-
-                                    <Button variant="ghost" size="icon"
-                                        onClick={() => openEditParticipationModal(particpation.participation_id)} >
-                                        <Pencil color="#171717" />
-                                    </Button>
-                                    <Button variant="ghost" size="icon"
-                                        onClick={() => handleDeleteParticipation(particpation.participation_id)}
-                                    >
-                                        <Trash2 color="#171717" />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-
             </div>
 
             {/* Edit student modal */}
