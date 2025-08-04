@@ -47,7 +47,7 @@ export interface Grade {
   accounting?: string | null;
   year: number;
 }
-export interface GradeAddData extends Omit<Grade, 'id'> {}
+export interface GradeAddData extends Omit<Grade, 'id'> { }
 export interface GradeEditData extends Partial<Grade> {
 
 }
@@ -61,7 +61,7 @@ export interface Participation {
 export interface ParticipationAddData extends Partial<Omit<Participation, 'participation_id'>> {
   studentId: number
 }
-export interface ParticipationEditData extends Partial<Participation> {}
+export interface ParticipationEditData extends Partial<Participation> { }
 
 export interface StudentDetail {
   id: number;
@@ -97,7 +97,7 @@ export interface StudentDetail {
   participations: Participation[];
 }
 
-export type EditStudentPayload = Omit<StudentDetail, 'grades'|'participations'> & {}
+export type EditStudentPayload = Omit<StudentDetail, 'grades' | 'participations'> & {}
 
 export interface SearchResult {
   count: number
@@ -235,4 +235,46 @@ export interface CreateStudentPayload {
 export interface ProgramStat {
   id: number
   program: Program
+}
+
+export interface CreateVolunteer {
+  firstName: string
+  lastName: string
+  active: boolean
+  startDate?: string
+  endDate?: string
+  program?: string
+  phone?: string
+  email?: string
+  address?: string
+  location?: string
+  skillSet?: string
+  // cp stands for contact person
+  cpName1?: string
+  cpRel1?: string
+  cpPhone1?: string
+
+  cpName2?: string
+  cpRel2?: string
+  cpPhone2?: string
+}
+
+export interface CreateStaff extends Omit<CreateVolunteer, 'program'> {
+  staffId: string
+  role: string
+}
+
+export interface StaffDetails extends CreateStaff {
+  id: number
+}
+
+
+export interface StaffPayload {
+  id: number,
+  staffId: string,
+  firstName: string,
+  lastName: string,
+  role: string,
+  active: boolean
+
 }

@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStudentData, CreateStudentPayload, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StudentDetail, StudentPagination } from "./types"
+import type { CreateStudentData, CreateStudentPayload, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -45,6 +45,17 @@ export async function getPrograms(): Promise<ProgramStat[]> {
     const res = await client.get('/programs')
     return res.data
 }
+
+export async function getAllStaff(): Promise<StaffPayload[]> {
+    const res = await client.get('/staff')
+    return res.data
+}
+
+export async function getStaff(id: number): Promise<StaffDetails> {
+    return client.get(`/staff/${id}`)
+        .then(res => res.data)
+}
+
 
 // Post functions
 export async function createStudent(data: CreateStudentData) {
@@ -139,7 +150,7 @@ export async function updateGrade(id: string, data: GradeEditData) {
     }
 }
 
-export async function updateParticipation(id: string, data: ParticipationEditData ) {
+export async function updateParticipation(id: string, data: ParticipationEditData) {
     const payload = {
         // programId: Number(data.program_program),
         quarter: Number(data.participation_quarter),

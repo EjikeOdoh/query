@@ -5,6 +5,7 @@ import { SearchForm } from "@/components/SearchForm"
 import StaffTable from "@/components/StaffTable"
 import { Button } from "@/components/ui/button"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
+import { useGetAllStaff } from "@/hooks/use-admin"
 import type { StudentPagination, Meta } from "@/utils/types"
 import { CircleFadingPlus } from "lucide-react"
 import { useState } from "react"
@@ -14,6 +15,8 @@ export default function Staff() {
 
     const navigate = useNavigate()
 
+    const {isLoading, isError, error, data} = useGetAllStaff()
+
     const [meta, setMeta] = useState<StudentPagination>({
         page: 1,
         limit: 10
@@ -22,6 +25,17 @@ export default function Staff() {
     const info: Partial<Meta> = {
 
     }
+
+    if (isLoading) {
+        return <span>Loading...</span>
+      }
+    
+      if (isError) {
+        console.log(error)
+        return <span>Error: {error.message}</span>
+      }
+
+      console.log(data)
 
     return (
         <Container label="Staff">
@@ -35,7 +49,7 @@ export default function Staff() {
                     <span>Add Staff</span>
                 </Button>
             </div>
-            <StaffTable />
+            <StaffTable data={data!} />
             <div className="flex justify-between items-baseline">
                 <p className="text-sm font-light">Page {meta.page} of {info.totalPages}</p>
                 <div className="w-fit">

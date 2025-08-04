@@ -2,10 +2,11 @@ import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 
 type SearchFormProps = {
-  action: string | ((formData: FormData) => void | Promise<void>) | undefined
+  action: string | ((formData: FormData) => void | Promise<void>) | undefined,
+  placeholder?:string
 }
 
-export function SearchForm({ action }: SearchFormProps) {
+export function SearchForm({ action, placeholder="Search" }: SearchFormProps) {
   return (
     <form action={action} className="flex min-w-1/2 max-w-sm items-center gap-2 border border-[#E5E5E5] rounded-lg overflow-hidden">
       <div className="flex-1 flex items-center gap-4 h-full px-4 rounded-lg">
@@ -13,7 +14,7 @@ export function SearchForm({ action }: SearchFormProps) {
         <input
           name="name"
           type="text"
-          placeholder="Enter Student's name"
+          placeholder={placeholder}
           className="flex-1 border-none shadow-none outline-none focus:outline-none focus:border-none focus:ring-0 p-0 font-light text-[#808080] h-full"
           required
         />

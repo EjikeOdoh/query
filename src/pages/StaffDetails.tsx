@@ -5,11 +5,15 @@ import Row from "@/components/Row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useGetStaffDetails } from "@/hooks/use-admin";
+import { type StaffDetails } from "@/utils/types";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useParams } from "react-router";
 
 export default function StaffDetails() {
+
+    const {staffId} = useParams()
 
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
 
@@ -20,6 +24,18 @@ export default function StaffDetails() {
     function closeEditModal() {
         setIsEditModalOpen(false)
     }
+
+    const {isLoading, isError, error, data} = useGetStaffDetails(Number(staffId))
+    const [editStaffDto, setEditStaffDto] = useState<Partial<StaffDetails>>(data!)
+
+    if (isLoading) {
+        return <span>Loading...</span>
+      }
+    
+      if (isError) {
+        console.log(error)
+        return <span>Error: {error.message}</span>
+      }
 
     return (
         <div className="flex flex-col">
@@ -35,11 +51,13 @@ export default function StaffDetails() {
                     <div className="flex justify-between items-start">
                         <div className="flex items-center gap-4">
                             <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
-                                <p className="text-3xl font-semibold text-[#008BCC]">EO</p>
+                                <p className="text-3xl font-semibold text-[#008BCC]">
+                                    {data?.firstName[0]}{data?.lastName[0]}
+                                </p>
                             </div>
                             <div>
-                                <h1 className="font-bold text-lg text-black">Ejike Odoh</h1>
-                                <small>Head Instructor</small>
+                                <h1 className="font-bold text-lg text-black">{data?.firstName} {data?.lastName}</h1>
+                                <small>{data?.role}</small>
                             </div>
                         </div>
 
@@ -64,12 +82,12 @@ export default function StaffDetails() {
                                 <div className="mt-4 flex flex-col gap-2">
                                     <Row
                                         label="Start Date"
-                                        value="April 15, 2024"
+                                        value={data?.startDate}
                                     />
 
                                     <Row
                                         label="Status"
-                                        value="Active"
+                                        value={data?.active ? "Active" : "Inactive"}
                                     />
                                 </div>
                             </div>
@@ -81,22 +99,22 @@ export default function StaffDetails() {
                                 <div className="mt-4 flex flex-col gap-2">
                                     <Row
                                         label="Phone Number"
-                                        value="April 15, 2024"
+                                        value={data?.phone}
                                     />
 
                                     <Row
                                         label="Email Address"
-                                        value="Active"
+                                        value={data?.email}
                                     />
 
                                     <Row
                                         label="Location"
-                                        value="Active"
+                                        value={data?.location}
                                     />
 
                                     <Row
                                         label="House Address"
-                                        value="Active"
+                                        value={data?.address}
                                     />
                                 </div>
                             </div>
@@ -110,17 +128,17 @@ export default function StaffDetails() {
 
                                     <Row
                                         label="Name"
-                                        value=""
+                                        value={data?.cpName1}
                                     />
 
                                     <Row
                                         label="Relation"
-                                        value=""
+                                        value={data?.cpRel1}
                                     />
 
                                     <Row
                                         label="Contact"
-                                        value=""
+                                        value={data?.cpPhone1}
                                     />
                                 </div>
                             </div>
@@ -132,17 +150,17 @@ export default function StaffDetails() {
 
                                     <Row
                                         label="Name"
-                                        value=""
+                                        value={data?.cpName2}
                                     />
 
                                     <Row
                                         label="Relation"
-                                        value=""
+                                        value={data?.cpRel2}
                                     />
 
                                     <Row
                                         label="Contact"
-                                        value=""
+                                        value={data?.cpPhone2}
                                     />
                                 </div>
                             </div>

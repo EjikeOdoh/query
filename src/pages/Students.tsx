@@ -24,7 +24,6 @@ import StudentTable from "@/components/Table"
 import { SearchForm } from "@/components/SearchForm"
 import { useNavigate } from "react-router"
 import { useGetAllStudents } from "@/hooks/use-students"
-import Header from "@/components/Header"
 import { Button } from "@/components/ui/button"
 import { CircleFadingPlus } from "lucide-react"
 import Container from "@/components/Container"
@@ -67,7 +66,9 @@ export default function Students() {
   return (
     <Container label="Student">
       <div className="flex gap-5 items-center justify-between">
-        <SearchForm action={logInput} />
+        <SearchForm 
+        placeholder="Enter Student's name"
+        action={logInput} />
         <Button
           className="bg-[#00AEFF] text-white text-sm"
           onClick={() => navigate('/add-student')}

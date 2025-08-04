@@ -2,9 +2,13 @@ import { Eye, Pencil, Trash2 } from "lucide-react"
 import { Button } from "./ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { useNavigate } from "react-router"
+import type { StaffPayload } from "@/utils/types"
 
+interface TableProps {
+    data: StaffPayload[]
+}
 
-export default function StaffTable() {
+export default function StaffTable({data}: TableProps) {
 
     const navigate = useNavigate()
 
@@ -21,20 +25,21 @@ export default function StaffTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell className="text-[#171717] text-sm font-light">I0415</TableCell>
-                    <TableCell className="text-[#171717] text-sm font-light">Ejike</TableCell>
-                    <TableCell className="text-[#171717] text-sm font-light">Odoh</TableCell>
-                    <TableCell className="text-[#171717] text-sm font-light">Head Instructor</TableCell>
-                    <TableCell className="text-[#171717] text-sm font-light">Active</TableCell>
+                {data.map(staff=>(
+                <TableRow key={staff.id}>
+                    <TableCell className="text-[#171717] text-sm font-light">{staff.staffId}</TableCell>
+                    <TableCell className="text-[#171717] text-sm font-light">{staff.firstName}</TableCell>
+                    <TableCell className="text-[#171717] text-sm font-light">{staff.lastName}</TableCell>
+                    <TableCell className="text-[#171717] text-sm font-light">{staff.role}</TableCell>
+                    <TableCell className="text-[#171717] text-sm font-light">{staff.active ? "Yes" : "No"}</TableCell>
                     <TableCell className="flex items-center justify-center gap-2">
                         <Button variant="ghost" size='icon'
-                            onClick={() => navigate(`/staff/1`)}
+                            onClick={() => navigate(`/staff/${staff.id}`)}
                         >
                             <Eye color="#171717" />
                         </Button>
                         <Button variant="ghost" size="icon"
-                            onClick={() => navigate(`/staff/1`, { state: true })}
+                            onClick={() => navigate(`/staff/${staff.id}`, { state: true })}
                         >
                             <Pencil color="#171717" />
                         </Button>
@@ -43,6 +48,7 @@ export default function StaffTable() {
                         </Button>
                     </TableCell>
                 </TableRow>
+                ))}
             </TableBody>
         </Table>
     )
