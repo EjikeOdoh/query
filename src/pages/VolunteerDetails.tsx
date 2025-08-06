@@ -5,7 +5,7 @@ import Row from "@/components/Row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useGetVolunteerDetails } from "@/hooks/use-admin";
+import { useGetVolunteerDetails, useUpdateVolunteer } from "@/hooks/use-admin";
 import { dateFormatter, updateData } from "@/utils/fn";
 import type { CreateVolunteer } from "@/utils/types";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
@@ -16,10 +16,12 @@ export default function VolunteerDetails() {
 
     const {volunteerId} = useParams()
 
-        const {isLoading, isError, error, data} = useGetVolunteerDetails(volunteerId!)
+        const {isLoading, isError, error, data, refetch} = useGetVolunteerDetails(volunteerId!)
 
        const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
        const [editVolunteerDto, setEditVolunteerDto] = useState<Partial<CreateVolunteer>>({})
+
+       const updateVolunteerMutation = useUpdateVolunteer(volunteerId!, editVolunteerDto, refetch)
     
         function openEditModal() {
             setIsEditModalOpen(true)
@@ -32,7 +34,10 @@ export default function VolunteerDetails() {
         function handleDelete() {
         }
 
-        function handleUpdate() {}
+        function handleUpdate() {
+            closeEditModal()
+            updateVolunteerMutation.mutate()
+        }
 
            useEffect(() => {
                 if (data) {
@@ -40,7 +45,7 @@ export default function VolunteerDetails() {
                 }
             }, [data])
 
-        if (isLoading) {
+        if (isLoading || updateVolunteerMutation.isPending) {
             return <span>Loading...</span>
         }
     

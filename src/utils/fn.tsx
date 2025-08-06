@@ -195,6 +195,15 @@ export async function updateStaff(id: string, data: Partial<CreateStaff>) {
     }
 }
 
+export async function updateVolunteer(id: string, data: Partial<CreateVolunteer>) {
+     try {
+        const res = await client.patch(`/volunteers/${id}`, data)
+        return res.data
+     } catch (error) {
+        console.log(error)
+     }
+}
+
 // Delete functions
 
 export async function deleteParticipation(id: number) {

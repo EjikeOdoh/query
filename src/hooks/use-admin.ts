@@ -1,4 +1,4 @@
-import { addVolunteer, deleteStaff, getAllParticipation, getAllStaff, getAllVolunteers, getStaff, getVolunteer, updateStaff } from "@/utils/fn";
+import { addVolunteer, deleteStaff, getAllParticipation, getAllStaff, getAllVolunteers, getStaff, getVolunteer, updateStaff, updateVolunteer } from "@/utils/fn";
 import type { CallFn, CreateStaff, CreateVolunteer, Participation } from "@/utils/types";
 import { useQuery, keepPreviousData, useMutation } from "@tanstack/react-query";
 
@@ -62,6 +62,13 @@ export function useGetVolunteerDetails(id: string) {
 export function useAddVolunteer(data: CreateVolunteer, refetch: CallFn) {
     return useMutation({
         mutationFn: () => addVolunteer(data),
+        onSuccess: refetch
+    })
+}
+
+export function useUpdateVolunteer(id:string, data: Partial<CreateVolunteer>, refetch: CallFn) {
+    return useMutation({
+        mutationFn: ()=>updateVolunteer(id, data),
         onSuccess: refetch
     })
 }

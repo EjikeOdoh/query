@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAddVolunteer } from "@/hooks/use-admin";
-import { dateFormatter, updateData } from "@/utils/fn";
+import { updateData } from "@/utils/fn";
 import { type CreateVolunteer } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -29,7 +29,7 @@ export default function AddVolunteer() {
         setStep(prev => prev - 1)
     }
 
-    const {mutate} = useAddVolunteer(createDto, ()=>navigate('/volunteers'))
+    const {mutate} = useAddVolunteer(createDto as CreateVolunteer, ()=>navigate('/volunteers'))
 
     useEffect(() => {
         if (step === 4) {
