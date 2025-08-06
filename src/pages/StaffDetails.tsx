@@ -5,15 +5,17 @@ import Row from "@/components/Row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useGetStaffDetails } from "@/hooks/use-admin";
+import { useDeleteStaff, useGetStaffDetails, useUpdateStaff } from "@/hooks/use-admin";
+import { dateFormatter, updateData } from "@/utils/fn";
 import { type StaffDetails } from "@/utils/types";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { NavLink, useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { NavLink, useNavigate, useParams } from "react-router";
 
 export default function StaffDetails() {
 
-    const {staffId} = useParams()
+    const navigate = useNavigate()
+    const { staffId } = useParams()
 
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
 
@@ -25,17 +27,35 @@ export default function StaffDetails() {
         setIsEditModalOpen(false)
     }
 
-    const {isLoading, isError, error, data} = useGetStaffDetails(Number(staffId))
+    const { isLoading, isError, error, data, refetch } = useGetStaffDetails(Number(staffId))
     const [editStaffDto, setEditStaffDto] = useState<Partial<StaffDetails>>(data!)
 
-    if (isLoading) {
+    const updateStaffMutation = useUpdateStaff(staffId!, editStaffDto, refetch)
+    const deleteStaffMutation = useDeleteStaff(staffId!,()=>navigate('/staff'))
+
+    function handleUpdate() {
+        closeEditModal()
+        updateStaffMutation.mutate()
+    }
+
+    function handleDelete() {
+        deleteStaffMutation.mutate()
+    }
+
+    useEffect(() => {
+        if (data) {
+            setEditStaffDto(data)
+        }
+    }, [data])
+
+    if (isLoading || updateStaffMutation.isPending) {
         return <span>Loading...</span>
-      }
-    
-      if (isError) {
+    }
+
+    if (isError) {
         console.log(error)
         return <span>Error: {error.message}</span>
-      }
+    }
 
     return (
         <div className="flex flex-col">
@@ -65,7 +85,7 @@ export default function StaffDetails() {
                             <Button variant="ghost" size="icon" onClick={openEditModal}>
                                 <Pencil color="#171717" />
                             </Button>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" onClick={handleDelete}>
                                 <Trash2 color="#171717" />
                             </Button>
                         </div>
@@ -82,7 +102,7 @@ export default function StaffDetails() {
                                 <div className="mt-4 flex flex-col gap-2">
                                     <Row
                                         label="Start Date"
-                                        value={data?.startDate}
+                                        value={dateFormatter(data?.startDate!)}
                                     />
 
                                     <Row
@@ -173,13 +193,15 @@ export default function StaffDetails() {
             <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
                 <Heading text="Edit Staff Details" />
 
-                <form>
+                <form action={handleUpdate}>
                     <div className="flex flex-col gap-4 mb-5">
                         <Input
                             name="firstName"
                             placeholder="First Name"
                             className="flex-1"
                             showLabel={true}
+                            value={editStaffDto?.firstName ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
@@ -187,28 +209,40 @@ export default function StaffDetails() {
                             placeholder="Last Name"
                             className="flex-1"
                             showLabel={true}
+                            value={editStaffDto?.lastName ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
-                            name="year"
+                            name="startDate"
                             type="date"
                             placeholder="Date of Employment"
                             showLabel={true}
+                            value={editStaffDto?.startDate ? new Date(editStaffDto?.startDate!).toISOString().split("T")[0] : ""
+                            }
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="role"
                             placeholder="Position"
                             showLabel={true}
+                            value={editStaffDto?.role ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="staffId"
                             placeholder="Staff ID"
                             showLabel={true}
+                            value={editStaffDto?.staffId ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
                         <div>
                             <label className="text-sm text-[#3d3d3d]">Active?</label>
                             <Select
-                                name="isActive"
+                                name="active"
+                                onValueChange={x => setEditStaffDto({ ...editStaffDto, active: x === "yes" ? true : false })}
                             >
                                 <SelectTrigger className="w-full px-6">
                                     <SelectValue placeholder="Active?" />
@@ -223,53 +257,83 @@ export default function StaffDetails() {
                         </div>
 
                         <Input
+                            name="phone"
                             placeholder="Phone Number"
                             showLabel={true}
+                            value={editStaffDto?.phone ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="email"
                             placeholder="Email Address"
                             type="email"
                             showLabel={true}
+                            value={editStaffDto?.email ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="address"
                             placeholder="Home Address"
                             showLabel={true}
+                            value={editStaffDto?.address ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="location"
                             placeholder="Location"
                             showLabel={true}
+                            value={editStaffDto?.location ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="cpName1"
                             placeholder="Emergency Contact 1 Name"
                             showLabel={true}
+                            value={editStaffDto?.cpName1 ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
                         <Input
+                            name="cpRel1"
                             placeholder="Relationship"
                             showLabel={true}
+                            value={editStaffDto?.cpRel1 ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="cpPhone"
                             placeholder="Phone Number"
                             showLabel={true}
+                            value={editStaffDto?.cpPhone1 ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="cpName2"
                             placeholder="Emergency Contact 2 Name"
                             showLabel={true}
+                            value={editStaffDto?.cpName2 ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="cpRel2"
                             placeholder="Relationship"
                             showLabel={true}
+                            value={editStaffDto?.cpRel2 ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
 
                         <Input
+                            name="cpPhone2"
                             placeholder="Phone Number"
                             showLabel={true}
+                            value={editStaffDto?.cpPhone2 ?? ""}
+                            onChange={e => updateData(e, setEditStaffDto)}
                         />
                     </div>
 

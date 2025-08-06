@@ -241,8 +241,8 @@ export interface CreateVolunteer {
   firstName: string
   lastName: string
   active: boolean
-  startDate?: string
-  endDate?: string
+  startDate?: Date
+  endDate?: Date
   program?: string
   phone?: string
   email?: string
@@ -259,6 +259,10 @@ export interface CreateVolunteer {
   cpPhone2?: string
 }
 
+export interface VolunteerDetails extends CreateVolunteer {
+  id: number
+}
+
 export interface CreateStaff extends Omit<CreateVolunteer, 'program'> {
   staffId: string
   role: string
@@ -268,13 +272,21 @@ export interface StaffDetails extends CreateStaff {
   id: number
 }
 
-
 export interface StaffPayload {
-  id: number,
-  staffId: string,
-  firstName: string,
-  lastName: string,
-  role: string,
+  id: number
+  staffId: string
+  firstName: string
+  lastName: string
   active: boolean
-
+  role: string
 }
+
+export interface VolunteersPayload {
+  id: number
+  firstName: string
+  lastName: string
+  active: boolean
+  program: string
+}
+
+export type CallFn = () => void

@@ -3,6 +3,7 @@ import { Button } from "./ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { useNavigate } from "react-router"
 import type { StaffPayload } from "@/utils/types"
+import { Active, Inactive } from "./Tags"
 
 interface TableProps {
     data: StaffPayload[]
@@ -31,7 +32,7 @@ export default function StaffTable({data}: TableProps) {
                     <TableCell className="text-[#171717] text-sm font-light">{staff.firstName}</TableCell>
                     <TableCell className="text-[#171717] text-sm font-light">{staff.lastName}</TableCell>
                     <TableCell className="text-[#171717] text-sm font-light">{staff.role}</TableCell>
-                    <TableCell className="text-[#171717] text-sm font-light">{staff.active ? "Yes" : "No"}</TableCell>
+                    <TableCell className="text-[#171717] text-sm font-light">{staff.active ? <Active /> : <Inactive />}</TableCell>
                     <TableCell className="flex items-center justify-center gap-2">
                         <Button variant="ghost" size='icon'
                             onClick={() => navigate(`/staff/${staff.id}`)}

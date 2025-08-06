@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAddGrades, useDeleteGrades, useUpdateGrades } from "@/hooks/use-grades";
 import { useAddStudentParticipation, useDeleteStudent, useDeleteStudentParticipation, useGetStudentDetails, useUpdateStudent, useUpdateStudentParticipation } from "@/hooks/use-students";
-import { updateData } from "@/utils/fn";
+import { dateFormatter, updateData } from "@/utils/fn";
 import { type ParticipationAddData, type GradeAddData, type GradeEditData, type ParticipationEditData } from "@/utils/types";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -200,7 +200,7 @@ export default function Student() {
                                 <div className="space-y-2">
                                     <Row
                                         label="Date of Birth"
-                                        value={String(dob)}
+                                        value={dateFormatter(dob)}
                                     />
 
                                     <Row

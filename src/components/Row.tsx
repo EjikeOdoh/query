@@ -6,7 +6,7 @@ type RowProps = {
 
 export default function Row({ label, value }: RowProps) {
     return (
-        <div className="flex items-center gap-5">
+        <div className="flex items-start gap-5">
             <p className="w-36 font-light text-sm text-[#808080]">{label}</p>
             {
                 !!value ? 

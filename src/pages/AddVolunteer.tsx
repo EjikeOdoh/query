@@ -1,16 +1,18 @@
 import Container from "@/components/Container";
-import Header from "@/components/Header";
 import Heading from "@/components/Heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { updateData } from "@/utils/fn";
+import { useAddVolunteer } from "@/hooks/use-admin";
+import { dateFormatter, updateData } from "@/utils/fn";
 import { type CreateVolunteer } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 
 export default function AddVolunteer() {
+
+    const navigate = useNavigate()
 
     const [step, setStep] = useState<number>(1)
     const [type, setType] = useState<boolean>(false)
@@ -27,9 +29,12 @@ export default function AddVolunteer() {
         setStep(prev => prev - 1)
     }
 
+    const {mutate} = useAddVolunteer(createDto, ()=>navigate('/volunteers'))
+
     useEffect(() => {
         if (step === 4) {
             console.log(createDto)
+            mutate()
         }
     }, [step])
 
@@ -70,7 +75,7 @@ export default function AddVolunteer() {
                                     placeholder="Start Date"
                                     onFocus={() => setType(true)}
                                     onBlur={() => setType(false)}
-                                    value={createDto.startDate ?? ""}
+                                    value={createDto.startDate ? new Date(createDto?.startDate!).toISOString().split("T")[0] : ""}
                                     onChange={e => updateData(e, setCreateDto)}
                                     required
                                 />
@@ -100,7 +105,7 @@ export default function AddVolunteer() {
                                         placeholder="End Date"
                                         onFocus={() => setType(true)}
                                         onBlur={() => setType(false)}
-                                        value={createDto.endDate ?? ""}
+                                        value={createDto.endDate ? new Date(createDto?.endDate!).toISOString().split("T")[0] : ""}
                                         onChange={e => updateData(e, setCreateDto)}
                                     /> : null
                                 }

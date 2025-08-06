@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStudentData, CreateStudentPayload, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination } from "./types"
+import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateVolunteer, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, VolunteerDetails, VolunteersPayload } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -54,6 +54,16 @@ export async function getAllStaff(): Promise<StaffPayload[]> {
 export async function getStaff(id: number): Promise<StaffDetails> {
     return client.get(`/staff/${id}`)
         .then(res => res.data)
+}
+
+export async function getAllVolunteers(): Promise<VolunteersPayload[]> {
+    const res = await client.get('/volunteers')
+    return res.data
+}
+
+export async function getVolunteer(id: string): Promise<VolunteerDetails> {
+    const res = await client.get(`/volunteers/${id}`)
+    return res.data
 }
 
 
@@ -131,6 +141,15 @@ export async function addParticipation(data: ParticipationAddData) {
     }
 }
 
+export async function addVolunteer(data: CreateVolunteer) {
+    try {
+        const res = await client.post('/volunteers', data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Patch functions
 export async function updateStudent(id: string, data: any) {
     try {
@@ -167,6 +186,15 @@ export async function updateParticipation(id: string, data: ParticipationEditDat
 }
 
 
+export async function updateStaff(id: string, data: Partial<CreateStaff>) {
+    try {
+        const res = await client.patch(`/staff/${id}`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Delete functions
 
 export async function deleteParticipation(id: number) {
@@ -181,6 +209,11 @@ export async function deleteGrade(id: number) {
 
 export async function deleteStudent(id: number) {
     const res = await client.delete(`/students/${id}`)
+    return res.data
+}
+
+export async function deleteStaff(id: string) {
+    const res = await client.delete(`/staff/${id}`)
     return res.data
 }
 
@@ -213,4 +246,10 @@ export function updateData<T extends Record<string, any>>(
     }));
 }
 
-
+export function dateFormatter(arg: Date): string {
+    return new Date(arg).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
