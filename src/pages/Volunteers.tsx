@@ -34,8 +34,6 @@ export default function Volunteers() {
         return <span>Error: {error.message}</span>
     }
 
-    console.log(data)
-
     return (
         <Container label="Volunteers">
             <div className="flex gap-5 items-center justify-between">

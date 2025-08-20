@@ -13,11 +13,11 @@ import Staff from "./Staff";
 import Dashboard from "./Dashboard";
 import Volunteers from "./Volunteers";
 import Partners from "./Partners";
-import Participation from "./Participation";
 import AddStaff from "./AddStaff";
 import StaffDetails from "./StaffDetails";
 import VolunteerDetails from "./VolunteerDetails";
 import AddVolunteer from "./AddVolunteer";
+import AddPartner from "./AddPartner";
 
 export default function Navigation() {
 
@@ -71,8 +71,7 @@ export default function Navigation() {
 
                                 {/* Routes for partners */}
                                 <Route path='/partners' element={<Partners />} />
-                                <Route path='/add-partner' element={<AddStudent />} />
-                                <Route path='/staff/:partnerId' element={<Student />} />
+                                <Route path='/add-partner' element={<AddPartner />} />
 
                                 {/* Admin routes */}
                                 <Route path='/students/upload' element={<Students />} />

@@ -241,6 +241,7 @@ export interface CreateVolunteer {
   firstName: string
   lastName: string
   active: boolean
+  type: string
   startDate?: Date
   endDate?: Date
   program?: string
@@ -253,7 +254,8 @@ export interface CreateVolunteer {
   cpName1?: string
   cpRel1?: string
   cpPhone1?: string
-
+  year: number
+  quarter: number
   cpName2?: string
   cpRel2?: string
   cpPhone2?: string
@@ -261,6 +263,7 @@ export interface CreateVolunteer {
 
 export interface VolunteerDetails extends CreateVolunteer {
   id: number
+  participations: VolunteerParticipation[]
 }
 
 export interface CreateStaff extends Omit<CreateVolunteer, 'program'> {
@@ -286,7 +289,17 @@ export interface VolunteersPayload {
   firstName: string
   lastName: string
   active: boolean
+  type: string
+}
+
+export interface VolunteerParticipation {
+  id?: number
+  volunteerId: number | undefined
   program: string
+  year: number
+  quarter: number
+  programId?: number
+
 }
 
 export type CallFn = () => void

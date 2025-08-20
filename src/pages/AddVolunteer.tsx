@@ -14,25 +14,25 @@ export default function AddVolunteer() {
 
     const navigate = useNavigate()
 
-    const [step, setStep] = useState<number>(1)
+    const [step, setStep] = useState<number>(0)
     const [type, setType] = useState<boolean>(false)
 
     const [createDto, setCreateDto] = useState<Partial<CreateVolunteer>>({
-        // active: true
+        // active: false
     })
 
     function handleFormSubmit() {
-        setStep(prev => prev + 1)
+        createDto.type && setStep(prev => prev + 1)
     }
 
     function previousStep() {
         setStep(prev => prev - 1)
     }
 
-    const {mutate} = useAddVolunteer(createDto as CreateVolunteer, ()=>navigate('/volunteers'))
+    const { mutate } = useAddVolunteer(createDto as CreateVolunteer, () => navigate('/volunteers', { replace: true }))
 
     useEffect(() => {
-        if (step === 4) {
+        if ((createDto.type === 'PROGRAM' && step === 3) || step === 4) {
             console.log(createDto)
             mutate()
         }
@@ -41,6 +41,89 @@ export default function AddVolunteer() {
     return (
         <Container label="Add Volunteer">
             <div className="w-[600px] m-auto">
+
+                {step === 0 && (
+                    <form action={handleFormSubmit}
+                        className="flex flex-col gap-10"
+                    >
+                        <Heading
+                            text="Volunteer Type"
+                        />
+                        <div className="flex flex-col gap-4">
+
+                            <Select
+                                name="type"
+                                required={true}
+                                value={createDto.type === undefined ? "" : createDto.type}
+                                onValueChange={x => setCreateDto({ ...createDto, type: x })}
+                            >
+                                <SelectTrigger className="w-full px-6">
+                                    <SelectValue placeholder="Volunteer Type" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white py-4">
+                                    <SelectGroup>
+                                        <SelectItem value="REGULAR">Regular</SelectItem>
+                                        <SelectItem value="PROGRAM">Program</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+
+                            {createDto.type === "PROGRAM" ?
+                                <>
+                                    <Select
+                                        name="program"
+                                        required
+                                        value={createDto.program ?? ""}
+                                        onValueChange={(x) => setCreateDto({ ...createDto, program: x })}
+                                    >
+                                        <SelectTrigger className="w-full px-6">
+                                            <SelectValue placeholder="Select program" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white py-4">
+                                            <SelectGroup>
+                                                <SelectItem value="ASCG">ASCG (Including Outreach)</SelectItem>
+                                                <SelectItem value="CBC">CBC</SelectItem>
+                                                <SelectItem value="SSC">SSC</SelectItem>
+                                                <SelectItem value="DSC">DSC</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+
+                                    <Input
+                                        name="year"
+                                        required
+                                        placeholder="Year"
+                                        maxLength={4}
+                                        value={createDto.year}
+                                        onChange={e => updateData(e, setCreateDto)}
+                                    />
+
+                                    <Select
+                                        name="quarter"
+                                        required
+                                        onValueChange={(x) => setCreateDto({ ...createDto, quarter: Number(x) })}
+                                    >
+                                        <SelectTrigger className="w-full px-6">
+                                            <SelectValue placeholder="Select Quarter" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white">
+                                            <SelectGroup>
+                                                <SelectItem value="1">First</SelectItem>
+                                                <SelectItem value="2">Second</SelectItem>
+                                                <SelectItem value="3">Third</SelectItem>
+                                                <SelectItem value="4">Fourth</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </>
+                                : null
+                            }
+
+                        </div>
+                        <Button className="w-full">Next</Button>
+                    </form>
+                )}
+
                 {
                     step === 1 && (
                         <form action={handleFormSubmit}
@@ -69,69 +152,59 @@ export default function AddVolunteer() {
                                     required
                                 />
 
-                                <Input
-                                    name="startDate"
-                                    type={type ? "date" : "text"}
-                                    placeholder="Start Date"
-                                    onFocus={() => setType(true)}
-                                    onBlur={() => setType(false)}
-                                    value={createDto.startDate ? new Date(createDto?.startDate!).toISOString().split("T")[0] : ""}
-                                    onChange={e => updateData(e, setCreateDto)}
-                                    required
-                                />
+                                {
+                                    createDto.type === 'REGULAR' && (
+                                        <>
+                                            <Input
+                                                name="startDate"
+                                                type={type ? "date" : "text"}
+                                                placeholder="Start Date"
+                                                onFocus={() => setType(true)}
+                                                onBlur={() => setType(false)}
+                                                value={createDto.startDate ? new Date(createDto?.startDate!).toISOString().split("T")[0] : ""}
+                                                onChange={e => updateData(e, setCreateDto)}
+                                                required
+                                            />
 
-                                <Select
-                                    name="isActive"
-                                    required
-                                    value={createDto.active === undefined ? "" : createDto.active ? "yes" : "no"}
-                                    onValueChange={x => setCreateDto({ ...createDto, active: x === "yes" ? true : false })}
-                                >
-                                    <SelectTrigger className="w-full px-6">
-                                        <SelectValue placeholder="Active?" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-white py-4">
-                                        <SelectGroup>
-                                            <SelectItem value="yes">Yes</SelectItem>
-                                            <SelectItem value="no">No</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
+                                            <Select
+                                                name="isActive"
+                                                required
+                                                value={createDto.active === undefined ? "" : createDto.active ? "yes" : "no"}
+                                                onValueChange={x => setCreateDto({ ...createDto, active: x === "yes" ? true : false })}
+                                            >
+                                                <SelectTrigger className="w-full px-6">
+                                                    <SelectValue placeholder="Active?" />
+                                                </SelectTrigger>
+                                                <SelectContent className="bg-white py-4">
+                                                    <SelectGroup>
+                                                        <SelectItem value="yes">Yes</SelectItem>
+                                                        <SelectItem value="no">No</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
 
-                                {createDto.active === undefined ? null : !createDto.active ?
-                                    <Input
-                                        name="endDate"
-                                        type={type ? "date" : "text"}
-                                        required
-                                        placeholder="End Date"
-                                        onFocus={() => setType(true)}
-                                        onBlur={() => setType(false)}
-                                        value={createDto.endDate ? new Date(createDto?.endDate!).toISOString().split("T")[0] : ""}
-                                        onChange={e => updateData(e, setCreateDto)}
-                                    /> : null
+                                            {createDto.active === undefined ? null : !createDto.active ?
+                                                <Input
+                                                    name="endDate"
+                                                    type={type ? "date" : "text"}
+                                                    required
+                                                    placeholder="End Date"
+                                                    onFocus={() => setType(true)}
+                                                    onBlur={() => setType(false)}
+                                                    value={createDto.endDate ? new Date(createDto?.endDate!).toISOString().split("T")[0] : ""}
+                                                    onChange={e => updateData(e, setCreateDto)}
+                                                /> : null
+                                            }
+                                        </>
+                                    )
                                 }
 
-                                <Select
-                                    name="program"
-                                    required
-                                    value={createDto.program ?? ""}
-                                    onValueChange={(x) => setCreateDto({ ...createDto, program: x })}
-                                >
-                                    <SelectTrigger className="w-full px-6">
-                                        <SelectValue placeholder="Select program" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-white py-4">
-                                        <SelectGroup>
-                                            <SelectItem value="All">All</SelectItem>
-                                            <SelectItem value="ASCG">ASCG</SelectItem>
-                                            <SelectItem value="CBC">CBC</SelectItem>
-                                            <SelectItem value="SSC">SSC</SelectItem>
-                                            <SelectItem value="DSC">DSC</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
 
                             </div>
-                            <Button className="w-full">Next</Button>
+                            <div className="flex gap-4">
+                                <Button className="flex-1" variant="outline" type="button" onClick={previousStep}>Previous</Button>
+                                <Button className="flex-1">Next</Button>
+                            </div>
                         </form>
                     )
                 }
@@ -141,6 +214,7 @@ export default function AddVolunteer() {
                             <Heading text="Contact Information" />
                             <div className="flex flex-col gap-4">
                                 <Input
+                                    required
                                     name="phone"
                                     placeholder="Phone Number"
                                     value={createDto.phone ?? ""}
@@ -171,14 +245,14 @@ export default function AddVolunteer() {
                             </div>
                             <div className="flex gap-4">
                                 <Button className="flex-1" variant="outline" type="button" onClick={previousStep}>Previous</Button>
-                                <Button className="flex-1">Next</Button>
+                                <Button className="flex-1">{createDto.type === 'PROGRAM' ? "Add Volunteer" : "Next"}</Button>
                             </div>
                         </form>
                     )
                 }
 
                 {
-                    step === 3 && (
+                    (step === 3 && createDto.type === 'REGULAR') && (
                         <form action={handleFormSubmit} className="flex flex-col gap-10">
                             <Heading text="Emergency Contact" />
                             <div className="flex flex-col gap-4">
@@ -229,12 +303,12 @@ export default function AddVolunteer() {
                             </div>
                             <div className="flex gap-4">
                                 <Button className="flex-1" variant="outline" type="button" onClick={previousStep}>Previous</Button>
-                                <Button className="flex-1">Add Staff</Button>
+                                <Button className="flex-1">Add Volunteer</Button>
                             </div>
                         </form>
                     )
                 }
             </div>
-        </Container>
+        </Container >
     )
 }

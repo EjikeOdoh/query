@@ -31,7 +31,7 @@ export default function StaffDetails() {
     const [editStaffDto, setEditStaffDto] = useState<Partial<StaffDetails>>(data!)
 
     const updateStaffMutation = useUpdateStaff(staffId!, editStaffDto, refetch)
-    const deleteStaffMutation = useDeleteStaff(staffId!,()=>navigate('/staff'))
+    const deleteStaffMutation = useDeleteStaff(staffId!, () => navigate('/staff', { replace: true }))
 
     function handleUpdate() {
         closeEditModal()

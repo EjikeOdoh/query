@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateVolunteer, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, VolunteerDetails, VolunteersPayload } from "./types"
+import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateVolunteer, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -150,6 +150,15 @@ export async function addVolunteer(data: CreateVolunteer) {
     }
 }
 
+export async function addVolunteerParticipation(data: VolunteerParticipation) {
+    try {
+        const res = await client.post('volunteer-participation', data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Patch functions
 export async function updateStudent(id: string, data: any) {
     try {
@@ -196,12 +205,12 @@ export async function updateStaff(id: string, data: Partial<CreateStaff>) {
 }
 
 export async function updateVolunteer(id: string, data: Partial<CreateVolunteer>) {
-     try {
+    try {
         const res = await client.patch(`/volunteers/${id}`, data)
         return res.data
-     } catch (error) {
+    } catch (error) {
         console.log(error)
-     }
+    }
 }
 
 // Delete functions
@@ -223,6 +232,11 @@ export async function deleteStudent(id: number) {
 
 export async function deleteStaff(id: string) {
     const res = await client.delete(`/staff/${id}`)
+    return res.data
+}
+
+export async function deleteVolunteer(id: string) {
+    const res = await client.delete(`/volunteers/${id}`)
     return res.data
 }
 
