@@ -4,7 +4,9 @@ import type { SearchResult, Student } from "@/utils/types";
 import { searchStudent } from "@/utils/fn";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useLocation } from "react-router";
+import { NavLink, useLocation } from "react-router";
+import Container from "@/components/Container";
+import { ChevronLeft } from "lucide-react";
 
 export default function Search() {
     const { state }: { state: string } = useLocation()
@@ -42,12 +44,18 @@ export default function Search() {
 
 
     return (
-        <div>
+        <Container label="Student search">
+              <div className="w-fit">
+                <NavLink to="/students" className="flex items-center gap-2 text-[#171717] font-light text-xs" replace={true}>
+                    <ChevronLeft color="#171717" size={14} />
+                    Back to Dashboard
+                </NavLink>
+            </div>
             <SearchForm action={logInput} />
             {
-                data ? <StudentTable data={students} /> : <p>Search again</p>
+                data && (students.length > 0 ? <StudentTable data={students} /> : <p className="">Student with name: <span className="font-bold text-xl text-[#00AEEF]">{name}</span> not found.</p> )
             }
 
-        </div>
+        </Container>
     )
 }

@@ -454,48 +454,55 @@ export default function VolunteerDetails() {
                     onSubmit={handleAddProgram}
                 >
                     <div className="flex flex-col gap-4">
-                        <Select
-                            name="program"
-                            required
-                            value={String(addProgramDto.programId) ?? ""}
-                            onValueChange={(x) => setAddProgramDto({ ...addProgramDto, programId: Number(x) })}
-                        >
-                            <SelectTrigger className="w-full px-6">
-                                <SelectValue placeholder="Select program" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white py-4">
-                                <SelectGroup>
-                                    {programs?.map(program => (<SelectItem key={program.id} value={String(program.id)}>{program.program}</SelectItem>))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                        <div>
+                            <label htmlFor="program" className="text-sm font-light">Select Program</label>
+                            <Select
+                                name="program"
+                                required
+                                value={String(addProgramDto.programId) ?? ""}
+                                onValueChange={(x) => setAddProgramDto({ ...addProgramDto, programId: Number(x) })}
+                            >
+                                <SelectTrigger className="w-full px-6">
+                                    {/* <SelectValue placeholder="Select program" /> */}
+                                </SelectTrigger>
+                                <SelectContent className="bg-white py-4">
+                                    <SelectGroup>
+                                        {programs?.map(program => (<SelectItem key={program.id} value={String(program.id)}>{program.program}</SelectItem>))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
                         <Input
                             name="year"
                             required
                             placeholder="Year"
                             maxLength={4}
+                            showLabel={true}
                             value={addProgramDto.year}
                             onChange={e => updateData(e, setAddProgramDto)}
                         />
 
-                        <Select
-                            name="quarter"
-                            required
-                            onValueChange={(x) => setAddProgramDto({ ...addProgramDto, quarter: Number(x) })}
-                        >
-                            <SelectTrigger className="w-full px-6">
-                                <SelectValue placeholder="Select Quarter" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white">
-                                <SelectGroup>
-                                    <SelectItem value="1">First</SelectItem>
-                                    <SelectItem value="2">Second</SelectItem>
-                                    <SelectItem value="3">Third</SelectItem>
-                                    <SelectItem value="4">Fourth</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                        <div>
+                            <label htmlFor="quarter" className="text-sm font-light">Select Quarter</label>
+                            <Select
+                                name="quarter"
+                                required
+                                onValueChange={(x) => setAddProgramDto({ ...addProgramDto, quarter: Number(x) })}
+                            >
+                                <SelectTrigger className="w-full px-6">
+                                    {/* <SelectValue placeholder="Select Quarter" /> */}
+                                </SelectTrigger>
+                                <SelectContent className="bg-white">
+                                    <SelectGroup>
+                                        <SelectItem value="1">First</SelectItem>
+                                        <SelectItem value="2">Second</SelectItem>
+                                        <SelectItem value="3">Third</SelectItem>
+                                        <SelectItem value="4">Fourth</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                     <Button className="w-full">Add Program</Button>
                 </form>
