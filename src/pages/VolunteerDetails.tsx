@@ -15,6 +15,7 @@ import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate, useParams } from "react-router";
 
+
 export default function VolunteerDetails() {
     const navigate = useNavigate()
     const { state } = useLocation()
