@@ -1,8 +1,10 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import type { VolunteersPayload } from "@/utils/types"
-import { useReactTable, getCoreRowModel, flexRender, getPaginationRowModel } from "@tanstack/react-table"
+import { useReactTable, getCoreRowModel, flexRender, getPaginationRowModel, getFilteredRowModel, type ColumnFiltersState } from "@tanstack/react-table"
 import { vColumns } from "./columns"
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "./ui/pagination"
+import { useState } from "react"
+import { Button } from "./ui/button"
 
 interface TableProps {
     data: VolunteersPayload[],
@@ -12,23 +14,109 @@ interface TableProps {
 
 export default function VolunteerTable({ data, onDelete }: TableProps) {
 
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 5
+    })
+
+    const [globalFilter, setGlobalFilter] = useState('')
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+
+
     const columns = vColumns(onDelete)
+
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        initialState: {
-            pagination: {
-                pageIndex: 0,
-                pageSize: 5
+        getFilteredRowModel: getFilteredRowModel(),
+        state: {
+            pagination,
+            globalFilter,
+            columnFilters
+        },
+        onColumnFiltersChange: setColumnFilters,
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: (row, _, filterValue) => {
+            const search = filterValue.trim().toLowerCase();
+            if (!search) return true;
+
+            const firstName = row.original.firstName?.toLowerCase() || "";
+            const lastName = row.original.lastName?.toLowerCase() || "";
+
+            const nameParts = search.split(/\s+/);
+
+            if (nameParts.length === 1) {
+                return (
+                    firstName.includes(nameParts[0]) ||
+                    lastName.includes(nameParts[0])
+                );
+            } else {
+                const [part1, part2] = nameParts;
+
+                return (
+                    (firstName.includes(part1) && lastName.includes(part2)) ||
+                    (firstName.includes(part2) && lastName.includes(part1))
+                );
             }
         },
+
         meta: { onDelete }
     })
 
+
+    function next() {
+        setPagination({ ...pagination, pageIndex: table.getCanNextPage() ? pagination.pageIndex + 1 : pagination.pageIndex })
+    }
+
+    function prev() {
+        setPagination({ ...pagination, pageIndex: table.getCanPreviousPage() ? pagination.pageIndex - 1 : pagination.pageIndex })
+    }
+
+    function applyFilter(columnId: string, value: any) {
+        const col = table.getColumn(columnId)
+        if (!col) return
+        table.resetColumnFilters()
+        globalFilter && table.resetGlobalFilter()
+        col.setFilterValue(value)
+        // setTimeout(() => col.setFilterValue(value), 0)
+    }
+
     return (
         <div className="space-y-10">
+            <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <Button variant='secondary' className=""
+                        onClick={() => applyFilter('type', 'REGULAR')}
+                    >Regular</Button>
+                    <Button variant='secondary'
+                        onClick={() => applyFilter('type', 'PROGRAM')}
+                    >Program</Button>
+                    <Button variant='secondary'
+                        onClick={() => applyFilter('active', true)}
+                    >Active</Button>
+                    <Button variant='secondary'
+                        onClick={() => applyFilter('active', false)}
+                    >Inactive</Button>
+
+                </div>
+                <div className="flex justify-between items-center border border-[#E5E5E5] min-w-1/2 rounded-lg max-w-sm px-4 py-2">
+                    <input
+                        type="search"
+                        value={globalFilter ?? ""}
+                        onChange={e => {
+                            table.resetColumnFilters()
+                            setGlobalFilter(e.target.value)
+                        }}
+                        placeholder="Search by name..."
+                        className="flex-1 border-none shadow-none outline-none focus:outline-none focus:border-none focus:ring-0 p-0 font-light text-[#808080]"
+                    />
+                </div>
+            </div>
+
+
             <Table className="rounded-xl overflow-hidden">
                 <TableHeader className="">
                     {
@@ -56,22 +144,21 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
                 </TableBody>
             </Table>
             <div className="flex justify-between items-baseline">
-                <p className="text-sm font-light">Showing {table.getRowModel().rows.length.toLocaleString()} of {table.getRowCount().toLocaleString()}</p>
+                <p className="text-sm font-light">Showing {(pagination.pageIndex * pagination.pageSize) + table.getRowModel().rows.length} of {table.getRowCount().toLocaleString()}</p>
                 <div className="w-fit">
                     <Pagination>
                         <PaginationContent>
                             <PaginationItem className={`text-[#808080]`}>
                                 <PaginationPrevious
                                     isActive={table.getCanPreviousPage()}
-                                    onClick={() => table.previousPage()}
+                                    onClick={prev}
                                 />
                             </PaginationItem>
-
 
                             <PaginationItem className="text-[#808080]">
                                 <PaginationNext
                                     isActive={table.getCanNextPage()}
-                                    onClick={() => table.getCanNextPage() && table.nextPage()}
+                                    onClick={next}
                                 />
                             </PaginationItem>
                         </PaginationContent>

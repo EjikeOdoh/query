@@ -64,10 +64,10 @@ export default function Students() {
   const info: Meta = res.meta
 
   return (
-    <Container label="Student">
+    <Container label="Students">
       <div className="flex gap-5 items-center justify-between">
         <SearchForm 
-        placeholder="Enter Student's name"
+        placeholder="Search by student names"
         action={logInput} />
         <Button
           className="bg-[#00AEFF] text-white text-sm"

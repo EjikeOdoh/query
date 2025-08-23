@@ -58,14 +58,21 @@ export const vColumns = (onDelete: (id: number) => void) => [
     ),
     vColumnHelper.accessor('type', {
         cell: info => info.getValue(),
-        header: 'Type'
+        header: 'Type',
+        filterFn: (row, columnId, filterValue) => {
+            if (!filterValue || filterValue === "all") return true
+            return row.getValue(columnId) === filterValue
+        },
     }
     ),
     vColumnHelper.accessor('active', {
-        cell: info => (info.getValue() === true ? <Active /> : <Inactive />),
-        header: 'Status'
-    }
-    ),
+        cell: info => (info.getValue() ? <Active /> : <Inactive />),
+        header: 'Status',
+        filterFn: (row, columnId, filterValue) => {
+            if (filterValue === undefined) return true
+            return Boolean(row.getValue(columnId)) === Boolean(filterValue)
+        },
+    }),
     vColumnHelper.display({
         id: 'actions',
         header: 'Actions',
