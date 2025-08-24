@@ -66,6 +66,7 @@ export default function VolunteerDetails() {
 
     useEffect(() => {
         if (data) {
+            console.log(data)
             setEditVolunteerDto(data)
         }
     }, [data])
@@ -127,10 +128,13 @@ export default function VolunteerDetails() {
                                         value={dateFormatter(data?.startDate!)}
                                     />
 
-                                    <Row
-                                        label="Status"
-                                        value={data?.active ? "Active" : "Inactive"}
-                                    />
+                                    {!data.active && (
+                                        <Row
+                                            label="End Date"
+                                            value={dateFormatter(data?.endDate!)}
+                                        />
+                                    )}
+
                                 </div>
                             </div>
 
@@ -259,7 +263,7 @@ export default function VolunteerDetails() {
                                         <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
-                                <TableBody>
+                                {/* <TableBody>
                                     {data?.participations.map(particpation => (
                                         <TableRow key={particpation.id}>
                                             <TableCell className="text-[#171717] text-sm font-light">{particpation.program}</TableCell>
@@ -279,7 +283,7 @@ export default function VolunteerDetails() {
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                </TableBody>
+                                </TableBody> */}
                             </Table>
 
                         </div>
@@ -395,51 +399,64 @@ export default function VolunteerDetails() {
                         />
 
                         <Input
-                            name="cpName1"
-                            placeholder="Emergency Contact 1 Name"
+                            name="skillSet"
+                            placeholder="Skillset"
                             showLabel={true}
-                            value={editVolunteerDto?.cpName1 ?? ""}
+                            value={editVolunteerDto?.skillSet ?? ""}
                             onChange={e => updateData(e, setEditVolunteerDto)}
                         />
-                        <Input
-                            name="cpRel1"
-                            placeholder="Relationship"
-                            showLabel={true}
-                            value={editVolunteerDto?.cpRel1 ?? ""}
-                            onChange={e => updateData(e, setEditVolunteerDto)}
-                        />
+                        {
+                            data?.type === "REGULAR" && (
+                                <>
+                                    <Input
+                                        name="cpName1"
+                                        placeholder="Emergency Contact 1 Name"
+                                        showLabel={true}
+                                        value={editVolunteerDto?.cpName1 ?? ""}
+                                        onChange={e => updateData(e, setEditVolunteerDto)}
+                                    />
+                                    <Input
+                                        name="cpRel1"
+                                        placeholder="Relationship"
+                                        showLabel={true}
+                                        value={editVolunteerDto?.cpRel1 ?? ""}
+                                        onChange={e => updateData(e, setEditVolunteerDto)}
+                                    />
 
-                        <Input
-                            name="cpPhone"
-                            placeholder="Phone Number"
-                            showLabel={true}
-                            value={editVolunteerDto?.cpPhone1 ?? ""}
-                            onChange={e => updateData(e, setEditVolunteerDto)}
-                        />
+                                    <Input
+                                        name="cpPhone"
+                                        placeholder="Phone Number"
+                                        showLabel={true}
+                                        value={editVolunteerDto?.cpPhone1 ?? ""}
+                                        onChange={e => updateData(e, setEditVolunteerDto)}
+                                    />
 
-                        <Input
-                            name="cpName2"
-                            placeholder="Emergency Contact 2 Name"
-                            showLabel={true}
-                            value={editVolunteerDto?.cpName2 ?? ""}
-                            onChange={e => updateData(e, setEditVolunteerDto)}
-                        />
+                                    <Input
+                                        name="cpName2"
+                                        placeholder="Emergency Contact 2 Name"
+                                        showLabel={true}
+                                        value={editVolunteerDto?.cpName2 ?? ""}
+                                        onChange={e => updateData(e, setEditVolunteerDto)}
+                                    />
 
-                        <Input
-                            name="cpRel2"
-                            placeholder="Relationship"
-                            showLabel={true}
-                            value={editVolunteerDto?.cpRel2 ?? ""}
-                            onChange={e => updateData(e, setEditVolunteerDto)}
-                        />
+                                    <Input
+                                        name="cpRel2"
+                                        placeholder="Relationship"
+                                        showLabel={true}
+                                        value={editVolunteerDto?.cpRel2 ?? ""}
+                                        onChange={e => updateData(e, setEditVolunteerDto)}
+                                    />
 
-                        <Input
-                            name="cpPhone2"
-                            placeholder="Phone Number"
-                            showLabel={true}
-                            value={editVolunteerDto?.cpPhone2 ?? ""}
-                            onChange={e => updateData(e, setEditVolunteerDto)}
-                        />
+                                    <Input
+                                        name="cpPhone2"
+                                        placeholder="Phone Number"
+                                        showLabel={true}
+                                        value={editVolunteerDto?.cpPhone2 ?? ""}
+                                        onChange={e => updateData(e, setEditVolunteerDto)}
+                                    />
+                                </>
+                            )
+                        }
                     </div>
 
                     <Button className="w-full">Update</Button>

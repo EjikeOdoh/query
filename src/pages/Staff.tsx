@@ -28,7 +28,6 @@ export default function Staff() {
     return (
         <Container label="Staff">
             <div className="flex gap-5 items-center justify-between">
-                <SearchForm action={"hello"} />
                 <Button
                     className="bg-[#00AEFF] text-white text-sm"
                     onClick={() => navigate('/add-staff')}

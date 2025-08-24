@@ -22,8 +22,6 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
     const [globalFilter, setGlobalFilter] = useState('')
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-
-
     const columns = vColumns(onDelete)
 
     const table = useReactTable({
@@ -31,6 +29,8 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        onPaginationChange: setPagination,
+        autoResetPageIndex: true,
         getFilteredRowModel: getFilteredRowModel(),
         state: {
             pagination,
@@ -81,23 +81,26 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
         table.resetColumnFilters()
         globalFilter && table.resetGlobalFilter()
         col.setFilterValue(value)
-        // setTimeout(() => col.setFilterValue(value), 0)
     }
 
     return (
         <div className="space-y-10">
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                    <Button variant='secondary' className=""
+                    <Button
+                        variant='secondary'
+                        className="font-light text-[#808080] text-sm border border-[#E5E5E5]"
                         onClick={() => applyFilter('type', 'REGULAR')}
-                    >Regular</Button>
-                    <Button variant='secondary'
+                    >
+                        Regular
+                    </Button>
+                    <Button variant='secondary' className="font-light text-[#808080] text-sm border border-[#E5E5E5]"
                         onClick={() => applyFilter('type', 'PROGRAM')}
                     >Program</Button>
-                    <Button variant='secondary'
+                    <Button variant='secondary' className="font-light text-[#808080] text-sm border border-[#E5E5E5]"
                         onClick={() => applyFilter('active', true)}
                     >Active</Button>
-                    <Button variant='secondary'
+                    <Button variant='secondary' className="font-light text-[#808080] text-sm border border-[#E5E5E5]"
                         onClick={() => applyFilter('active', false)}
                     >Inactive</Button>
 
@@ -115,8 +118,6 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
                     />
                 </div>
             </div>
-
-
             <Table className="rounded-xl overflow-hidden">
                 <TableHeader className="">
                     {

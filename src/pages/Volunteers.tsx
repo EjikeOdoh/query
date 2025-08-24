@@ -28,7 +28,6 @@ export default function Volunteers() {
     return (
         <Container label="Volunteers">
             <div className="flex gap-5 items-center justify-between">
-                <SearchForm placeholder="Search by volunteer names" action={"hello"} />
                 <Button
                     className="text-sm"
                     onClick={() => navigate('/add-volunteer')}

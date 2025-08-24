@@ -94,7 +94,7 @@ export default function AddVolunteer() {
                                         required
                                         placeholder="Year"
                                         maxLength={4}
-                                        value={createDto.year}
+                                        value={createDto.year ?? ""}
                                         onChange={e => updateData(e, setCreateDto)}
                                     />
 

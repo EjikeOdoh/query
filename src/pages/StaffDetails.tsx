@@ -10,14 +10,15 @@ import { dateFormatter, updateData } from "@/utils/fn";
 import { type StaffDetails } from "@/utils/types";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate, useParams } from "react-router";
+import { NavLink, useLocation, useNavigate, useParams } from "react-router";
 
 export default function StaffDetails() {
 
     const navigate = useNavigate()
+    const { state } = useLocation()
     const { staffId } = useParams()
 
-    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state)
 
     function openEditModal() {
         setIsEditModalOpen(true)

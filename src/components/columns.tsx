@@ -11,9 +11,10 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
 type ActionsCellProps = {
     id: number;
     onDelete: (id: number) => void;
+    target?: string
 };
 
-function ActionsCell({ id, onDelete }: ActionsCellProps) {
+function ActionsCell({ id, target="volunteers", onDelete }: ActionsCellProps) {
     const navigate = useNavigate();
 
     return (
@@ -21,7 +22,7 @@ function ActionsCell({ id, onDelete }: ActionsCellProps) {
             <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => navigate(`/volunteers/${id}`)}
+                onClick={() => navigate(`/${target}/${id}`)}
             >
                 <Eye color="#171717" />
             </Button>
@@ -29,7 +30,7 @@ function ActionsCell({ id, onDelete }: ActionsCellProps) {
             <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => navigate(`/volunteers/${id}`, { state: { edit: true } })}
+                onClick={() => navigate(`/${target}/${id}`, { state: { edit: true } })}
             >
                 <Pencil color="#171717" />
             </Button>
@@ -57,7 +58,7 @@ export const vColumns = (onDelete: (id: number) => void) => [
     }
     ),
     vColumnHelper.accessor('type', {
-        cell: info => info.getValue(),
+        cell: info => (info.getValue()[0] + info.getValue().slice(1).toLocaleLowerCase()),
         header: 'Type',
         filterFn: (row, columnId, filterValue) => {
             if (!filterValue || filterValue === "all") return true
@@ -108,6 +109,8 @@ export const sColumns = (onDelete: (id: number) => void) => [
     sColumnHelper.display({
         id: 'actions',
         header: 'Actions',
-        cell: props => <ActionsCell id={props.row.original.id} onDelete={() => onDelete(props.row.original.id)} />
+        cell: props => <ActionsCell id={props.row.original.id}
+        target="staff"
+        onDelete={() => onDelete(props.row.original.id)} />
     })
 ]
