@@ -2,15 +2,8 @@
 import { Tooltip } from "@radix-ui/react-tooltip"
 import { type ChartConfig, ChartContainer } from "./ui/chart"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import type { YearStat } from "@/utils/types"
 
-const chartData = [
-    { year: 2024, count: 1200 },
-    { year: 2025, count: 2000 },
-    { year: 2026, count: 3200 },
-    { year: 2027, count: 1200 },
-    { year: 2028, count: 2000 },
-    { year: 2029, count: 3200 },
-]
 
 const chartConfig = {
     count: {
@@ -19,10 +12,14 @@ const chartConfig = {
     }
 } satisfies ChartConfig
 
-export default function LineGraph() {
+interface LineGraphProps {
+    data: YearStat[]
+}
+
+export default function LineGraph({data}: LineGraphProps) {
     return (
         <ChartContainer config={chartConfig} className="flex-1 min-h-[200px] w-full">
-            <LineChart data={chartData}>
+            <LineChart data={data}>
                 <CartesianGrid strokeDasharray="2 2" />
                 <XAxis dataKey="year" />
                 <YAxis />

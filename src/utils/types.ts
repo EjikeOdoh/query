@@ -244,18 +244,21 @@ export interface CreateVolunteer {
   type: string
   startDate?: Date
   endDate?: Date
-  program?: string
   phone?: string
   email?: string
   address?: string
   location?: string
   skillSet?: string
+
+  programId?: string | number
+  year?: number
+  quarter?: number
+
   // cp stands for contact person
   cpName1?: string
   cpRel1?: string
   cpPhone1?: string
-  year: number
-  quarter: number
+
   cpName2?: string
   cpRel2?: string
   cpPhone2?: string
@@ -264,6 +267,9 @@ export interface CreateVolunteer {
 export interface VolunteerDetails extends CreateVolunteer {
   id: number
   participations: VolunteerParticipation[]
+}
+
+export interface EditVolunteerDto extends Partial<Omit<CreateVolunteer, 'programId' | 'year' | 'quarter'>> {
 }
 
 export interface CreateStaff extends Omit<CreateVolunteer, 'program'> {
@@ -303,3 +309,8 @@ export interface VolunteerParticipation {
 }
 
 export type CallFn = () => void
+
+export interface YearStat {
+  year: number
+  count: number | string
+}

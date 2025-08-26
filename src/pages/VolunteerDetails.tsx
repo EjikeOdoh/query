@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAddVP, useDeleteVolunteer, useGetVolunteerDetails, useUpdateVolunteer } from "@/hooks/use-admin";
 import { dateFormatter, updateData } from "@/utils/fn";
-import type { CreateVolunteer, ProgramStat, VolunteerParticipation } from "@/utils/types";
+import type { EditVolunteerDto, ProgramStat, VolunteerParticipation } from "@/utils/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -21,18 +21,22 @@ export default function VolunteerDetails() {
     const { state } = useLocation()
     const { volunteerId } = useParams()
 
-    const programs = useQueryClient().getQueryData(['programs']) as ProgramStat[]
+    const queryClient = useQueryClient()
+    const programs = queryClient.getQueryData(['programs']) as ProgramStat[]
 
     const { isLoading, isError, error, data, refetch } = useGetVolunteerDetails(volunteerId!)
 
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state)
     const [isAddProgramModalOpen, setIsAddProgramModalOpen] = useState<boolean>(false)
-    const [editVolunteerDto, setEditVolunteerDto] = useState<Partial<CreateVolunteer>>({})
+    const [editVolunteerDto, setEditVolunteerDto] = useState<EditVolunteerDto>({})
     const [addProgramDto, setAddProgramDto] = useState<Partial<VolunteerParticipation>>({
         volunteerId: Number(volunteerId)
     })
 
-    const updateVolunteerMutation = useUpdateVolunteer(volunteerId!, editVolunteerDto, refetch)
+    const updateVolunteerMutation = useUpdateVolunteer(volunteerId!, editVolunteerDto, () => {
+        refetch()
+        queryClient.invalidateQueries({ queryKey: ['volunteers'] })
+    })
     const deleteVolunteerMutation = useDeleteVolunteer(volunteerId!, () => navigate('/volunteers', { replace: true }))
 
     const addProgramMutation = useAddVP(addProgramDto as VolunteerParticipation, refetch)
@@ -66,8 +70,8 @@ export default function VolunteerDetails() {
 
     useEffect(() => {
         if (data) {
-            console.log(data)
-            setEditVolunteerDto(data)
+            const { participations, ...rest } = data
+            setEditVolunteerDto(rest)
         }
     }, [data])
 
@@ -263,7 +267,7 @@ export default function VolunteerDetails() {
                                         <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
-                                {/* <TableBody>
+                                <TableBody>
                                     {data?.participations.map(particpation => (
                                         <TableRow key={particpation.id}>
                                             <TableCell className="text-[#171717] text-sm font-light">{particpation.program}</TableCell>
@@ -283,7 +287,7 @@ export default function VolunteerDetails() {
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                </TableBody> */}
+                                </TableBody>
                             </Table>
 
                         </div>
@@ -337,29 +341,6 @@ export default function VolunteerDetails() {
                                     <SelectGroup>
                                         <SelectItem value="yes">Yes</SelectItem>
                                         <SelectItem value="no">No</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div>
-                            <label className="text-sm text-[#3d3d3d]">Program</label>
-                            <Select
-                                name="program"
-                                required
-                                value={editVolunteerDto.program ?? ""}
-                                onValueChange={(x) => setEditVolunteerDto({ ...editVolunteerDto, program: x })}
-                            >
-                                <SelectTrigger className="w-full px-6">
-                                    <SelectValue placeholder="Select program" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white py-4">
-                                    <SelectGroup>
-                                        <SelectItem value="All">All</SelectItem>
-                                        <SelectItem value="ASCG">ASCG</SelectItem>
-                                        <SelectItem value="CBC">CBC</SelectItem>
-                                        <SelectItem value="SSC">SSC</SelectItem>
-                                        <SelectItem value="DSC">DSC</SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
@@ -481,7 +462,7 @@ export default function VolunteerDetails() {
                                 onValueChange={(x) => setAddProgramDto({ ...addProgramDto, programId: Number(x) })}
                             >
                                 <SelectTrigger className="w-full px-6">
-                                    {/* <SelectValue placeholder="Select program" /> */}
+                                    <SelectValue placeholder="Select program" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-white py-4">
                                     <SelectGroup>
@@ -497,7 +478,7 @@ export default function VolunteerDetails() {
                             placeholder="Year"
                             maxLength={4}
                             showLabel={true}
-                            value={addProgramDto.year}
+                            value={addProgramDto.year ?? ""}
                             onChange={e => updateData(e, setAddProgramDto)}
                         />
 
@@ -509,7 +490,7 @@ export default function VolunteerDetails() {
                                 onValueChange={(x) => setAddProgramDto({ ...addProgramDto, quarter: Number(x) })}
                             >
                                 <SelectTrigger className="w-full px-6">
-                                    {/* <SelectValue placeholder="Select Quarter" /> */}
+                                    <SelectValue placeholder="Select Quarter" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                     <SelectGroup>

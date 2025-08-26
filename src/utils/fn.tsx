@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateVolunteer, DashStats, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateVolunteer, DashStats, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -204,7 +204,7 @@ export async function updateStaff(id: string, data: Partial<CreateStaff>) {
     }
 }
 
-export async function updateVolunteer(id: string, data: Partial<CreateVolunteer>) {
+export async function updateVolunteer(id: string, data: EditVolunteerDto) {
     try {
         const res = await client.patch(`/volunteers/${id}`, data)
         return res.data
