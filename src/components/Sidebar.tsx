@@ -5,6 +5,9 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
@@ -12,12 +15,14 @@ import {
 } from '@/components/ui/sidebar'
 import { NavLink, useLocation } from 'react-router'
 import { logout } from '@/utils/fn'
-import { ChartLine, GraduationCap, Handshake, LogOut, ShieldUser, User, UserRoundPlus } from 'lucide-react'
+import { ChartLine, ChevronDown, ChevronRight, FileUp, GraduationCap, Handshake, LogOut, ShieldUser, Target, User, UserRoundPlus } from 'lucide-react'
+import { useState } from 'react'
 
 
 export default function MySidebar({ profile }: { profile: ProfileState }) {
     const { role } = profile
     const { pathname } = useLocation();
+    const [adminOpen, setAdminOpen] = useState(false)
 
     const activeLink: string = "m-auto py-4 px-6 rounded-[6px] bg-[#00AEFF] border-2 border-[#B0E6FF] hover:bg-[#00AEFF] hover:text-white text-white"
     const normalLink: string = "m-auto py-4 px-6"
@@ -92,10 +97,39 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
                                         </NavLink>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
+
+                                {/* Admin specials */}
+                                <SidebarGroup>
+                                    <SidebarGroupLabel>Admin</SidebarGroupLabel>
+                                    <SidebarGroupContent>
+                                    <SidebarMenuItem className='w-full'>
+                                    <SidebarMenuButton className={pathname === "/upload" ? activeLink : normalLink} asChild>
+                                        <NavLink to='/upload'>
+                                            <FileUp />
+                                            <span>
+                                                Upload attendance
+                                            </span>
+                                        </NavLink>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem className='w-full'>
+                                    <SidebarMenuButton className={pathname === "/target" ? activeLink : normalLink} asChild>
+                                        <NavLink to='/target'>
+                                            <Target />
+                                            <span>
+                                                Target
+                                            </span>
+                                        </NavLink>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                    </SidebarGroupContent>
+                                </SidebarGroup>
                             </>
                         )
                     }
                 </SidebarMenu>
+
+
 
             </SidebarContent>
             <SidebarFooter className='px-10 pb-10 group-data-[collapsible=icon]:px-0 '>

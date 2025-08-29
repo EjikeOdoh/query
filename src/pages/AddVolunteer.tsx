@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAddVolunteer } from "@/hooks/use-admin";
 import { updateData } from "@/utils/fn";
-import { type CreateVolunteer } from "@/utils/types";
+import { type CreateVolunteer, type ProgramStat } from "@/utils/types";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -16,6 +17,9 @@ export default function AddVolunteer() {
 
     const [step, setStep] = useState<number>(0)
     const [type, setType] = useState<boolean>(false)
+
+    const queryClient = useQueryClient()
+    const programs = queryClient.getQueryData(['programs']) as ProgramStat[]
 
     const [createDto, setCreateDto] = useState<Partial<CreateVolunteer>>({
         // active: false
@@ -73,18 +77,15 @@ export default function AddVolunteer() {
                                     <Select
                                         name="program"
                                         required
-                                        value={createDto.program ?? ""}
-                                        onValueChange={(x) => setCreateDto({ ...createDto, program: x })}
+                                        value={createDto.programId?.toString() ?? ""}
+                                        onValueChange={(x) => setCreateDto({ ...createDto, programId: Number(x) })}
                                     >
                                         <SelectTrigger className="w-full px-6">
                                             <SelectValue placeholder="Select program" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-white py-4">
                                             <SelectGroup>
-                                                <SelectItem value="ASCG">ASCG (Including Outreach)</SelectItem>
-                                                <SelectItem value="CBC">CBC</SelectItem>
-                                                <SelectItem value="SSC">SSC</SelectItem>
-                                                <SelectItem value="DSC">DSC</SelectItem>
+                                                {programs?.map(program => (<SelectItem key={program.id} value={String(program.id)}>{program.program}</SelectItem>))}
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>

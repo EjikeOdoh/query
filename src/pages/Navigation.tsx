@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import LoginPage from "./Login";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { TokenContext } from "@/context/TokenContext";
 import Protected from "./Protected";
 import Students from "./Students";
@@ -10,7 +10,6 @@ import AddStudent from "./AddStudent";
 import useGetProfile from "@/hooks/useGetProfile";
 import type { ProfileState } from "@/utils/types";
 import Staff from "./Staff";
-import Dashboard from "./Dashboard";
 import Volunteers from "./Volunteers";
 import Partners from "./Partners";
 import AddStaff from "./AddStaff";
@@ -18,6 +17,9 @@ import StaffDetails from "./StaffDetails";
 import VolunteerDetails from "./VolunteerDetails";
 import AddVolunteer from "./AddVolunteer";
 import AddPartner from "./AddPartner";
+import Dashboard from "./Dashboard";
+import Upload from "./Upload";
+import Target from "./Target";
 
 export default function Navigation() {
 
@@ -74,7 +76,9 @@ export default function Navigation() {
                                 <Route path='/add-partner' element={<AddPartner />} />
 
                                 {/* Admin routes */}
-                                <Route path='/students/upload' element={<Students />} />
+                                <Route path='/upload' element={<Upload />} />
+                                <Route path='/target' element={<Target />} />
+
 
                             </>
                         }
