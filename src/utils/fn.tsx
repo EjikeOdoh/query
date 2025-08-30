@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateVolunteer, DashStats, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateVolunteer, DashStats, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -63,6 +63,12 @@ export async function getAllVolunteers(): Promise<VolunteersPayload[]> {
 
 export async function getVolunteer(id: string): Promise<VolunteerDetails> {
     const res = await client.get(`/volunteers/${id}`)
+    return res.data
+}
+
+
+export async function getAllTargets(): Promise<Target[]> {
+    const res = await client.get('/target')
     return res.data
 }
 
@@ -152,7 +158,20 @@ export async function addVolunteer(data: CreateVolunteer) {
 
 export async function addVolunteerParticipation(data: VolunteerParticipation) {
     try {
-        const res = await client.post('volunteer-participation', data)
+        const res = await client.post('/volunteer-participation', data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function uploadAttendance(data: FormData) {
+    try {
+        const res = await client.post('/uploads', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
         return res.data
     } catch (error) {
         console.log(error)

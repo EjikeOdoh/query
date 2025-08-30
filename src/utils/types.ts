@@ -314,3 +314,9 @@ export interface YearStat {
   year: number
   count: number | string
 }
+
+export interface Target {
+  id: number
+  target: number
+  year: number
+}

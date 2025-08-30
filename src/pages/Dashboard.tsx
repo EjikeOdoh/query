@@ -43,7 +43,7 @@ export default function Dashboard() {
         <Container 
         label="Dashboard" 
         bgColor="transparent"
-        padding="0"
+        padding={0}
         >
             <div className="space-y-10">
                 <Card className="px-6">

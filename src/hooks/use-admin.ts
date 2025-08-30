@@ -1,4 +1,4 @@
-import { addVolunteer, addVolunteerParticipation, deleteStaff, deleteVolunteer, getAllParticipation, getAllStaff, getAllVolunteers, getStaff, getVolunteer, updateStaff, updateVolunteer } from "@/utils/fn";
+import { addVolunteer, addVolunteerParticipation, deleteStaff, deleteVolunteer, getAllParticipation, getAllStaff, getAllTargets, getAllVolunteers, getStaff, getVolunteer, updateStaff, updateVolunteer, uploadAttendance } from "@/utils/fn";
 import type { CallFn, CreateStaff, CreateVolunteer, Participation, VolunteerParticipation } from "@/utils/types";
 import { useQuery, keepPreviousData, useMutation } from "@tanstack/react-query";
 
@@ -84,5 +84,20 @@ export function useAddVP(data: VolunteerParticipation, refetch: CallFn) {
     return useMutation({
         mutationFn: ()=>addVolunteerParticipation(data),
         onSuccess: refetch
+    })
+}
+
+export function useUpload(data: FormData, refetch: CallFn) {
+    return useMutation({
+        mutationFn: ()=>uploadAttendance(data),
+        onSuccess: refetch
+    })
+}
+
+export function useGetAllTargets() {
+    return useQuery({
+        queryKey:['targets'],
+        queryFn: getAllTargets,
+        staleTime: 5 * 60 * 1000
     })
 }

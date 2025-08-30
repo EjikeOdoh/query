@@ -2,20 +2,55 @@ import Container from "@/components/Container";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useUpload } from "@/hooks/use-admin";
+import { uploadAttendance } from "@/utils/fn";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 
 export default function Upload() {
+
+    const navigate = useNavigate()
+    const queryClient = useQueryClient()
+
     function handleSubmit(x: FormData) {
-        const data = Object.fromEntries(x)
-        console.log(data)
+        const file = x.get('file')
+        if(!file || !(file instanceof File) || file.size === 0) {
+            alert('Please select a valid file')
+            return
+        }
+       uploadMutation.mutate(x)
     }
+
+    const uploadMutation = useMutation({
+        mutationFn: uploadAttendance,
+        onSuccess:()=>{
+            queryClient.invalidateQueries({queryKey: ['stats']})
+            navigate('/')
+        }
+    })
+
+    if(uploadMutation.isPending) {
+        return (
+            <div>Loading</div>
+        )
+    }
+
+    if(uploadMutation.isError) {
+        return (
+            <div>Error: {uploadMutation.error.message}</div>
+        )
+    }
+
     return (
         <Container label="Upload Student Attendance">
-            <div className="w-[600px] m-auto">
-            <form action={handleSubmit}>
+            <div className="w-[600px] m-auto my-5">
+            <form action={handleSubmit} className="space-y-5">
                 <Input
                     name="file"
                     type="file"
+                    accept=".xlsx, .xls"
                     required
+                    placeholder="Select Attendance"
                 />
                 <Select
                     name="program"
@@ -57,7 +92,7 @@ export default function Upload() {
                     </SelectContent>
                 </Select>
 
-                <Button>Upload</Button>
+                <Button className="w-full mt-5">Upload</Button>
             </form>
 
             </div>
