@@ -272,67 +272,71 @@ export default function Student() {
 
                     {/* Grades table */}
 
+                    {
+                        !data.school.includes('University') && (
+                            <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
+                                <div className="flex justify-between items-center">
+                                    <Heading text="Grades" />
+                                    <Button onClick={openAddGradeModal}>
+                                        Add Grades
+                                    </Button>
+                                </div>
+
+                                {
+                                    data.school !== "University" && (
+                                        <Table className="rounded-xl overflow-hidden">
+                                            <TableHeader className="">
+                                                <TableRow className="bg-[#E6F7FF]">
+                                                    <TableHead className="text-[#808080] text-sm font-light">Year</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Mth</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Eng</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Chm</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Phy</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Bio</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Gov</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Eco</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Lit</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Act</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Com</TableHead>
+                                                    <TableHead className="text-[#808080] text-sm font-light w-28">Actions</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody >
+                                                {grades.map(grade => (
+                                                    <TableRow key={grade.id}>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.year}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.math}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.english}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.chemistry}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.physics}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.biology}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.government}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.economics}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.literature}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.accounting}</TableCell>
+                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.commerce}</TableCell>
+                                                        <TableCell className="flex items-center justify-center gap-2">
+                                                            <Button variant="ghost" size="icon" onClick={() => openEditGradeModal(grade.id)}>
+                                                                <Pencil color="#171717" />
+                                                            </Button>
+                                                            <Button variant="ghost" size="icon"
+                                                                onClick={() => handleDeleteGrade(grade.id)}
+                                                            >
+                                                                <Trash2 color="#171717" />
+                                                            </Button>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    )
+                                }
+
+                            </div>
+                        )
+                    }
 
 
-                    <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
-                        <div className="flex justify-between items-center">
-                            <Heading text="Grades" />
-                            <Button onClick={openAddGradeModal}>
-                                Add Grades
-                            </Button>
-                        </div>
-
-                        {
-                            data.school !== "University" && (
-                                <Table className="rounded-xl overflow-hidden">
-                                    <TableHeader className="">
-                                        <TableRow className="bg-[#E6F7FF]">
-                                            <TableHead className="text-[#808080] text-sm font-light">Year</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Mth</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Eng</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Chm</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Phy</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Bio</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Gov</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Eco</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Lit</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Act</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light min-w-10">Com</TableHead>
-                                            <TableHead className="text-[#808080] text-sm font-light w-28">Actions</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody >
-                                        {grades.map(grade => (
-                                            <TableRow key={grade.id}>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.year}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.math}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.english}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.chemistry}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.physics}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.biology}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.government}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.economics}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.literature}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.accounting}</TableCell>
-                                                <TableCell className="text-[#171717] text-sm font-light">{grade.commerce}</TableCell>
-                                                <TableCell className="flex items-center justify-center gap-2">
-                                                    <Button variant="ghost" size="icon" onClick={() => openEditGradeModal(grade.id)}>
-                                                        <Pencil color="#171717" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon"
-                                                        onClick={() => handleDeleteGrade(grade.id)}
-                                                    >
-                                                        <Trash2 color="#171717" />
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            )
-                        }
-
-                    </div>
 
                     {/* Participation table */}
                     <div className="py-6 px-10 bg-white rounded-2xl space-y-5">

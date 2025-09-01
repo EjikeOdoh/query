@@ -4,10 +4,12 @@ import { Button } from "./ui/button"
 import { Pencil, Trash2 } from "lucide-react"
 
 interface TargetsProps {
-    data: Target[]
+    data: Target[],
+    edit: (id: number) => void,
+    remove: (id: number) => void
 }
 
-export default function TargetsTable({ data }: TargetsProps) {
+export default function TargetsTable({ data, edit, remove }: TargetsProps) {
     return (
         <Table className="rounded-xl overflow-hidden">
             <TableHeader>
@@ -31,10 +33,14 @@ export default function TargetsTable({ data }: TargetsProps) {
                         <TableCell className="text-[#171717] text-sm font-light">{x.year}</TableCell>
                         <TableCell className="text-[#171717] text-sm font-light text-right">{x.target}</TableCell>
                         <TableCell className="flex items-center justify-end gap-2">
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon"
+                                onClick={() => edit(x.id)}
+                            >
                                 <Pencil color="#171717" />
                             </Button>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon"
+                                onClick={() => remove(x.id)}
+                            >
                                 <Trash2 color="#171717" />
                             </Button>
                         </TableCell>

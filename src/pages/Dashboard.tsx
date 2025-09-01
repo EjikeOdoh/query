@@ -36,6 +36,7 @@ export default function Dashboard() {
     }));
     const COLORS = ["#009DE6", "#8B86B4", "#9EB707"];
     const countryCount = data?.countByCountry.length;
+    const currentYear = data?.countByYear.find(x=>x.year === filterYear)
 
 
 
@@ -114,13 +115,13 @@ export default function Dashboard() {
                                     ) : (
                                         <>
                                             <div className="text-3xl font-bold">
-                                                {data?.totalCount} / {data?.target}
+                                                {currentYear.count} / {data?.target}
                                             </div>
                                             <p className="text-xs text-muted-foreground mb-2">
                                                 Progress toward the participation goal
                                             </p>
                                             <Progress
-                                                value={data!.target > 0 ? (data!.totalCount / data!.target) * 100 : 0}
+                                                value={(data!.target > 0) ? (currentYear.count / data!?.target) * 100 : 0}
                                                 className="h-2"
                                             />
                                         </>

@@ -1,5 +1,5 @@
-import { addVolunteer, addVolunteerParticipation, deleteStaff, deleteVolunteer, getAllParticipation, getAllStaff, getAllTargets, getAllVolunteers, getStaff, getVolunteer, updateStaff, updateVolunteer, uploadAttendance } from "@/utils/fn";
-import type { CallFn, CreateStaff, CreateVolunteer, Participation, VolunteerParticipation } from "@/utils/types";
+import { addTarget, addVolunteer, addVolunteerParticipation, deleteStaff, deleteTarget, deleteVolunteer, getAllParticipation, getAllStaff, getAllTargets, getAllVolunteers, getStaff, getVolunteer, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
+import type { CallFn, CreateStaff, CreateTargetDto, CreateVolunteer, EditTargetDto, Participation, VolunteerParticipation } from "@/utils/types";
 import { useQuery, keepPreviousData, useMutation } from "@tanstack/react-query";
 
 
@@ -99,5 +99,26 @@ export function useGetAllTargets() {
         queryKey:['targets'],
         queryFn: getAllTargets,
         staleTime: 5 * 60 * 1000
+    })
+}
+
+export function useAddTarget(data: CreateTargetDto, refetch: CallFn) {
+    return useMutation({
+        mutationFn: () => addTarget(data),
+        onSuccess: refetch
+    })
+}
+
+export function useUpdateTarget(id:number, data: EditTargetDto, refetch: CallFn) {
+    return useMutation({
+        mutationFn: ()=>updateTarget(id, data),
+        onSuccess: refetch
+    })
+}
+
+export function useDeleteTarget(id:number, refetch: CallFn) {
+    return useMutation({
+        mutationFn: () => deleteTarget(id),
+        onSuccess: refetch
     })
 }

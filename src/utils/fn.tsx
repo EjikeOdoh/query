@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateVolunteer, DashStats, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, Partner, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -72,6 +72,11 @@ export async function getAllTargets(): Promise<Target[]> {
     return res.data
 }
 
+
+export async function getAllPartners(): Promise<Partner[]>{
+    const res = await client.get(`/partners`)
+    return res.data
+}
 
 // Post functions
 export async function createStudent(data: CreateStudentData) {
@@ -178,6 +183,15 @@ export async function uploadAttendance(data: FormData) {
     }
 }
 
+export async function addTarget(data: CreateTargetDto) {
+    try {
+        const res = await client.post(`/target`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Patch functions
 export async function updateStudent(id: string, data: any) {
     try {
@@ -223,6 +237,16 @@ export async function updateStaff(id: string, data: Partial<CreateStaff>) {
     }
 }
 
+
+export async function updateTarget(id: number, data: EditTargetDto) {
+    try {
+        const res = await client.patch(`/target/${id}`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export async function updateVolunteer(id: string, data: EditVolunteerDto) {
     try {
         const res = await client.patch(`/volunteers/${id}`, data)
@@ -256,6 +280,11 @@ export async function deleteStaff(id: string) {
 
 export async function deleteVolunteer(id: string) {
     const res = await client.delete(`/volunteers/${id}`)
+    return res.data
+}
+
+export async function deleteTarget(id: number) {
+    const res = await client.delete(`/target/${id}`)
     return res.data
 }
 

@@ -101,7 +101,7 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
                                 {/* Admin specials */}
                                 <SidebarGroup>
                                     <SidebarGroupLabel>Admin</SidebarGroupLabel>
-                                    <SidebarGroupContent>
+                                    <SidebarGroupContent className='space-y-2'>
                                     <SidebarMenuItem className='w-full'>
                                     <SidebarMenuButton className={pathname === "/upload" ? activeLink : normalLink} asChild>
                                         <NavLink to='/upload'>

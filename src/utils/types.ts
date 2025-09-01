@@ -320,3 +320,32 @@ export interface Target {
   target: number
   year: number
 }
+
+export interface CreateTargetDto extends Omit<Target, 'id'> { }
+
+export interface EditTargetDto extends Partial<Target> { }
+
+export interface Partner {
+  id: number
+  name: string
+  logoUrl: string
+  isActive: boolean
+}
+
+export interface Sponsorship {
+  id: number
+  year: number
+  amount: number
+  currency: string
+  donation: string | null
+  program: string
+}
+
+export interface PartnerDetails extends Partner {
+  sponsorships: Sponsorship[];
+  desc: string;
+  logoPublicId: string;
+  twitter: string;
+  linkedIn: string;
+  year: number;
+}
