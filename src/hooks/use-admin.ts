@@ -1,4 +1,4 @@
-import { addTarget, addVolunteer, addVolunteerParticipation, deleteStaff, deleteTarget, deleteVolunteer, getAllParticipation, getAllStaff, getAllTargets, getAllVolunteers, getStaff, getVolunteer, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
+import { addTarget, addVolunteer, addVolunteerParticipation, deleteStaff, deleteTarget, deleteVolunteer, getAllParticipation, getAllPartners, getAllStaff, getAllTargets, getAllVolunteers, getPartner, getStaff, getVolunteer, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
 import type { CallFn, CreateStaff, CreateTargetDto, CreateVolunteer, EditTargetDto, Participation, VolunteerParticipation } from "@/utils/types";
 import { useQuery, keepPreviousData, useMutation } from "@tanstack/react-query";
 
@@ -120,5 +120,21 @@ export function useDeleteTarget(id:number, refetch: CallFn) {
     return useMutation({
         mutationFn: () => deleteTarget(id),
         onSuccess: refetch
+    })
+}
+
+export function useGetAllPartners () {
+    return useQuery({
+        queryKey:['partners'],
+        queryFn: getAllPartners,
+        staleTime: 5 * 60 * 1000
+    })
+}
+
+export function useGetPartner(id: number) {
+    return useQuery({
+        queryKey:['partner', id],
+        queryFn:() => getPartner(id),
+        staleTime: 5 * 60 * 1000
     })
 }

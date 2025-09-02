@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, Partner, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -73,8 +73,13 @@ export async function getAllTargets(): Promise<Target[]> {
 }
 
 
-export async function getAllPartners(): Promise<Partner[]>{
+export async function getAllPartners(): Promise<Partner[]> {
     const res = await client.get(`/partners`)
+    return res.data
+}
+
+export async function getPartner(id: number): Promise<PartnerDetails> {
+    const res = await client.get(`/partners/${id}`)
     return res.data
 }
 

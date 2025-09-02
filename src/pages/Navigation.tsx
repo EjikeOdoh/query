@@ -20,6 +20,7 @@ import AddPartner from "./AddPartner";
 import Dashboard from "./Dashboard";
 import Upload from "./Upload";
 import Target from "./Target";
+import PartnerDetails from "./PartnerDetails";
 
 export default function Navigation() {
 
@@ -60,27 +61,28 @@ export default function Navigation() {
                         }
 
                         {
-                            accountType.role === 'admin' && <>
-                                {/* Routes for volunteers */}
-                                <Route path='/volunteers' element={<Volunteers />} />
-                                <Route path='/add-volunteer' element={<AddVolunteer />} />
-                                <Route path='/volunteers/:volunteerId' element={<VolunteerDetails />} />
+                            accountType.role === 'admin' && (
+                                <>
+                                    {/* Routes for volunteers */}
+                                    <Route path='/volunteers' element={<Volunteers />} />
+                                    <Route path='/add-volunteer' element={<AddVolunteer />} />
+                                    <Route path='/volunteers/:volunteerId' element={<VolunteerDetails />} />
 
-                                {/* Routes for staff */}
-                                <Route path='/staff' element={<Staff />} />
-                                <Route path='/add-staff' element={<AddStaff />} />
-                                <Route path='/staff/:staffId' element={<StaffDetails />} />
+                                    {/* Routes for staff */}
+                                    <Route path='/staff' element={<Staff />} />
+                                    <Route path='/add-staff' element={<AddStaff />} />
+                                    <Route path='/staff/:staffId' element={<StaffDetails />} />
 
-                                {/* Routes for partners */}
-                                <Route path='/partners' element={<Partners />} />
-                                <Route path='/add-partner' element={<AddPartner />} />
+                                    {/* Routes for partners */}
+                                    <Route path='/partners' element={<Partners />} />
+                                    <Route path='/add-partner' element={<AddPartner />} />
+                                    <Route path='/partners/:partnerId' element={<PartnerDetails />} />
 
-                                {/* Admin routes */}
-                                <Route path='/upload' element={<Upload />} />
-                                <Route path='/target' element={<Target />} />
-
-
-                            </>
+                                    {/* Admin routes */}
+                                    <Route path='/upload' element={<Upload />} />
+                                    <Route path='/target' element={<Target />} />
+                                </>
+                            )
                         }
 
 
