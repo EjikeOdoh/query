@@ -138,7 +138,7 @@ export function useGetPartner(id: number) {
     })
 }
 
-export function useUpdatePartner(id: number, data: EditPartnerDetailsDto, refetch: CallFn) {
+export function useUpdatePartner(id: number, data: FormData, refetch: CallFn) {
     return useMutation({
         mutationFn: () => editPartner(id, data),
         onSuccess: refetch

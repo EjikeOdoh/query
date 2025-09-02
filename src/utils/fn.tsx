@@ -283,9 +283,13 @@ export async function updateVolunteer(id: string, data: EditVolunteerDto) {
     }
 }
 
-export async function editPartner(id: number, data: EditPartnerDetailsDto) {
+export async function editPartner(id: number, data: FormData) {
     try {
-        const res = await client.patch(`/partners/${id}`, data)
+        const res = await client.patch(`/partners/${id}`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
         return res.data
     } catch (error) {
         console.log(error)

@@ -31,7 +31,7 @@ export default function SponsorshipTable({ data, edit, remove }: SponsorshipProp
                         <TableCell className="text-[#171717] text-sm font-light">{x.program}</TableCell>
                         <TableCell className="text-[#171717] text-sm font-light">{x.amount}</TableCell>
                         <TableCell className="text-[#171717] text-sm font-light">{x.currency}</TableCell>
-                        <TableCell className="text-[#171717] text-sm font-light">{x.donation}</TableCell>
+                        <TableCell className="text-[#171717] text-sm font-light">{x.inkinddonation}</TableCell>
                         <TableCell className="flex items-center justify-end gap-2">
                             <Button variant="ghost" size="icon"
                                 onClick={() => edit(x.id)}

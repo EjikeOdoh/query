@@ -337,7 +337,7 @@ export interface Sponsorship {
   year: number
   amount: number
   currency: string
-  donation: string | null
+  inkinddonation: string | null
   program: string
 }
 
@@ -352,10 +352,9 @@ export interface PartnerDetails extends Partner {
 
 export interface EditPartnerDetailsDto extends Partial<PartnerDetails> { }
 
-export interface CreateSponsorshipDto extends Omit<Sponsorship, 'program' | 'id'|'donation'> {
+export interface CreateSponsorshipDto extends Omit<Sponsorship, 'program' | 'id'> {
   partnerId: number
   programId: number
-  inKindDonation: string
 }
 
 export interface EditSponsorshipDto extends Partial<CreateSponsorshipDto> { }

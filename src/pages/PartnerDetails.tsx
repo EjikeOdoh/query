@@ -6,7 +6,7 @@ import SponsorshipTable from "@/components/SponsorshipTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useGetPartner } from "@/hooks/use-admin";
+import { useAddSponsorship, useDeleteSponsorship, useEditSponsorship, useGetPartner } from "@/hooks/use-admin";
 import { updateData } from "@/utils/fn";
 import type { CreateSponsorshipDto, EditPartnerDetailsDto, EditSponsorshipDto, ProgramStat } from "@/utils/types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -35,14 +35,26 @@ export default function PartnerDetails() {
         year: 0,
         amount: 0,
         currency: "",
-        inKindDonation: "",
+        inkinddonation: "",
         partnerId: Number(partnerId),
         programId: 0
     })
-    const [editSponsorshipDto, setEditSponsorshipDto] = useState<EditSponsorshipDto>({})
+    const [editSponsorshipDto, setEditSponsorshipDto] = useState<EditSponsorshipDto>(data!?.sponsorships?.find(x => x.id === sId) || {})
+
+    const addSponsorshipMutation = useAddSponsorship(createSponsorshipDto, refetch)
+    const editSponsorshipMutation = useEditSponsorship(sId!, 
+        { inkinddonation: editSponsorshipDto.inkinddonation, amount: editSponsorshipDto.amount, currency: editSponsorshipDto.currency, year: editSponsorshipDto.year}
+        , refetch)
+    const deleteSponsorshipMutation = useDeleteSponsorship(sId!, refetch)
 
     function openAddSponsorshipModal() {
         setIsAddSponsorshipModalOpen(true)
+    }
+
+    function openEditSponsorshipModal(id: number) {
+        setSId(id)
+        setEditSponsorshipDto(data!?.sponsorships.find(x => x.id === id) || {})
+        setIsEditSponsorshipModalOpen(true)
     }
 
     function closeModal() {
@@ -51,8 +63,25 @@ export default function PartnerDetails() {
         setIsEditSponsorshipModalOpen(false)
     }
 
+
+    function handleAddSponsorship() {
+        closeModal()
+        addSponsorshipMutation.mutate()
+    }
+
+    function handleUpdateSponsorship() {
+        setIsEditSponsorshipModalOpen(false)
+        editSponsorshipMutation.mutate()
+    }
+
+    function handleDeleteSponsorship() {
+        deleteSponsorshipMutation.mutate()
+    }
+
+
     useEffect(() => {
         if (data) {
+            console.log(data)
             const { id, sponsorships, ...rest } = data
             setEditPartnerDto(rest)
         }
@@ -121,19 +150,38 @@ export default function PartnerDetails() {
                         sponsorships.length !== 0 && (
                             <SponsorshipTable
                                 data={sponsorships || []}
-                                edit={() => console.log('id')}
-                                remove={() => console.log(id)}
+                                edit={openEditSponsorshipModal}
+                                remove={handleDeleteSponsorship}
                             />
                         )
                     }
                 </div>
             </div>
 
-            {/* Add sponsorship modal */}
+            {/* Edit partner modal */}
+            <Modal isOpen={isEditModalOpen} onClose={closeModal}>
+                <Heading text="Edit Partner" />
+                <form>
+                    <Input
+                        name="name"
+                        placeholder="Partner Name"
 
+                    />
+                    <Input
+                        name="desc"
+                        placeholder="Description"
+
+                    />
+
+
+                </form>
+
+            </Modal>
+
+            {/* Add sponsorship modal */}
             <Modal isOpen={isAddSponsorshipModalOpen} onClose={closeModal}>
                 <Heading text="Add Sponsorship" />
-                <form action={() => { }}>
+                <form action={handleAddSponsorship}>
                     <div className="flex flex-col gap-4 mb-5">
                         <Input
                             name="year"
@@ -168,7 +216,6 @@ export default function PartnerDetails() {
                             name="amount"
                             placeholder="Amount"
                             type="number"
-                            required
                             className="flex-1"
                             showLabel={true}
                             value={createSponsorshipDto?.amount ?? ""}
@@ -178,9 +225,8 @@ export default function PartnerDetails() {
                             <label htmlFor="currency" className="text-sm font-light">Select Currency</label>
                             <Select
                                 name="currency"
-                                required
-                                value={String(createSponsorshipDto.programId) ?? ""}
-                                onValueChange={(x) => setCreateSponsorshipDto({ ...createSponsorshipDto, programId: Number(x) })}
+                                value={String(createSponsorshipDto.currency) ?? ""}
+                                onValueChange={(x) => setCreateSponsorshipDto({ ...createSponsorshipDto, currency: x })}
                             >
                                 <SelectTrigger className="w-full px-6">
                                     <SelectValue placeholder="Choose currency" />
@@ -195,18 +241,74 @@ export default function PartnerDetails() {
                             </Select>
                         </div>
                         <Input
-                            name="inKindDonation"
+                            name="inkinddonation"
                             placeholder="In Kind Donation"
-                            required
                             className="flex-1"
                             showLabel={true}
-                            value={createSponsorshipDto?.inKindDonation ?? ""}
+                            value={createSponsorshipDto?.inkinddonation ?? ""}
                             onChange={e => updateData(e, setCreateSponsorshipDto)}
                         />
                     </div>
                     <Button className="w-full">Add Sponsorship</Button>
                 </form>
             </Modal>
+
+            {/* Edit sponsorship modal */}
+            <Modal isOpen={isEditSponsorshipModalOpen} onClose={closeModal}>
+                <Heading text="Edit Sponsorship" />
+                <form action={handleUpdateSponsorship}>
+                    <div className="flex flex-col gap-4 mb-5">
+                        <Input
+                            name="year"
+                            placeholder="Year"
+                            type="number"
+                            maxLength={4}
+                            className="flex-1"
+                            showLabel={true}
+                            value={editSponsorshipDto?.year ?? ""}
+                            onChange={e => updateData(e, setEditSponsorshipDto)}
+                        />
+                        <Input
+                            name="amount"
+                            placeholder="Amount"
+                            type="number"
+                            className="flex-1"
+                            showLabel={true}
+                            value={editSponsorshipDto?.amount ?? ""}
+                            onChange={e => updateData(e, setEditSponsorshipDto)}
+                        />
+                        <div>
+                            <label htmlFor="currency" className="text-sm font-light">Select Currency</label>
+                            <Select
+                                name="currency"
+                                value={String(editSponsorshipDto.currency) ?? ""}
+                                onValueChange={(x) => setEditSponsorshipDto({ ...editSponsorshipDto, currency: x })}
+                            >
+                                <SelectTrigger className="w-full px-6">
+                                    <SelectValue placeholder="Choose currency" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white py-4">
+                                    <SelectGroup>
+                                        <SelectItem value="NGN">NGN</SelectItem>
+                                        <SelectItem value="USD">USD</SelectItem>
+                                        <SelectItem value="EUR">EUR</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Input
+                            name="inkinddonation"
+                            placeholder="In-Kind Donation"
+                            className="flex-1"
+                            showLabel={true}
+                            value={editSponsorshipDto?.inkinddonation ?? ""}
+                            onChange={e => updateData(e, setEditSponsorshipDto)}
+                        />
+                    </div>
+                    <Button className="w-full">Edit Sponsorship</Button>
+                </form>
+            </Modal>
+
         </Container>
     )
 }
