@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string) {
@@ -197,6 +197,28 @@ export async function addTarget(data: CreateTargetDto) {
     }
 }
 
+export async function addSponsorship(data: CreateSponsorshipDto) {
+    try {
+        const res = await client.post(`/sponsorship`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function addPartner(data: FormData) {
+    try {
+        const res = await client.post('/partners', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Patch functions
 export async function updateStudent(id: string, data: any) {
     try {
@@ -261,6 +283,24 @@ export async function updateVolunteer(id: string, data: EditVolunteerDto) {
     }
 }
 
+export async function editPartner(id: number, data: EditPartnerDetailsDto) {
+    try {
+        const res = await client.patch(`/partners/${id}`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function updateSponsorship(id: number, data: EditSponsorshipDto) {
+    try {
+        const res = await client.patch(`/sponsorship/${id}`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Delete functions
 
 export async function deleteParticipation(id: number) {
@@ -290,6 +330,16 @@ export async function deleteVolunteer(id: string) {
 
 export async function deleteTarget(id: number) {
     const res = await client.delete(`/target/${id}`)
+    return res.data
+}
+
+export async function deleteSponsorship(id: number) {
+    const res = await client.delete(`/sponsorship/${id}`)
+    return res.data
+}
+
+export async function deletePartner(id: number) {
+    const res = await client.delete(`/partners/${id}`)
     return res.data
 }
 

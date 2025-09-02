@@ -342,10 +342,20 @@ export interface Sponsorship {
 }
 
 export interface PartnerDetails extends Partner {
-  sponsorships: Sponsorship[];
-  desc: string;
-  logoPublicId: string;
-  twitter: string;
-  linkedIn: string;
-  year: number;
+  sponsorships: Sponsorship[]
+  desc: string
+  logoPublicId: string
+  twitter: string
+  linkedIn: string
+  year: number
 }
+
+export interface EditPartnerDetailsDto extends Partial<PartnerDetails> { }
+
+export interface CreateSponsorshipDto extends Omit<Sponsorship, 'program' | 'id'|'donation'> {
+  partnerId: number
+  programId: number
+  inKindDonation: string
+}
+
+export interface EditSponsorshipDto extends Partial<CreateSponsorshipDto> { }
