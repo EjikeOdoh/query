@@ -296,6 +296,15 @@ export async function editPartner(id: number, data: FormData) {
     }
 }
 
+export async function updatePartnerStatus(id: number, data: EditPartnerDetailsDto) {
+    try {
+        const res = await client.patch(`/partners/${id}/status`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export async function updateSponsorship(id: number, data: EditSponsorshipDto) {
     try {
         const res = await client.patch(`/sponsorship/${id}`, data)

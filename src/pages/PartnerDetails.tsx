@@ -3,19 +3,19 @@ import Modal from "@/components/Dialog";
 import Heading from "@/components/Heading";
 import Row from "@/components/Row";
 import SponsorshipTable from "@/components/SponsorshipTable";
+import { Active, Inactive } from "@/components/Tags";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAddSponsorship, useDeleteSponsorship, useEditSponsorship, useGetPartner } from "@/hooks/use-admin";
-import { updateData } from "@/utils/fn";
+import { useAddSponsorship, useDeleteSponsorship, useEditSponsorship, useGetPartner, useUpdatePartner } from "@/hooks/use-admin";
+import { editPartner, updateData } from "@/utils/fn";
 import type { CreateSponsorshipDto, EditPartnerDetailsDto, EditSponsorshipDto, ProgramStat } from "@/utils/types";
-import { useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate, useParams } from "react-router";
+import { NavLink, useParams } from "react-router";
 
 export default function PartnerDetails() {
-    const navigate = useNavigate()
     const { partnerId } = useParams()
 
     const queryClient = useQueryClient()
@@ -26,6 +26,7 @@ export default function PartnerDetails() {
     // Partner details variables
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
     const [editPartnerDto, setEditPartnerDto] = useState<EditPartnerDetailsDto>({})
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false)
 
     //  Sponsorship variables
     const [sId, setSId] = useState<number>()
@@ -41,11 +42,29 @@ export default function PartnerDetails() {
     })
     const [editSponsorshipDto, setEditSponsorshipDto] = useState<EditSponsorshipDto>(data!?.sponsorships?.find(x => x.id === sId) || {})
 
+    const { mutate, isPending } = useMutation({
+        mutationFn: (x: FormData) => editPartner(Number(partnerId), x),
+        onSuccess: refetch
+    })
+    const updateStatusMutation = useUpdatePartner(Number(partnerId), editPartnerDto, ()=>{
+        refetch()
+        queryClient.invalidateQueries({
+            queryKey:['partners']
+        })
+    } )
     const addSponsorshipMutation = useAddSponsorship(createSponsorshipDto, refetch)
-    const editSponsorshipMutation = useEditSponsorship(sId!, 
-        { inkinddonation: editSponsorshipDto.inkinddonation, amount: editSponsorshipDto.amount, currency: editSponsorshipDto.currency, year: editSponsorshipDto.year}
+    const editSponsorshipMutation = useEditSponsorship(sId!,
+        { inkinddonation: editSponsorshipDto.inkinddonation, amount: editSponsorshipDto.amount, currency: editSponsorshipDto.currency, year: editSponsorshipDto.year }
         , refetch)
     const deleteSponsorshipMutation = useDeleteSponsorship(sId!, refetch)
+
+    function openEditModal() {
+        setIsEditModalOpen(true)
+    }
+
+    function openUpdateStatusModal() {
+        setIsStatusModalOpen(true)
+    }
 
     function openAddSponsorshipModal() {
         setIsAddSponsorshipModalOpen(true)
@@ -61,6 +80,7 @@ export default function PartnerDetails() {
         setIsEditModalOpen(false)
         setIsAddSponsorshipModalOpen(false)
         setIsEditSponsorshipModalOpen(false)
+        setIsStatusModalOpen(false)
     }
 
 
@@ -70,7 +90,7 @@ export default function PartnerDetails() {
     }
 
     function handleUpdateSponsorship() {
-        setIsEditSponsorshipModalOpen(false)
+        closeModal()
         editSponsorshipMutation.mutate()
     }
 
@@ -78,16 +98,30 @@ export default function PartnerDetails() {
         deleteSponsorshipMutation.mutate()
     }
 
+    function handleUpdate(x: FormData) {
+        closeModal()
+        mutate(x)
+    }
+
+    function handleUpdateStatus() {
+        console.log(editPartnerDto)
+        closeModal()
+        updateStatusMutation.mutate()
+    }
+
+    function handleDelete() {
+
+    }
+
 
     useEffect(() => {
         if (data) {
-            console.log(data)
             const { id, sponsorships, ...rest } = data
             setEditPartnerDto(rest)
         }
     }, [data])
 
-    if (isLoading) {
+    if (isLoading || isPending || updateStatusMutation.isPending) {
         return <span>Loading...</span>
     }
 
@@ -108,15 +142,30 @@ export default function PartnerDetails() {
                     </NavLink>
                 </div>
 
-                <div>
-                    <div className="flex gap-4 items-center">
+                <div className="flex items-start justify-between">
+                    <div className="flex gap-4 items-start">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-clip">
                             <img src={logoUrl} />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold">{name}</h1>
-                            {year && <p>Since {year}</p>}
+                            <h1 className="text-2xl font-bold">{name}</h1>
+                            {(!!year) && <p className="text-xs">Since {year}</p>}
+                            <div className="flex items-center gap-2 mt-2">
+                                {isActive ? <Active /> : <Inactive />}
+                                <Button variant='link'
+                                    onClick={openUpdateStatusModal}
+                                    className="text-[10px]"
+                                >Change status</Button>
+                            </div>
                         </div>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                        <Button variant="ghost" size="icon" onClick={openEditModal}>
+                            <Pencil color="#171717" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={handleDelete}>
+                            <Trash2 color="#171717" />
+                        </Button>
                     </div>
                 </div>
 
@@ -158,24 +207,51 @@ export default function PartnerDetails() {
                 </div>
             </div>
 
-            {/* Edit partner modal */}
+            {/* Edit partner details */}
             <Modal isOpen={isEditModalOpen} onClose={closeModal}>
-                <Heading text="Edit Partner" />
-                <form>
+                <Heading text="Edit Partner Information" />
+                <form action={handleUpdate} className="space-y-5">
                     <Input
                         name="name"
-                        placeholder="Partner Name"
-
+                        placeholder="Name"
+                        showLabel={true}
+                        defaultValue={editPartnerDto.name}
                     />
                     <Input
                         name="desc"
                         placeholder="Description"
-
+                        showLabel={true}
+                        defaultValue={editPartnerDto.desc}
+                    />
+                    <Input
+                        name="twitter"
+                        placeholder="Twitter"
+                        showLabel={true}
+                        defaultValue={editPartnerDto.twitter}
+                    />
+                    <Input
+                        name="linkedIn"
+                        placeholder="LinkedIn"
+                        showLabel={true}
+                        defaultValue={editPartnerDto.linkedIn}
+                    />
+                    <Input
+                        name="year"
+                        type="number"
+                        placeholder="Year"
+                        showLabel={true}
+                        maxLength={4}
+                        defaultValue={editPartnerDto.year ?? 0}
+                    />
+                    <Input
+                        name="logo"
+                        type="file"
+                        placeholder="Logo"
+                        showLabel={true}
                     />
 
-
+                    <Button className="w-full mt-5">Update</Button>
                 </form>
-
             </Modal>
 
             {/* Add sponsorship modal */}
@@ -242,7 +318,7 @@ export default function PartnerDetails() {
                         </div>
                         <Input
                             name="inkinddonation"
-                            placeholder="In Kind Donation"
+                            placeholder="In-Kind Donation"
                             className="flex-1"
                             showLabel={true}
                             value={createSponsorshipDto?.inkinddonation ?? ""}
@@ -306,6 +382,41 @@ export default function PartnerDetails() {
                         />
                     </div>
                     <Button className="w-full">Edit Sponsorship</Button>
+                </form>
+            </Modal>
+
+            {/* Edit status Modal */}
+            <Modal isOpen={isStatusModalOpen} onClose={closeModal}>
+                <form action={handleUpdateStatus}>
+                    <Heading text="Update Partner Status" />
+                    <div className="my-5">
+                        <Input
+                            name="name"
+                            placeholder="Name"
+                            showLabel={true}
+                            defaultValue={editPartnerDto.name}
+                            onChange={e => updateData(e, setEditPartnerDto)}
+                        />
+                        <label className="text-sm text-[#3d3d3d]">Active?</label>
+                        <Select
+                            name="isActive"
+                            onValueChange={(val) => {
+                                const boolVal = val === "yes";
+                                setEditPartnerDto({ ...editPartnerDto, isActive: boolVal });
+                            }}
+                        >
+                            <SelectTrigger className="flex-1 p-6 w-full">
+                                <SelectValue placeholder="Active?" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white py-4 w-full">
+                                <SelectGroup>
+                                    <SelectItem value="yes">Yes</SelectItem>
+                                    <SelectItem value="no">No</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <Button className="w-full">Update Status</Button>
                 </form>
             </Modal>
 

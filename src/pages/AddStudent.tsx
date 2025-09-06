@@ -70,7 +70,7 @@ export default function AddStudent() {
 
     })
 
-    const { mutateAsync } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: () => createStudent(data),
         onSuccess: () => navigate('/students')
     })
@@ -93,7 +93,7 @@ export default function AddStudent() {
     useEffect(() => {
         if (step === 7) {
             console.log(data)
-            mutateAsync()
+            mutate()
         }
     }, [step])
 

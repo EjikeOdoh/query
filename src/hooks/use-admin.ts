@@ -1,4 +1,4 @@
-import { addSponsorship, addTarget, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteVolunteer, editPartner, getAllParticipation, getAllPartners, getAllStaff, getAllTargets, getAllVolunteers, getPartner, getStaff, getVolunteer, updateSponsorship, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
+import { addSponsorship, addTarget, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteVolunteer, editPartner, getAllParticipation, getAllPartners, getAllStaff, getAllTargets, getAllVolunteers, getPartner, getStaff, getVolunteer, updatePartnerStatus, updateSponsorship, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
 import type { CallFn, CreateSponsorshipDto, CreateStaff, CreateTargetDto, CreateVolunteer, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, Participation, VolunteerParticipation } from "@/utils/types";
 import { useQuery, keepPreviousData, useMutation } from "@tanstack/react-query";
 
@@ -138,9 +138,9 @@ export function useGetPartner(id: number) {
     })
 }
 
-export function useUpdatePartner(id: number, data: FormData, refetch: CallFn) {
+export function useUpdatePartner(id: number, data: EditPartnerDetailsDto, refetch: CallFn) {
     return useMutation({
-        mutationFn: () => editPartner(id, data),
+        mutationFn: () => updatePartnerStatus(id, data),
         onSuccess: refetch
     })
 }

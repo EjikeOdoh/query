@@ -36,15 +36,15 @@ export default function Dashboard() {
     }));
     const COLORS = ["#009DE6", "#8B86B4", "#9EB707"];
     const countryCount = data?.countByCountry.length;
-    const currentYear = data?.countByYear.find(x=>x.year === filterYear)
+    const currentYear = data?.countByYear.find(x => x.year === filterYear)
 
 
 
     return (
-        <Container 
-        label="Dashboard" 
-        bgColor="transparent"
-        padding={0}
+        <Container
+            label="Dashboard"
+            bgColor="transparent"
+            padding={0}
         >
             <div className="space-y-10">
                 <Card className="px-6">
@@ -121,7 +121,7 @@ export default function Dashboard() {
                                                 Progress toward the participation goal
                                             </p>
                                             <Progress
-                                                value={(data!.target > 0) ? (currentYear.count / data!?.target) * 100 : 0}
+                                                value={(data!.target > 0) ? (currentYear.count / data!?.target) > 1 ? 100 : ((currentYear.count / data!?.target) * 100) : 0}
                                                 className="h-2"
                                             />
                                         </>
@@ -177,7 +177,7 @@ export default function Dashboard() {
                         </CardHeader>
                         <CardContent className="h-[320px]">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={data?.countByYear} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                                <BarChart data={data?.countByYear} margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="year" tick={{ fontSize: 10 }} label={{
                                         value: 'Year',
@@ -187,7 +187,7 @@ export default function Dashboard() {
                                     }} />
                                     <YAxis tick={{ fontSize: 10 }} label={{ value: 'Count', angle: -90, position: 'insideLeft', fontSize: 10 }} />
                                     <RTooltip formatter={(v) => (v as number)} />
-                                    <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#009DE6" />
+                                    <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#009DE6" height={100} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </CardContent>

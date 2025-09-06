@@ -1,2 +1,4 @@
-1. Update volunteer not working.
-2. Insufficient logic to handle grades for cbc students.
+1. Update volunteer not working. = fixed
+2. Insufficient logic to handle grades for cbc students. = fixed
+3. Y-Axis of barchart
+4. Handling update partner

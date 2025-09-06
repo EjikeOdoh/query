@@ -14,12 +14,15 @@ import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate, NavLink } from "react-router";
 import { useGetPrograms } from "@/hooks/use-dashboard";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 export default function Student() {
     const { studentId, } = useParams();
     const { state } = useLocation()
     const navigate = useNavigate()
+
+    const queryClient = useQueryClient()
 
     const programs = useGetPrograms()
 
@@ -43,7 +46,12 @@ export default function Student() {
 
     const { isLoading, isError, error, data, refetch } = useGetStudentDetails(studentId ?? "");
     const { isPending, mutate } = useUpdateStudent(studentId, editData, refetch)
-    const deleteStudentMutation = useDeleteStudent(Number(studentId), () => navigate('/students', { replace: true }))
+    const deleteStudentMutation = useDeleteStudent(Number(studentId), () => {
+        queryClient.invalidateQueries({
+            queryKey: ['stats']
+        })
+        navigate('/students', { replace: true })
+    })
 
 
     const updateGradeMutation = useUpdateGrades(String(editGradesData.id), editGradesData, refetch)
@@ -51,8 +59,18 @@ export default function Student() {
     const deleteGradeMutation = useDeleteGrades(gradeId!, refetch)
 
     const updateParticipationMutation = useUpdateStudentParticipation(Number(studentId), editParticipationData, refetch)
-    const addPartipationMutation = useAddStudentParticipation(addParticipationData, refetch)
-    const deleteParticipationMutation = useDeleteStudentParticipation(pId!, refetch)
+    const addPartipationMutation = useAddStudentParticipation(addParticipationData, () => {
+        refetch()
+        queryClient.invalidateQueries({
+            queryKey: ['stats']
+        })
+    })
+    const deleteParticipationMutation = useDeleteStudentParticipation(pId!, () => {
+        refetch()
+        queryClient.invalidateQueries({
+            queryKey: ['stats']
+        })
+    })
 
 
 
