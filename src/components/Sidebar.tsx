@@ -1,4 +1,4 @@
-import type { ProfileState } from '@/utils/types'
+import type { CallFn, ProfileState } from '@/utils/types'
 import Logo from '../assets/logo.png'
 import LogoIcon from '../assets/icon.png'
 import {
@@ -14,15 +14,12 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { NavLink, useLocation } from 'react-router'
-import { logout } from '@/utils/fn'
-import { ChartLine, ChevronDown, ChevronRight, FileUp, GraduationCap, Handshake, LogOut, ShieldUser, Target, User, UserRoundPlus } from 'lucide-react'
-import { useState } from 'react'
+import { ChartLine, FileUp, GraduationCap, Handshake, LogOut, Target, User, UserRoundPlus } from 'lucide-react'
 
 
-export default function MySidebar({ profile }: { profile: ProfileState }) {
+export default function MySidebar({ profile, logout }: { profile: ProfileState, logout: CallFn }) {
     const { role } = profile
     const { pathname } = useLocation();
-    const [adminOpen, setAdminOpen] = useState(false)
 
     const activeLink: string = "m-auto py-4 px-6 rounded-[6px] bg-[#00AEFF] border-2 border-[#B0E6FF] hover:bg-[#00AEFF] hover:text-white text-white"
     const normalLink: string = "m-auto py-4 px-6"
@@ -128,9 +125,6 @@ export default function MySidebar({ profile }: { profile: ProfileState }) {
                         )
                     }
                 </SidebarMenu>
-
-
-
             </SidebarContent>
             <SidebarFooter className='px-10 pb-10 group-data-[collapsible=icon]:px-0 '>
                 <SidebarMenuButton className='py-4 px-6 m-auto' onClick={logout}>

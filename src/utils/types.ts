@@ -47,11 +47,8 @@ export interface Grade {
   accounting?: string | null;
   year: number;
 }
-export interface GradeAddData extends Omit<Grade, 'id'> { }
-export interface GradeEditData extends Partial<Grade> {
-
-}
-
+export type GradeAddData = Omit<Grade, 'id'>
+export type GradeEditData = Partial<Grade>
 export interface Participation {
   participation_id: number
   participation_year: number;
@@ -61,7 +58,7 @@ export interface Participation {
 export interface ParticipationAddData extends Partial<Omit<Participation, 'participation_id'>> {
   studentId: number
 }
-export interface ParticipationEditData extends Partial<Participation> { }
+export type ParticipationEditData = Partial<Participation>
 
 export interface StudentDetail {
   id: number;
@@ -97,7 +94,7 @@ export interface StudentDetail {
   participations: Participation[];
 }
 
-export type EditStudentPayload = Omit<StudentDetail, 'grades' | 'participations'> & {}
+export type EditStudentPayload = Omit<StudentDetail, 'id'|'grades' | 'participations'>
 
 export interface SearchResult {
   count: number
@@ -125,23 +122,23 @@ export type Program = "ASCG" | "CBC" | "DSC" | "SSC"
 export interface DashStats {
   year: string | number
   totalCount: number
-  countByCountry: ({ country: string, count: number } | any)[]
-  countByProgram: ({ program: Program, count: number } | any)[]
-  countByYear: ({ year: number, count: number } | any)[]
+  countByCountry: ({ country: string, count: number } )[]
+  countByProgram: ({ program: Program, count: number })[]
+  countByYear: ({ year: number, count: number })[]
   uniqueCount: number
   target: number
 }
 
 export interface ParticipationData {
-  participationId: any
-  year: any
-  quarter: any
-  studentId: any
-  firstName: any
-  lastName: any
-  dob: any
-  country: any
-  program: any
+  participationId: number
+  year: number
+  quarter: number
+  studentId: number
+  firstName: string
+  lastName: string
+  dob: Date
+  country: string
+  program: string
 }
 
 export interface CreateStudentData {
@@ -269,8 +266,7 @@ export interface VolunteerDetails extends CreateVolunteer {
   participations: VolunteerParticipation[]
 }
 
-export interface EditVolunteerDto extends Partial<Omit<CreateVolunteer, 'programId' | 'year' | 'quarter'>> {
-}
+export type EditVolunteerDto = Partial<Omit<CreateVolunteer, 'programId' | 'year' | 'quarter'>> 
 
 export interface CreateStaff extends Omit<CreateVolunteer, 'program'> {
   staffId: string
@@ -321,9 +317,8 @@ export interface Target {
   year: number
 }
 
-export interface CreateTargetDto extends Omit<Target, 'id'> { }
-
-export interface EditTargetDto extends Partial<Target> { }
+export type CreateTargetDto = Omit<Target, 'id'>
+export type EditTargetDto = Partial<Target>
 
 export interface Partner {
   id: number
@@ -350,11 +345,11 @@ export interface PartnerDetails extends Partner {
   year: number
 }
 
-export interface EditPartnerDetailsDto extends Partial<PartnerDetails> { }
+export type EditPartnerDetailsDto = Partial<PartnerDetails>
 
 export interface CreateSponsorshipDto extends Omit<Sponsorship, 'program' | 'id'> {
   partnerId: number
   programId: number
 }
 
-export interface EditSponsorshipDto extends Partial<CreateSponsorshipDto> { }
+export type EditSponsorshipDto = Partial<CreateSponsorshipDto>

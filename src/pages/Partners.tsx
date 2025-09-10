@@ -1,16 +1,10 @@
-import Header from "@/components/Header";
-import Logo from '../assets/google.png'
 import { useGetAllPartners } from "@/hooks/use-admin";
 import Container from "@/components/Container";
 import { Button } from "@/components/ui/button";
 import { CircleFadingPlus } from "lucide-react";
 import { useNavigate } from "react-router";
-import type { CallFn } from "@/utils/types";
-import Modal from "@/components/Dialog";
+import type { CallFn, Partner } from "@/utils/types";
 import { useState } from "react";
-import Heading from "@/components/Heading";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface CardProps {
     imgUrl: string,
@@ -18,13 +12,12 @@ interface CardProps {
     onclick: CallFn
 }
 
-function Card({ imgUrl, name, onclick }: CardProps) {
+function Card({ imgUrl, onclick }: CardProps) {
     return (
         <button
             onClick={onclick}
             className="w-full flex flex-col h-[120px] items-center justify-center gap-2 cursor-pointer border-2 border-[#F5F5F5] rounded-2xl p-2 outline-2 outline-white bg-clip-padding overflow-hidden grayscale hover:grayscale-0 transition-all">
             <img src={imgUrl} className="object-contain w-full" />
-            {/* <p>{name}</p> */}
         </button>
     )
 }
@@ -32,6 +25,8 @@ function Card({ imgUrl, name, onclick }: CardProps) {
 export default function Partners() {
     const { isLoading, isError, error, data } = useGetAllPartners()
     const navigate = useNavigate()
+
+    const [filter, setFilter] = useState<string>('all')
 
 
     if (isLoading) {
@@ -43,7 +38,12 @@ export default function Partners() {
         return <span>Error: {error.message}</span>
     }
 
-    const cards = data!.map(card => (
+    const partners = filter === 'all' ? data!
+        : filter === 'active' ? data!.filter(x => x.isActive === true)
+            : filter === 'inactive' ? data!.filter(x => x.isActive !== true)
+                : data!
+
+    const cards = partners.map(card => (
         <Card
             key={card.id}
             imgUrl={card.logoUrl}
@@ -54,7 +54,27 @@ export default function Partners() {
     return (
         <Container label="Partners" bgColor="transparent">
             <div className="flex items-center justify-between bg-white py-4 px-8 rounded-2xl">
-                <div>Tags</div>
+                <div className="flex items-center gap-5">
+                    <Button
+                        variant={filter === "all" ? 'default' : 'secondary'}
+                        className="font-light text-sm border border-[#E5E5E5]"
+                        onClick={() => setFilter('all')}
+                    >All</Button>
+
+                    <Button
+                        variant={filter === "active" ? 'default' : 'secondary'}
+                        className="font-light text-sm border border-[#E5E5E5]"
+                        onClick={() => setFilter('active')}
+
+                    >Active</Button>
+
+                    <Button
+                        variant={filter === "inactive" ? 'default' : 'secondary'}
+                        className="font-light text-sm border border-[#E5E5E5]"
+                        onClick={() => setFilter('inactive')}
+
+                    >Inactive</Button>
+                </div>
                 <Button
                     className="text-sm"
                     onClick={() => navigate('/add-partner')}

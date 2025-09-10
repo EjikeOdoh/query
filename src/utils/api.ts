@@ -12,7 +12,7 @@ const client = axios.create({
 client.interceptors.request.use(
     (config) => {
 
-        let token = sessionStorage.getItem('myToken');
+        const token = sessionStorage.getItem('myToken');
 
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;

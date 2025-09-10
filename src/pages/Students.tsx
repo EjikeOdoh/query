@@ -2,16 +2,6 @@
 import { useState } from "react"
 import type { Meta, Student, StudentPagination, StudentResponse } from "../utils/types"
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -19,14 +9,15 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-
 import StudentTable from "@/components/Table"
 import { SearchForm } from "@/components/SearchForm"
 import { useNavigate } from "react-router"
-import { useGetAllStudents } from "@/hooks/use-students"
+import { useDeleteStudent, useGetAllStudents } from "@/hooks/use-students"
 import { Button } from "@/components/ui/button"
-import { CircleFadingPlus } from "lucide-react"
+import { CircleFadingPlus, Trash2 } from "lucide-react"
 import Container from "@/components/Container"
+import Modal from "@/components/Dialog"
+import { useQueryClient } from "@tanstack/react-query"
 
 export default function Students() {
 
@@ -35,6 +26,7 @@ export default function Students() {
   })
 
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   function logInput(formData: FormData) {
     const studentName = formData.get('name') as string;
@@ -48,7 +40,33 @@ export default function Students() {
     limit: 10
   })
 
-  const { isPending, isError, data, error } = useGetAllStudents(meta, token)
+  const { isPending, isError, data, error, refetch } = useGetAllStudents(meta, token)
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+  const [sId, setSId] = useState<number>()
+
+  function selectStudent(id: number) {
+    setSId(id)
+    openModal()
+  }
+
+  function cleanUp() {
+    refetch()
+    queryClient.invalidateQueries({ queryKey: ['stats'] })
+    queryClient.invalidateQueries({ queryKey: ['students'] })
+  }
+
+  const deleteStudentMutation = useDeleteStudent(sId!, cleanUp)
+
+  function openModal() { setIsDeleteModalOpen(true) }
+  function closeModal() { setIsDeleteModalOpen(false) }
+
+  function handleDeleteStudent() {
+    closeModal()
+    deleteStudentMutation.mutate()
+  }
+
+
 
   if (isPending) {
     return <span>Loading...</span>
@@ -66,9 +84,9 @@ export default function Students() {
   return (
     <Container label="Students">
       <div className="flex gap-5 items-center justify-between">
-        <SearchForm 
-        placeholder="Search by student names"
-        action={logInput} />
+        <SearchForm
+          placeholder="Search by student names"
+          action={logInput} />
         <Button
           className="bg-[#00AEFF] text-white text-sm"
           onClick={() => navigate('/add-student')}
@@ -77,27 +95,8 @@ export default function Students() {
           <span>Add Student</span>
         </Button>
       </div>
-      {/* <div className="">
-            <Select onValueChange={(value) => {
-              setMeta({
-                page: 1, limit: Number(value)
-              })
-            }} >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={meta.limit} />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectGroup>
-                  <SelectLabel>Rows per page</SelectLabel>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="50">50</SelectItem>
-                  <SelectItem value="100">100</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
 
-          </div> */}
-      <StudentTable data={students} />
+      <StudentTable data={students} remove={selectStudent} />
       <div className="flex justify-between items-baseline">
         <p className="text-sm font-light">Page {meta.page} of {info.totalPages}</p>
         <div className="w-fit">
@@ -170,6 +169,23 @@ export default function Students() {
           </Pagination>
         </div>
       </div>
+      <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
+        <div className="space-y-10">
+          <div className="space-y-8">
+            <Trash2 size={90} className="mx-auto" />
+            <div>
+              <h3 className="font-bold text-3xl text-center">Delete Student</h3>
+              <p className="font-light text-center">Are you sure you want to delete this student?</p>
+
+            </div>
+
+          </div>
+          <div className="flex items-center gap-4">
+            <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
+            <Button variant="destructive" className="flex-1" onClick={handleDeleteStudent}>Yes, Delete</Button>
+          </div>
+        </div>
+      </Modal>
     </Container>
 
 

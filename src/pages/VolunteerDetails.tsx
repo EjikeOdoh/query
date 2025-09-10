@@ -33,11 +33,22 @@ export default function VolunteerDetails() {
         volunteerId: Number(volunteerId)
     })
 
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+
+    function openDeleteModal() {
+        setIsDeleteModalOpen(true)
+    }
+
+    function cleanUp() {
+        queryClient.invalidateQueries({ queryKey: ['volunteers'] })
+        navigate('/volunteers', { replace: true })
+    }
+
     const updateVolunteerMutation = useUpdateVolunteer(volunteerId!, editVolunteerDto, () => {
         refetch()
         queryClient.invalidateQueries({ queryKey: ['volunteers'] })
     })
-    const deleteVolunteerMutation = useDeleteVolunteer(volunteerId!, () => navigate('/volunteers', { replace: true }))
+    const deleteVolunteerMutation = useDeleteVolunteer(volunteerId!, cleanUp)
 
     const addProgramMutation = useAddVP(addProgramDto as VolunteerParticipation, refetch)
 
@@ -45,9 +56,11 @@ export default function VolunteerDetails() {
         setIsEditModalOpen(true)
     }
 
+    // Close all modals
     function closeEditModal() {
         setIsEditModalOpen(false)
         setIsAddProgramModalOpen(false)
+        setIsDeleteModalOpen(false)
     }
 
     function openAddProgramModal() {
@@ -55,6 +68,7 @@ export default function VolunteerDetails() {
     }
 
     function handleDelete() {
+        closeEditModal()
         deleteVolunteerMutation.mutate()
     }
 
@@ -71,6 +85,7 @@ export default function VolunteerDetails() {
     useEffect(() => {
         if (data) {
             const { participations, ...rest } = data
+            void participations;
             setEditVolunteerDto(rest)
         }
     }, [data])
@@ -111,7 +126,7 @@ export default function VolunteerDetails() {
                     <Button variant="ghost" size="icon" onClick={openEditModal}>
                         <Pencil color="#171717" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={handleDelete}>
+                    <Button variant="ghost" size="icon" onClick={openDeleteModal}>
                         <Trash2 color="#171717" />
                     </Button>
                 </div>
@@ -129,13 +144,13 @@ export default function VolunteerDetails() {
                                 <div className="mt-4 flex flex-col gap-2">
                                     <Row
                                         label="Start Date"
-                                        value={dateFormatter(data?.startDate!)}
+                                        value={dateFormatter(data.startDate!)}
                                     />
 
                                     {!data.active && (
                                         <Row
                                             label="End Date"
-                                            value={dateFormatter(data?.endDate!)}
+                                            value={dateFormatter(data.endDate!)}
                                         />
                                     )}
 
@@ -324,7 +339,7 @@ export default function VolunteerDetails() {
                             type="date"
                             placeholder="Start Date"
                             showLabel={true}
-                            value={editVolunteerDto?.startDate ? new Date(editVolunteerDto?.startDate!).toISOString().split("T")[0] : ""
+                            value={editVolunteerDto?.startDate ? new Date(editVolunteerDto.startDate!).toISOString().split("T")[0] : ""
                             }
                             onChange={e => updateData(e, setEditVolunteerDto)}
                         />
@@ -458,7 +473,7 @@ export default function VolunteerDetails() {
                             <Select
                                 name="program"
                                 required
-                                value={String(addProgramDto.programId) ?? ""}
+                                value={String(addProgramDto.programId)}
                                 onValueChange={(x) => setAddProgramDto({ ...addProgramDto, programId: Number(x) })}
                             >
                                 <SelectTrigger className="w-full px-6">
@@ -505,6 +520,25 @@ export default function VolunteerDetails() {
                     </div>
                     <Button className="w-full">Add Program</Button>
                 </form>
+            </Modal>
+
+            {/* Delete Volunteer modal */}
+            <Modal isOpen={isDeleteModalOpen} onClose={closeEditModal}>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <Trash2 size={90} className="mx-auto" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Delete Volunteer</h3>
+                            <p className="font-light text-center">Are you sure you want to delete this volunteer?</p>
+
+                        </div>
+
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Button variant='outline' className="flex-1" onClick={closeEditModal}>No</Button>
+                        <Button variant="destructive" className="flex-1" onClick={handleDelete}>Yes, Delete</Button>
+                    </div>
+                </div>
             </Modal>
         </Container>
     )

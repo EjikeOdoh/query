@@ -1,29 +1,45 @@
 import Container from "@/components/Container"
-import { SearchForm } from "@/components/SearchForm"
+import Modal from "@/components/Dialog"
 import StaffTable from "@/components/StaffTable"
 import { Button } from "@/components/ui/button"
-import { useGetAllStaff } from "@/hooks/use-admin"
-import { CircleFadingPlus } from "lucide-react"
+import { useDeleteStaff, useGetAllStaff } from "@/hooks/use-admin"
+import { CircleFadingPlus, Trash2 } from "lucide-react"
+import { useState } from "react"
 import { useNavigate } from "react-router"
 
 export default function Staff() {
 
     const navigate = useNavigate()
 
-    const {isLoading, isError, error, data} = useGetAllStaff()
+    const { isLoading, isError, error, data, refetch } = useGetAllStaff()
+
+    const [sId, setSId] = useState<number>()
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+
+    const deleteMutation = useDeleteStaff(String(sId), refetch)
+
+    function openModal(id: number) {
+        setSId(id)
+        setIsDeleteModalOpen(true)
+    }
+
+    function closeModal() {
+        setIsDeleteModalOpen(false)
+    }
 
     if (isLoading) {
         return <span>Loading...</span>
-      }
-    
-      if (isError) {
+    }
+
+    if (isError) {
         console.log(error)
         return <span>Error: {error.message}</span>
-      }
+    }
 
-      function handleDelete(id:number) {
-        console.log(id)
-      }
+    function handleDelete() {
+        closeModal()
+        deleteMutation.mutate()
+    }
 
     return (
         <Container label="Staff">
@@ -36,7 +52,25 @@ export default function Staff() {
                     <span>Add Staff</span>
                 </Button>
             </div>
-            <StaffTable data={data!} onDelete={handleDelete} />
+            <StaffTable data={data!} onDelete={openModal} />
+            {/* Delete modal */}
+            <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <Trash2 size={90} className="mx-auto" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Delete Staff</h3>
+                            <p className="font-light text-center">Are you sure you want to delete this staff?</p>
+
+                        </div>
+
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
+                        <Button variant="destructive" className="flex-1" onClick={handleDelete}>Yes, Delete</Button>
+                    </div>
+                </div>
+            </Modal>
         </Container>
     )
 }

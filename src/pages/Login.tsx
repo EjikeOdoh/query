@@ -1,17 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TokenReducerContext } from "@/context/TokenContext";
 import { login } from "@/utils/fn";
 import type { TokenAction } from "@/utils/types";
 import { useContext, type Dispatch } from "react";
+import WhiteLogo from '../assets/whiteLogo.svg'
 
 export default function LoginPage() {
 
 
     const dispatch: Dispatch<TokenAction> = useContext(TokenReducerContext)
-
 
     async function handleLogin(formData: FormData) {
         const name = formData.get('name') as string
@@ -33,9 +33,15 @@ export default function LoginPage() {
 
     return (
         <div className="bg-primary flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-            <Card className="min-w-2/5">
+            <div>
+                <img src={WhiteLogo} />
+            </div>
+            <Card className="md:w-3/5 md:min-3/5  space-y-10">
                 <CardHeader className="text-center">
-                    <CardTitle className="text-xl">Visiola Foundation</CardTitle>
+                    <CardTitle className="text-4xl font-bold">
+                        Welcome Back
+                    </CardTitle>
+                    <CardDescription className="text-sm font-light">Kindly enter your login details</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form action={handleLogin}>
@@ -55,7 +61,13 @@ export default function LoginPage() {
                                     <div className="flex items-center">
                                         <Label htmlFor="password">Password</Label>
                                     </div>
-                                    <Input id="password" name="password" type="password" required />
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        required
+                                        
+                                    />
                                 </div>
                                 <Button type="submit" className="w-full">
                                     Login

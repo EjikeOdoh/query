@@ -1,30 +1,30 @@
 import type React from "react"
 import client from "./api"
-import type { CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, Participation, ParticipationAddData, ParticipationData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, StaffDetails, StaffPayload, StudentDetail, StudentPagination, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 
 // Fetchers
-export async function searchStudent(name: string) {
+export async function searchStudent(name: string): Promise<SearchResult> {
     const res = await client.get(`/students/search?name=${name}`)
     return await res.data
 }
 
-export async function getStudentDetails(id: any): Promise<StudentDetail | undefined> {
+export async function getStudentDetails(id: number): Promise<StudentDetail | undefined> {
     return client.get(`/students/${id}`)
         .then(res => res.data)
 }
 
-export async function getAllStudents(meta: StudentPagination) {
+export async function getAllStudents(meta: StudentPagination): Promise<StudentResponse> {
     return client.get(`/students?page=${meta.page}&limit=${meta.limit}`)
         .then(res => res.data)
 }
 
-export async function getAllParticipation(filterOptions: Participation): Promise<ParticipationData[]> {
-    const query = Object.entries(filterOptions)
-        .filter(([_, value]) => value !== undefined && value !== null && value !== '')
-        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
-        .join('&');
-    return client.get('/participation/filter').then(res => res.data)
-}
+// export async function getAllParticipation(filterOptions: Participation): Promise<ParticipationData[]> {
+//     const query = Object.entries(filterOptions)
+//         .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+//         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
+//         .join('&');
+//     return client.get('/participation/filter').then(res => res.data)
+// }
 
 export async function getProfile() {
     const res = await client.get('/auth/profile')
@@ -119,7 +119,8 @@ export async function createStudent(data: CreateStudentData) {
             biology,
             commerce,
             literature,
-            accounting
+            accounting,
+            economics
         }
     }
 
@@ -219,8 +220,17 @@ export async function addPartner(data: FormData) {
     }
 }
 
+export async function addStaff(data: CreateStaff) {
+    try {
+        const res = await client.post(`/staff`, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Patch functions
-export async function updateStudent(id: string, data: any) {
+export async function updateStudent(id: string, data: EditStudentPayload) {
     try {
         const res = await client.patch(`/students/${id}`, data)
         return res.data
@@ -244,14 +254,12 @@ export async function updateParticipation(id: string, data: ParticipationEditDat
         quarter: Number(data.participation_quarter),
         year: Number(data.participation_year)
     }
-
     try {
         const res = await client.patch(`/participation/${data.participation_id}`, payload)
         return res.data
     } catch (error) {
         console.log(error)
     }
-
 }
 
 
@@ -374,21 +382,33 @@ export function logout() {
 
 
 // utility functions
-export function updateData<T extends Record<string, any>>(
+export function updateData<T>(
     e: React.ChangeEvent<HTMLInputElement>,
     setData: React.Dispatch<React.SetStateAction<T>>
 ) {
     const { name, value, type } = e.target;
+
+    let processedValue: string | number | boolean | Date = value;
+
+    if (type === "number") {
+        processedValue = Number(value);
+    } else if (type === "checkbox") {
+        processedValue = (e.target as HTMLInputElement).checked;
+    }
+
     setData(prev => ({
         ...prev,
-        [name]: type === "number" ? Number(value) : value,
+        [name]: processedValue,
     }));
 }
 
-export function dateFormatter(arg: Date): string {
-    return new Date(arg).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
+export function dateFormatter(arg?: Date | string): string {
+    if (arg) {
+        return new Date(arg).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+    return ""
 }

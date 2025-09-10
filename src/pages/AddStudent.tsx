@@ -1,11 +1,12 @@
 import Container from "@/components/Container";
-import Header from "@/components/Header";
+import Modal from "@/components/Dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createStudent, updateData } from "@/utils/fn";
 import type { CreateStudentData } from "@/utils/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CircleCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -22,7 +23,8 @@ function Heading({ text, count }: { text: string, count: number }) {
 export default function AddStudent() {
 
     const navigate = useNavigate()
-
+    const queryClient = useQueryClient()
+    
     const [step, setStep] = useState<number>(1)
 
     const [type, setType] = useState<boolean>(false)
@@ -70,9 +72,22 @@ export default function AddStudent() {
 
     })
 
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false)
+
+    function cleanUp() {
+        queryClient.invalidateQueries({ queryKey: ['students'] })
+        queryClient.invalidateQueries({ queryKey: ['stats'] })
+       setIsSuccessModalOpen(true)
+    }
+
+    function closeModal() {
+        setIsSuccessModalOpen(false)
+        navigate('/students', { replace: true })
+    }
+
     const { mutate } = useMutation({
         mutationFn: () => createStudent(data),
-        onSuccess: () => navigate('/students')
+        onSuccess: cleanUp
     })
 
     function handleFormSubmit(x: FormData) {
@@ -92,10 +107,9 @@ export default function AddStudent() {
 
     useEffect(() => {
         if (step === 7) {
-            console.log(data)
             mutate()
         }
-    }, [step])
+    }, [step, mutate])
 
     return (
         <Container label="Add New Student">
@@ -536,6 +550,20 @@ export default function AddStudent() {
                 }
 
             </div>
+
+            {/* Success modal */}
+            <Modal isOpen={isSuccessModalOpen} onClose={closeModal}>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <CircleCheck size={90} className="mx-auto" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Student Added</h3>
+                            <p className="font-light text-center">The student has been added successfully</p>
+                        </div>
+                    </div>
+                    <Button className="w-full" onClick={closeModal}>Okay</Button>
+                </div>
+            </Modal>
         </Container>
     )
 }

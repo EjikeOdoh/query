@@ -66,6 +66,7 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
         meta: { onDelete }
     })
 
+    const [filter, setFilter] = useState<string>('all')
 
     function next() {
         setPagination({ ...pagination, pageIndex: table.getCanNextPage() ? pagination.pageIndex + 1 : pagination.pageIndex })
@@ -75,11 +76,13 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
         setPagination({ ...pagination, pageIndex: table.getCanPreviousPage() ? pagination.pageIndex - 1 : pagination.pageIndex })
     }
 
-    function applyFilter(columnId: string, value: any) {
+    function applyFilter(columnId: string, value: string | boolean) {
         const col = table.getColumn(columnId)
         if (!col) return
         table.resetColumnFilters()
-        globalFilter && table.resetGlobalFilter()
+        if (globalFilter) {
+            return table.resetGlobalFilter()
+        }
         col.setFilterValue(value)
     }
 
@@ -88,20 +91,48 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <Button
-                        variant='secondary'
-                        className="font-light text-[#808080] text-sm border border-[#E5E5E5]"
-                        onClick={() => applyFilter('type', 'REGULAR')}
+                        variant={filter === 'all' ? 'default':'secondary'}
+                        className="font-light  text-sm border border-[#E5E5E5]"
+                        onClick={() => {
+                            setFilter('all')
+                            table.resetColumnFilters()
+                        }}
+                    >
+                        All
+                    </Button>
+                    <Button
+                        variant={filter === 'regular' ?'default': 'secondary'}
+                        className="font-light text-sm border border-[#E5E5E5]"
+                        onClick={() => {
+                            setFilter('regular')
+                            applyFilter('type', 'REGULAR')
+                        }}
                     >
                         Regular
                     </Button>
-                    <Button variant='secondary' className="font-light text-[#808080] text-sm border border-[#E5E5E5]"
-                        onClick={() => applyFilter('type', 'PROGRAM')}
+                    <Button 
+                    variant={filter ==='program'?'default': 'secondary'} 
+                    className="font-light text-sm border border-[#E5E5E5]"
+                        onClick={() => {
+                            setFilter('program')
+                            applyFilter('type', 'PROGRAM')
+                        }}
                     >Program</Button>
-                    <Button variant='secondary' className="font-light text-[#808080] text-sm border border-[#E5E5E5]"
-                        onClick={() => applyFilter('active', true)}
+                    <Button 
+                    variant={filter === 'active'?'default':'secondary'} 
+                    className="font-light text-sm border border-[#E5E5E5]"
+                        onClick={() => {
+                            setFilter('active')
+                            applyFilter('active', true)
+                        }}
                     >Active</Button>
-                    <Button variant='secondary' className="font-light text-[#808080] text-sm border border-[#E5E5E5]"
-                        onClick={() => applyFilter('active', false)}
+                    <Button 
+                    variant={filter === 'inactive'? 'default':'secondary'} 
+                    className="font-light text-sm border border-[#E5E5E5]"
+                        onClick={() => {
+                            setFilter('inactive')
+                            applyFilter('active', false)
+                        }}
                     >Inactive</Button>
 
                 </div>

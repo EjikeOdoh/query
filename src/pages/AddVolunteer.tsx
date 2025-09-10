@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import Modal from "@/components/Dialog";
 import Heading from "@/components/Heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,7 @@ import { useAddVolunteer } from "@/hooks/use-admin";
 import { updateData } from "@/utils/fn";
 import { type CreateVolunteer, type ProgramStat } from "@/utils/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { CircleCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -24,23 +26,35 @@ export default function AddVolunteer() {
     const [createDto, setCreateDto] = useState<Partial<CreateVolunteer>>({
         // active: false
     })
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false)
+
+    function cleanUp() {
+        queryClient.invalidateQueries({ queryKey: ['volunteers'] })
+        setIsSuccessModalOpen(true)
+    }
+
+    function closeModal() {
+        setIsSuccessModalOpen(false)
+        navigate('/volunteers', { replace: true })
+    }
 
     function handleFormSubmit() {
-        createDto.type && setStep(prev => prev + 1)
+        if (createDto.type) {
+            setStep(prev => prev + 1)
+        }
     }
 
     function previousStep() {
         setStep(prev => prev - 1)
     }
 
-    const { mutate } = useAddVolunteer(createDto as CreateVolunteer, () => navigate('/volunteers', { replace: true }))
+    const { mutate } = useAddVolunteer(createDto as CreateVolunteer, cleanUp)
 
     useEffect(() => {
         if ((createDto.type === 'PROGRAM' && step === 3) || step === 4) {
-            console.log(createDto)
             mutate()
         }
-    }, [step])
+    }, [step, createDto, mutate])
 
     return (
         <Container label="Add Volunteer">
@@ -162,7 +176,7 @@ export default function AddVolunteer() {
                                                 placeholder="Start Date"
                                                 onFocus={() => setType(true)}
                                                 onBlur={() => setType(false)}
-                                                value={createDto.startDate ? new Date(createDto?.startDate!).toISOString().split("T")[0] : ""}
+                                                value={createDto.startDate ? new Date(createDto?.startDate).toISOString().split("T")[0] : ""}
                                                 onChange={e => updateData(e, setCreateDto)}
                                                 required
                                             />
@@ -192,7 +206,7 @@ export default function AddVolunteer() {
                                                     placeholder="End Date"
                                                     onFocus={() => setType(true)}
                                                     onBlur={() => setType(false)}
-                                                    value={createDto.endDate ? new Date(createDto?.endDate!).toISOString().split("T")[0] : ""}
+                                                    value={createDto.endDate ? new Date(createDto?.endDate).toISOString().split("T")[0] : ""}
                                                     onChange={e => updateData(e, setCreateDto)}
                                                 /> : null
                                             }
@@ -310,6 +324,18 @@ export default function AddVolunteer() {
                     )
                 }
             </div>
+            <Modal isOpen={isSuccessModalOpen} onClose={closeModal}>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <CircleCheck size={90} className="mx-auto" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Volunteer Added</h3>
+                            <p className="font-light text-center">The volunteer has been added successfully</p>
+                        </div>
+                    </div>
+                    <Button className="w-full" onClick={closeModal}>Okay</Button>
+                </div>
+            </Modal>
         </Container >
     )
 }

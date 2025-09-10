@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { useDeleteStaff, useGetStaffDetails, useUpdateStaff } from "@/hooks/use-admin";
 import { dateFormatter, updateData } from "@/utils/fn";
 import { type StaffDetails } from "@/utils/types";
+import { useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate, useParams } from "react-router";
@@ -15,24 +16,37 @@ import { NavLink, useLocation, useNavigate, useParams } from "react-router";
 export default function StaffDetails() {
 
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
     const { state } = useLocation()
     const { staffId } = useParams()
 
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
 
     function openEditModal() {
         setIsEditModalOpen(true)
     }
 
+    function openDeleteModal() {
+        setIsDeleteModalOpen(true)
+    }
+
+    // Closes all modals
     function closeEditModal() {
         setIsEditModalOpen(false)
+        setIsDeleteModalOpen(false)
+    }
+
+    function cleanUp() {
+        queryClient.invalidateQueries({ queryKey: ['staff'] })
+        navigate('/staff', { replace: true })
     }
 
     const { isLoading, isError, error, data, refetch } = useGetStaffDetails(Number(staffId))
     const [editStaffDto, setEditStaffDto] = useState<Partial<StaffDetails>>(data!)
 
-    const updateStaffMutation = useUpdateStaff(staffId!, editStaffDto, refetch)
-    const deleteStaffMutation = useDeleteStaff(staffId!, () => navigate('/staff', { replace: true }))
+    const updateStaffMutation = useUpdateStaff(staffId as string, editStaffDto, refetch)
+    const deleteStaffMutation = useDeleteStaff(staffId as string, cleanUp)
 
     function handleUpdate() {
         closeEditModal()
@@ -86,7 +100,7 @@ export default function StaffDetails() {
                             <Button variant="ghost" size="icon" onClick={openEditModal}>
                                 <Pencil color="#171717" />
                             </Button>
-                            <Button variant="ghost" size="icon" onClick={handleDelete}>
+                            <Button variant="ghost" size="icon" onClick={openDeleteModal}>
                                 <Trash2 color="#171717" />
                             </Button>
                         </div>
@@ -103,7 +117,7 @@ export default function StaffDetails() {
                                 <div className="mt-4 flex flex-col gap-2">
                                     <Row
                                         label="Start Date"
-                                        value={dateFormatter(data?.startDate!)}
+                                        value={dateFormatter(data?.startDate ? data.startDate : "")}
                                     />
 
                                     <Row
@@ -191,6 +205,8 @@ export default function StaffDetails() {
                     </div>
                 </div>
             </div>
+
+            {/* Edit modal */}
             <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
                 <Heading text="Edit Staff Details" />
 
@@ -219,7 +235,7 @@ export default function StaffDetails() {
                             type="date"
                             placeholder="Date of Employment"
                             showLabel={true}
-                            value={editStaffDto?.startDate ? new Date(editStaffDto?.startDate!).toISOString().split("T")[0] : ""
+                            value={editStaffDto?.startDate ? new Date(editStaffDto?.startDate).toISOString().split("T")[0] : ""
                             }
                             onChange={e => updateData(e, setEditStaffDto)}
                         />
@@ -341,6 +357,25 @@ export default function StaffDetails() {
                     <Button className="w-full">Update</Button>
                 </form>
 
+            </Modal>
+
+            {/* Delete modal */}
+            <Modal isOpen={isDeleteModalOpen} onClose={closeEditModal}>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <Trash2 size={90} className="mx-auto" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Delete Staff</h3>
+                            <p className="font-light text-center">Are you sure you want to delete this staff?</p>
+
+                        </div>
+
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Button variant='outline' className="flex-1" onClick={closeEditModal}>No</Button>
+                        <Button variant="destructive" className="flex-1" onClick={handleDelete}>Yes, Delete</Button>
+                    </div>
+                </div>
             </Modal>
         </div>
     )

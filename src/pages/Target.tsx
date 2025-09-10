@@ -25,7 +25,7 @@ export default function Target() {
         target: 0,
         year: 0
     })
-    const [editTargetDto, setEditTargetDto] = useState<EditTargetDto>(data!?.find(x => x.id === id) || {})
+    const [editTargetDto, setEditTargetDto] = useState<EditTargetDto>(data?.find(x => x.id === id) || {})
 
     const addMutation = useAddTarget(createTargetDto, refetch)
     const editMutation = useUpdateTarget(id!, editTargetDto, refetch)
@@ -37,7 +37,7 @@ export default function Target() {
 
     function openEditModal(id: number) {
         setId(id)
-        setEditTargetDto(data!?.find(x => x.id === id) || {})
+        setEditTargetDto(data?.find(x => x.id === id) || {})
         setIsEditModalOpen(true)
     }
 

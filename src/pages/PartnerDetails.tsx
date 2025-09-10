@@ -40,7 +40,7 @@ export default function PartnerDetails() {
         partnerId: Number(partnerId),
         programId: 0
     })
-    const [editSponsorshipDto, setEditSponsorshipDto] = useState<EditSponsorshipDto>(data!?.sponsorships?.find(x => x.id === sId) || {})
+    const [editSponsorshipDto, setEditSponsorshipDto] = useState<EditSponsorshipDto>(data?.sponsorships?.find(x => x.id === sId) || {})
 
     const { mutate, isPending } = useMutation({
         mutationFn: (x: FormData) => editPartner(Number(partnerId), x),
@@ -72,7 +72,7 @@ export default function PartnerDetails() {
 
     function openEditSponsorshipModal(id: number) {
         setSId(id)
-        setEditSponsorshipDto(data!?.sponsorships.find(x => x.id === id) || {})
+        setEditSponsorshipDto(data?.sponsorships.find(x => x.id === id) || {})
         setIsEditSponsorshipModalOpen(true)
     }
 
@@ -117,6 +117,8 @@ export default function PartnerDetails() {
     useEffect(() => {
         if (data) {
             const { id, sponsorships, ...rest } = data
+            void id
+            void sponsorships
             setEditPartnerDto(rest)
         }
     }, [data])
@@ -130,7 +132,7 @@ export default function PartnerDetails() {
         return <span>Error: {error.message}</span>
     }
 
-    const { desc, logoUrl, name, year, id, isActive, linkedIn, logoPublicId, sponsorships, twitter } = data!
+    const { desc, logoUrl, name, year, isActive, linkedIn, sponsorships, twitter } = data!
 
     return (
         <Container label="Partner Details">
@@ -275,7 +277,7 @@ export default function PartnerDetails() {
                             <Select
                                 name="programId"
                                 required
-                                value={String(createSponsorshipDto.programId) ?? ""}
+                                value={String(createSponsorshipDto.programId)}
                                 onValueChange={(x) => setCreateSponsorshipDto({ ...createSponsorshipDto, programId: Number(x) })}
                             >
                                 <SelectTrigger className="w-full px-6">
@@ -301,7 +303,7 @@ export default function PartnerDetails() {
                             <label htmlFor="currency" className="text-sm font-light">Select Currency</label>
                             <Select
                                 name="currency"
-                                value={String(createSponsorshipDto.currency) ?? ""}
+                                value={String(createSponsorshipDto.currency)}
                                 onValueChange={(x) => setCreateSponsorshipDto({ ...createSponsorshipDto, currency: x })}
                             >
                                 <SelectTrigger className="w-full px-6">
@@ -357,7 +359,7 @@ export default function PartnerDetails() {
                             <label htmlFor="currency" className="text-sm font-light">Select Currency</label>
                             <Select
                                 name="currency"
-                                value={String(editSponsorshipDto.currency) ?? ""}
+                                value={String(editSponsorshipDto.currency)}
                                 onValueChange={(x) => setEditSponsorshipDto({ ...editSponsorshipDto, currency: x })}
                             >
                                 <SelectTrigger className="w-full px-6">

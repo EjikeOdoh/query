@@ -9,7 +9,7 @@ export default function Row({ label, value }: RowProps) {
         <div className="flex items-start gap-5">
             <p className="w-36 font-light text-sm text-[#808080]">{label}</p>
             {
-                !!value ? 
+                value ? 
                 <p className="flex-1 font-light text-sm text-[#171717]">{value}</p>
                 : <span className="flex-1 font-light text-sm text-[#171717] italic">Not provided</span>
             }

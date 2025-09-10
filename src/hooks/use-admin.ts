@@ -1,17 +1,17 @@
-import { addSponsorship, addTarget, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteVolunteer, editPartner, getAllParticipation, getAllPartners, getAllStaff, getAllTargets, getAllVolunteers, getPartner, getStaff, getVolunteer, updatePartnerStatus, updateSponsorship, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
-import type { CallFn, CreateSponsorshipDto, CreateStaff, CreateTargetDto, CreateVolunteer, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, Participation, VolunteerParticipation } from "@/utils/types";
-import { useQuery, keepPreviousData, useMutation } from "@tanstack/react-query";
+import { addSponsorship, addStaff, addTarget, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteVolunteer, getAllPartners, getAllStaff, getAllTargets, getAllVolunteers, getPartner, getStaff, getVolunteer, updatePartnerStatus, updateSponsorship, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
+import type { CallFn, CreateSponsorshipDto, CreateStaff, CreateTargetDto, CreateVolunteer, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, VolunteerParticipation } from "@/utils/types";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 
-export function useGetParticipation(filterOptions: Participation, token: string) {
-    return useQuery({
-        queryKey: ['participation'],
-        queryFn: () => getAllParticipation(filterOptions),
-        placeholderData: keepPreviousData,
-        staleTime: 5 * 60 * 1000,
-        enabled: !!(token)
-    })
-}
+// export function useGetParticipation(filterOptions: Participation, token: string) {
+//     return useQuery({
+//         queryKey: ['participation'],
+//         queryFn: () => getAllParticipation(filterOptions),
+//         placeholderData: keepPreviousData,
+//         staleTime: 5 * 60 * 1000,
+//         enabled: !!(token)
+//     })
+// }
 
 export function useGetAllStaff() {
     return useQuery({
@@ -25,6 +25,13 @@ export function useGetStaffDetails(id: number) {
     return useQuery({
         queryKey: ['staff', id],
         queryFn: () => getStaff(id)
+    })
+}
+
+export function useAddStaff(data: CreateStaff, refetch: CallFn) {
+    return useMutation({
+        mutationFn: () => addStaff(data),
+        onSuccess: refetch
     })
 }
 

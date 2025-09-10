@@ -5,10 +5,11 @@ import { Eye, Pencil, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router"
 
 interface StudentTableProps {
-  data: Student[]
+  data: Student[],
+  remove: (id: number) => void
 }
 
-export default function StudentTable({ data }: StudentTableProps) {
+export default function StudentTable({ data, remove }: StudentTableProps) {
   const navigate = useNavigate()
 
   return (
@@ -42,7 +43,9 @@ export default function StudentTable({ data }: StudentTableProps) {
               >
                 <Pencil color="#171717" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon"
+                onClick={() => remove(student.id)}
+              >
                 <Trash2 color="#171717" />
               </Button>
             </TableCell>

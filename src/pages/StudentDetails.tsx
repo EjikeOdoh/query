@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useAddGrades, useDeleteGrades, useUpdateGrades } from "@/hooks/use-grades";
 import { useAddStudentParticipation, useDeleteStudent, useDeleteStudentParticipation, useGetStudentDetails, useUpdateStudent, useUpdateStudentParticipation } from "@/hooks/use-students";
 import { dateFormatter, updateData } from "@/utils/fn";
-import { type ParticipationAddData, type GradeAddData, type GradeEditData, type ParticipationEditData } from "@/utils/types";
+import { type ParticipationAddData, type GradeAddData, type GradeEditData, type ParticipationEditData, type EditStudentPayload } from "@/utils/types";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate, NavLink } from "react-router";
@@ -18,15 +18,14 @@ import { useQueryClient } from "@tanstack/react-query";
 
 
 export default function Student() {
-    const { studentId, } = useParams();
+    const { studentId } = useParams();
     const { state } = useLocation()
     const navigate = useNavigate()
 
     const queryClient = useQueryClient()
-
     const programs = useGetPrograms()
 
-    const [editData, setEditData] = useState<any>();
+    const [editData, setEditData] = useState<Partial<EditStudentPayload>>({});
     const [addGradesData, setAddGradesData] = useState<GradeAddData>({
         year: 0,
     })
@@ -39,17 +38,18 @@ export default function Student() {
     const [gradeId, setGradeId] = useState<number>()
 
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state ?? false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+
     const [isEditGradeModalOpen, setIsEditGradeModalOpen] = useState<boolean>(false)
     const [isAddGradeModalOpen, setIsAddGradeModalOpen] = useState<boolean>(false)
     const [isEditParticipationModalOpen, setIsParticipationModalOpen] = useState<boolean>(false)
     const [isAddParticipationModalOpen, setIsAddParticipationModalOpen] = useState<boolean>(false)
 
-    const { isLoading, isError, error, data, refetch } = useGetStudentDetails(studentId ?? "");
-    const { isPending, mutate } = useUpdateStudent(studentId, editData, refetch)
+    const { isLoading, isError, error, data, refetch } = useGetStudentDetails(Number(studentId));
+    const { isPending, mutate } = useUpdateStudent(studentId!, editData as EditStudentPayload, refetch)
     const deleteStudentMutation = useDeleteStudent(Number(studentId), () => {
-        queryClient.invalidateQueries({
-            queryKey: ['stats']
-        })
+        queryClient.invalidateQueries({ queryKey: ['stats'] })
+        queryClient.invalidateQueries({ queryKey: ['students'] })
         navigate('/students', { replace: true })
     })
 
@@ -58,12 +58,10 @@ export default function Student() {
     const addGradeMutation = useAddGrades(Number(studentId), addGradesData, refetch)
     const deleteGradeMutation = useDeleteGrades(gradeId!, refetch)
 
-    const updateParticipationMutation = useUpdateStudentParticipation(Number(studentId), editParticipationData, refetch)
+    const updateParticipationMutation = useUpdateStudentParticipation(studentId!, editParticipationData, refetch)
     const addPartipationMutation = useAddStudentParticipation(addParticipationData, () => {
         refetch()
-        queryClient.invalidateQueries({
-            queryKey: ['stats']
-        })
+        queryClient.invalidateQueries({ queryKey: ['stats'] })
     })
     const deleteParticipationMutation = useDeleteStudentParticipation(pId!, () => {
         refetch()
@@ -72,13 +70,15 @@ export default function Student() {
         })
     })
 
-
-
     function openEditModal() {
         setIsEditModalOpen(true)
     }
 
-    function openEditGradeModal(id: any) {
+    function openDeleteModal() {
+        setIsDeleteModalOpen(true)
+    }
+
+    function openEditGradeModal<T>(id: T) {
         setEditGradesData(() => {
             return data!.grades!.find(x => x.id === id) as GradeEditData
         })
@@ -90,7 +90,7 @@ export default function Student() {
         setIsAddGradeModalOpen(true)
     }
 
-    function openEditParticipationModal(id: any) {
+    function openEditParticipationModal<T>(id: T) {
         setEditParticipationData(() => data!.participations!.find(x => x.participation_id === id) as ParticipationEditData)
         setIsParticipationModalOpen(true)
     }
@@ -105,6 +105,7 @@ export default function Student() {
         setIsAddGradeModalOpen(false)
         setIsParticipationModalOpen(false)
         setIsAddParticipationModalOpen(false)
+        setIsDeleteModalOpen(false)
     }
 
     function handleSubmitStudentData() {
@@ -127,7 +128,7 @@ export default function Student() {
         updateParticipationMutation.mutate()
     }
 
-    function handleAddParticipation(formData: FormData) {
+    function handleAddParticipation() {
         closeEditModal()
         addPartipationMutation.mutate()
     }
@@ -142,9 +143,16 @@ export default function Student() {
         deleteGradeMutation.mutate()
     }
 
+    function handleDeleteStudent() {
+        closeEditModal()
+        deleteStudentMutation.mutate()
+    }
+
     useEffect(() => {
         if (data) {
             const { participations, grades, ...profile } = data;
+            void participations;
+            void grades;
             setEditData(profile);
         }
     }, [data]);
@@ -203,7 +211,7 @@ export default function Student() {
                                 <Button variant="ghost" size="icon" onClick={openEditModal}>
                                     <Pencil color="#171717" />
                                 </Button>
-                                <Button variant="ghost" size="icon" onClick={() => deleteStudentMutation.mutate()}>
+                                <Button variant="ghost" size="icon" onClick={openDeleteModal}>
                                     <Trash2 color="#171717" />
                                 </Button>
                             </div>
@@ -289,7 +297,6 @@ export default function Student() {
                     </div>
 
                     {/* Grades table */}
-
                     {
                         !data.school.includes('University') && (
                             <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
@@ -353,8 +360,6 @@ export default function Student() {
                             </div>
                         )
                     }
-
-
 
                     {/* Participation table */}
                     <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
@@ -475,7 +480,7 @@ export default function Student() {
                             type="email"
                             name="email"
                             placeholder="Email Address"
-                            value={editData?.email! ?? ""}
+                            value={editData?.email ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -492,7 +497,7 @@ export default function Student() {
                             type="text"
                             name="address"
                             placeholder="House Address"
-                            value={editData?.address! ?? ""}
+                            value={editData?.address ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -500,7 +505,7 @@ export default function Student() {
                         <Input
                             name="fatherLastName"
                             placeholder="Father's Last Name"
-                            value={editData?.fatherLastName! ?? ""}
+                            value={editData?.fatherLastName ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -508,7 +513,7 @@ export default function Student() {
                         <Input
                             name="fatherFirstName"
                             placeholder="Father's First Name"
-                            value={editData?.fatherFirstName! ?? ""}
+                            value={editData?.fatherFirstName ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -516,7 +521,7 @@ export default function Student() {
                         <Input
                             name="fatherEducation"
                             placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.fatherEducation! ?? ""}
+                            value={editData?.fatherEducation ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -524,7 +529,7 @@ export default function Student() {
                         <Input
                             name="fatherLastName"
                             placeholder="Father's Last Name"
-                            value={editData?.fatherLastName! ?? ""}
+                            value={editData?.fatherLastName ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -532,7 +537,7 @@ export default function Student() {
                         <Input
                             name="fatherFirstName"
                             placeholder="Father's First Name"
-                            value={editData?.fatherFirstName! ?? ""}
+                            value={editData?.fatherFirstName ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -540,7 +545,7 @@ export default function Student() {
                         <Input
                             name="fatherEducation"
                             placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.fatherEducation! ?? ""}
+                            value={editData?.fatherEducation ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -548,7 +553,7 @@ export default function Student() {
                         <Input
                             name="fatherPhone"
                             placeholder="Father's Phone Number"
-                            value={editData?.fatherPhone! ?? ""}
+                            value={editData?.fatherPhone ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -556,7 +561,7 @@ export default function Student() {
                         <Input
                             name="fatherJob"
                             placeholder="Father's Job"
-                            value={editData?.fatherJob! ?? ""}
+                            value={editData?.fatherJob ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -564,14 +569,14 @@ export default function Student() {
                         <Input
                             name="motherLastName"
                             placeholder="Mother's Last Name"
-                            value={editData?.motherLastName! ?? ""}
+                            value={editData?.motherLastName ?? ""}
                             showLabel={true}
                             onChange={(e) => updateData(e, setEditData)}
                         />
                         <Input
                             name="motherFirstName"
                             placeholder="Mother's First Name"
-                            value={editData?.motherFirstName! ?? ""}
+                            value={editData?.motherFirstName ?? ""}
                             showLabel={true}
                             onChange={(e) => updateData(e, setEditData)}
                         />
@@ -580,7 +585,7 @@ export default function Student() {
                         <Input
                             name="motherEducation"
                             placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.motherEducation! ?? ""}
+                            value={editData?.motherEducation ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -588,7 +593,7 @@ export default function Student() {
                         <Input
                             name="motherPhone"
                             placeholder="Mother's Phone Number"
-                            value={editData?.motherPhone! ?? ""}
+                            value={editData?.motherPhone ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -596,7 +601,7 @@ export default function Student() {
                         <Input
                             name="motherJob"
                             placeholder="Mother's Job"
-                            value={editData?.motherJob! ?? ""}
+                            value={editData?.motherJob ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -604,7 +609,7 @@ export default function Student() {
                         <Input
                             name="fatherPhone"
                             placeholder="Father's Phone Number"
-                            value={editData?.fatherPhone! ?? ""}
+                            value={editData?.fatherPhone ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -612,7 +617,7 @@ export default function Student() {
                         <Input
                             name="fatherJob"
                             placeholder="Father's Job"
-                            value={editData?.fatherJob! ?? ""}
+                            value={editData?.fatherJob ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -620,7 +625,7 @@ export default function Student() {
                         <Input
                             name="motherLastName"
                             placeholder="Mother's Last Name"
-                            value={editData?.motherLastName! ?? ""}
+                            value={editData?.motherLastName ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -628,7 +633,7 @@ export default function Student() {
                         <Input
                             name="motherFirstName"
                             placeholder="Mother's First Name"
-                            value={editData?.motherFirstName! ?? ""}
+                            value={editData?.motherFirstName ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -636,7 +641,7 @@ export default function Student() {
                         <Input
                             name="motherEducation"
                             placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.motherEducation! ?? ""}
+                            value={editData?.motherEducation ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -644,7 +649,7 @@ export default function Student() {
                         <Input
                             name="motherPhone"
                             placeholder="Mother's Phone Number"
-                            value={editData?.motherPhone! ?? ""}
+                            value={editData?.motherPhone ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -652,7 +657,7 @@ export default function Student() {
                         <Input
                             name="motherJob"
                             placeholder="Mother's Job"
-                            value={editData?.motherJob! ?? ""}
+                            value={editData?.motherJob ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -661,21 +666,21 @@ export default function Student() {
                         <Input
                             name="noOfSisters"
                             placeholder="Number of Sisters"
-                            value={editData?.noOfSisters! ?? ""}
+                            value={editData?.noOfSisters ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
                         <Input
                             name="noOfBrothers"
                             placeholder="Number of Brothers"
-                            value={editData?.noOfBrothers! ?? ""}
+                            value={editData?.noOfBrothers ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
                         <Input
                             name="position"
                             placeholder="Position i.e Oldest, Second, Third, Youngest"
-                            value={editData?.position! ?? ""}
+                            value={editData?.position ?? ""}
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
@@ -684,7 +689,7 @@ export default function Student() {
                             <label className="text-sm font-light">Focus i.e Science, Art, Technology, Commercial</label>
                             <Select
                                 name="focus"
-                                value={editData?.focus!}
+                                value={editData?.focus ?? ""}
                                 onValueChange={(x) => setEditData({
                                     ...editData, focus: x
                                 })}
@@ -735,6 +740,24 @@ export default function Student() {
                     <Button className="w-full">Submit</Button>
                 </form>
 
+            </Modal>
+
+            {/* Delete student modal */}
+            <Modal isOpen={isDeleteModalOpen} onClose={closeEditModal}>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <Trash2 size={90} className="mx-auto" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Delete Student</h3>
+                            <p className="font-light text-center">Are you sure you want to delete this student?</p>
+                        </div>
+
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Button variant='outline' className="flex-1" onClick={closeEditModal}>No</Button>
+                        <Button variant="destructive" className="flex-1" onClick={handleDeleteStudent}>Yes, Delete</Button>
+                    </div>
+                </div>
             </Modal>
 
             {/* Edit grade modal */}
@@ -1015,7 +1038,7 @@ export default function Student() {
                             <Select
                                 name="program"
                                 required
-                                value={String(addParticipationData.program_program) ?? ""}
+                                value={String(addParticipationData?.program_program)}
                                 onValueChange={x => setAddParticipationData(prev => ({ ...prev, program_program: Number(x) }))}
                             >
                                 <SelectTrigger className="w-full px-6">

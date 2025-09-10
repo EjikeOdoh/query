@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import type { ProfileState, ProfileAction } from '@/utils/types';
 import { createContext, useReducer, type ReactNode, type Dispatch } from 'react';
 

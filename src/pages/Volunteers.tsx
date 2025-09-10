@@ -1,15 +1,36 @@
 import Container from "@/components/Container"
+import Modal from "@/components/Dialog"
 import { Button } from "@/components/ui/button"
 import VolunteerTable from "@/components/VolunteerTable"
-import { useGetAllVolunteers } from "@/hooks/use-admin"
-import { CircleFadingPlus } from "lucide-react"
+import { useDeleteVolunteer, useGetAllVolunteers } from "@/hooks/use-admin"
+import { CircleFadingPlus, Trash2 } from "lucide-react"
+import { useState } from "react"
 import { useNavigate } from "react-router"
 
 
 export default function Volunteers() {
 
     const navigate = useNavigate()
-    const { isLoading, isError, error, data } = useGetAllVolunteers()
+    const { isLoading, isError, error, data, refetch } = useGetAllVolunteers()
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+    const [vId, setVId] = useState<number>()
+
+    function cleanUp() {
+        refetch()
+        closeModal()
+    }
+
+    const deleteMutation = useDeleteVolunteer(String(vId), cleanUp)
+
+    function openDeleteModal(id: number) {
+        setVId(id)
+        setIsDeleteModalOpen(true)
+    }
+
+    function closeModal() {
+        setIsDeleteModalOpen(false)
+    }
 
     if (isLoading) {
         return <span>Loading...</span>
@@ -20,8 +41,8 @@ export default function Volunteers() {
         return <span>Error: {error.message}</span>
     }
 
-    function handleDelete(id:number) {
-        console.log(id)
+    function handleDelete() {
+        deleteMutation.mutate()
     }
 
     return (
@@ -38,12 +59,30 @@ export default function Volunteers() {
             {
                 data?.length ? (
                     <>
-                        <VolunteerTable data={data} onDelete={handleDelete} />
+                        <VolunteerTable data={data} onDelete={openDeleteModal} />
                     </>
                 ) : <div>
                     <h1>No Volunteer record yet!</h1>
                 </div>
             }
+
+            <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <Trash2 size={90} className="mx-auto" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Delete Volunteer</h3>
+                            <p className="font-light text-center">Are you sure you want to delete this volunteer?</p>
+
+                        </div>
+
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
+                        <Button variant="destructive" className="flex-1" onClick={handleDelete}>Yes, Delete</Button>
+                    </div>
+                </div>
+            </Modal>
 
         </Container>
     )

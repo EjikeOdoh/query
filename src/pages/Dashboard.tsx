@@ -8,15 +8,15 @@ import { Users, Target, Layers, PieChart as PieIcon, RefreshCw, BarChart2Icon, M
 import { motion } from "framer-motion";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip as RTooltip, BarChart, Bar, CartesianGrid, XAxis, YAxis, Legend } from "recharts";
 import Container from "@/components/Container";
-import { getDashboardStats, useGetPrograms } from "@/hooks/use-dashboard";
+import { useDashboardStats, useGetPrograms } from "@/hooks/use-dashboard";
 import { Progress } from "@/components/ui/progress";
 import CountryTable from "@/components/CountryTable";
 
 
 
 export default function Dashboard() {
-    const [filterYear, setFilterYear] = useState<number>(0)
-    const { isLoading, isError, error, data } = getDashboardStats(filterYear)
+    const [filterYear, setFilterYear] = useState<number>(new Date().getFullYear())
+    const { isLoading, isError, error, data } = useDashboardStats(filterYear)
     useGetPrograms()
 
     if (isLoading) {
@@ -115,13 +115,13 @@ export default function Dashboard() {
                                     ) : (
                                         <>
                                             <div className="text-3xl font-bold">
-                                                {currentYear.count} / {data?.target}
+                                                {currentYear?.count} / {data?.target}
                                             </div>
                                             <p className="text-xs text-muted-foreground mb-2">
                                                 Progress toward the participation goal
                                             </p>
                                             <Progress
-                                                value={(data!.target > 0) ? (currentYear.count / data!?.target) > 1 ? 100 : ((currentYear.count / data!?.target) * 100) : 0}
+                                                value={(data!.target > 0) ? (currentYear!.count / data!.target) > 1 ? 100 : ((currentYear!.count / data!.target) * 100) : 0}
                                                 className="h-2"
                                             />
                                         </>
@@ -151,7 +151,7 @@ export default function Dashboard() {
                                         innerRadius={0}
                                         outerRadius={100}
                                     >
-                                        {programData!?.map((_, idx) => (
+                                        {programData?.map((_, idx) => (
                                             <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
                                         ))}
                                     </Pie>
@@ -160,7 +160,7 @@ export default function Dashboard() {
                                         verticalAlign="top"
                                         height={36}
                                         formatter={(value) => {
-                                            const programItem = programData!?.find(p => p.program === value);
+                                            const programItem = programData?.find(p => p.program === value);
                                             return <span className="text-xs font-semibold mr-2">{programItem?.program}: {programItem?.count}</span>;
                                         }}
                                     />
