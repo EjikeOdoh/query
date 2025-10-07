@@ -1,4 +1,4 @@
-import { addSponsorship, addStaff, addTarget, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteVolunteer, getAllPartners, getAllStaff, getAllTargets, getAllVolunteers, getPartner, getStaff, getVolunteer, updatePartnerStatus, updateSponsorship, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
+import { addSponsorship, addStaff, addTarget, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteUploadTag, deleteVolunteer, getAllPartners, getAllStaff, getAllTags, getAllTargets, getAllVolunteers, getPartner, getStaff, getVolunteer, updatePartnerStatus, updateSponsorship, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
 import type { CallFn, CreateSponsorshipDto, CreateStaff, CreateTargetDto, CreateVolunteer, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, VolunteerParticipation } from "@/utils/types";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
@@ -176,6 +176,21 @@ export function useEditSponsorship(id: number, data: EditSponsorshipDto, refetch
 export function useDeleteSponsorship(id: number, refetch: CallFn) {
     return useMutation({
         mutationFn: () => deleteSponsorship(id),
+        onSuccess: refetch
+    })
+}
+
+export function useGetAllTags() {
+    return useQuery({
+        queryKey: ['tags'],
+        queryFn: getAllTags,
+        staleTime: 5 * 60 * 1000
+    })
+}
+
+export function useDeleteTag(tag: string, refetch: CallFn) {
+    return useMutation({
+        mutationFn: () => deleteUploadTag(tag),
         onSuccess: refetch
     })
 }

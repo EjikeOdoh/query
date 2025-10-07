@@ -3,8 +3,9 @@ import Container from "@/components/Container";
 import { Button } from "@/components/ui/button";
 import { CircleFadingPlus } from "lucide-react";
 import { useNavigate } from "react-router";
-import type { CallFn, Partner } from "@/utils/types";
+import type { CallFn } from "@/utils/types";
 import { useState } from "react";
+import { SpinnerCustom } from "@/components/Loader";
 
 interface CardProps {
     imgUrl: string,
@@ -30,7 +31,7 @@ export default function Partners() {
 
 
     if (isLoading) {
-        return <span>Loading...</span>
+        return <SpinnerCustom />
     }
 
     if (isError) {
@@ -43,14 +44,14 @@ export default function Partners() {
             : filter === 'inactive' ? data!.filter(x => x.isActive !== true)
                 : data!
 
-    const cards = partners.map(card => (
+    const cards = partners.length > 0 ? partners.map(card => (
         <Card
             key={card.id}
             imgUrl={card.logoUrl}
             name={card.name}
             onclick={() => navigate(`/partners/${card.id}`)}
         />
-    ))
+    )) : <p>Partner record not added yet</p>
     return (
         <Container label="Partners" bgColor="transparent">
             <div className="flex items-center justify-between bg-white py-4 px-8 rounded-2xl">

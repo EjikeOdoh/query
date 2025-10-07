@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
 import Heading from "@/components/Heading";
+import { SpinnerCustom } from "@/components/Loader";
 import Row from "@/components/Row";
 import { Active, Inactive } from "@/components/Tags";
 import { Button } from "@/components/ui/button";
@@ -91,7 +92,7 @@ export default function VolunteerDetails() {
     }, [data])
 
     if (isLoading || updateVolunteerMutation.isPending) {
-        return <span>Loading...</span>
+        return   <SpinnerCustom />
     }
 
     if (isError) {

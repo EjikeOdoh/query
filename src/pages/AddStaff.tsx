@@ -1,6 +1,7 @@
 import Modal from "@/components/Dialog";
 import Header from "@/components/Header";
 import Heading from "@/components/Heading";
+import { SpinnerCustom } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -51,7 +52,7 @@ export default function AddStaff() {
     }, [step, mutate])
 
     if (isPending) {
-        return (<div>Loading...</div>)
+        return <SpinnerCustom />
     }
 
     if (isError) {

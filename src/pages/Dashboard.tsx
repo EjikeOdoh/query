@@ -11,17 +11,18 @@ import Container from "@/components/Container";
 import { useDashboardStats, useGetPrograms } from "@/hooks/use-dashboard";
 import { Progress } from "@/components/ui/progress";
 import CountryTable from "@/components/CountryTable";
+import { SpinnerCustom } from "@/components/Loader";
 
 
 
 export default function Dashboard() {
-    const [filterYear, setFilterYear] = useState<number>(new Date().getFullYear())
-    const { isLoading, isError, error, data } = useDashboardStats(filterYear)
+    const [filterYear, setFilterYear] = useState<number>(0)
+    const { isLoading, isError, error, data, } = useDashboardStats(filterYear)
     useGetPrograms()
 
     if (isLoading) {
         return (
-            <div>Loading</div>
+            <SpinnerCustom />
         )
     }
 
@@ -30,15 +31,15 @@ export default function Dashboard() {
     }
 
     const years: number[] = data!.countByYear.map(x => x.year)
+    const includesYear: boolean = years.includes(filterYear)
+    console.log(includesYear)
     const programData = data?.countByProgram.map(p => ({
         ...p,
         count: Number(p.count)
     }));
-    const COLORS = ["#009DE6", "#8B86B4", "#9EB707"];
-    const countryCount = data?.countByCountry.length;
-    const currentYear = data?.countByYear.find(x => x.year === filterYear)
-
-
+    const COLORS = ["#009DE6", "#8B86B4", "#9EB707", "#D92121"];
+    const countryCount = data?.countByCountry.length || 0;
+    const currentYear = data?.countByYear.find(x => x.year === filterYear) || { count: 0 }
 
     return (
         <Container
@@ -51,10 +52,10 @@ export default function Dashboard() {
                     <div className="flex flex-col md:flex-row md:items-center justify-end gap-4 bg-white pb-6 border-b border-gray-200">
                         <div className="flex items-center gap-3">
                             <Select
-                                value={filterYear.toString()}
+                                value={includesYear ? filterYear.toString() : '0'}
                                 onValueChange={(value) => { setFilterYear(Number(value)) }}
                             >
-                                <SelectTrigger className="w-[140px]"><SelectValue placeholder={filterYear === 0 ? "All" : filterYear} /></SelectTrigger>
+                                <SelectTrigger className="w-[140px]"><SelectValue placeholder={includesYear ? filterYear : 'All'} /></SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="0">All</SelectItem>
                                     {
@@ -137,7 +138,7 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <Card className="rounded-2xl shadow-sm">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-base text-muted-foreground font-semibold flex items-center gap-2">
+                            <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
                                 <PieIcon className="h-4 w-4" /> Program Mix
                             </CardTitle>
                         </CardHeader>
@@ -171,7 +172,7 @@ export default function Dashboard() {
 
                     <Card className="rounded-2xl shadow-sm lg:col-span-2">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-base text-muted-foreground font-semibold flex items-center gap-2">
+                            <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
                                 <BarChart2Icon className="h-4 w-4" />
                                 Yearly Impact</CardTitle>
                         </CardHeader>
@@ -185,7 +186,14 @@ export default function Dashboard() {
                                         offset: -10,   // adjust as needed to avoid clipping
                                         fontSize: 10
                                     }} />
-                                    <YAxis tick={{ fontSize: 10 }} label={{ value: 'Count', angle: -90, position: 'insideLeft', fontSize: 10 }} />
+                                    <YAxis
+                                        tick={{ fontSize: 10 }}
+                                        label={{
+                                            value: 'Count', angle: -90,
+                                            position: 'insideLeft', fontSize: 10
+                                        }}
+                                        domain={[0, Math.ceil(data!.highestYearlyCount * 1.1)]}
+                                    />
                                     <RTooltip formatter={(v) => (v as number)} />
                                     <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#009DE6" height={100} />
                                 </BarChart>
@@ -198,7 +206,7 @@ export default function Dashboard() {
                 <Card className="rounded-2xl shadow-sm">
                     <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-base text-muted-foreground font-semibold flex items-center gap-2">
+                            <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
                                 <Map />
                                 Country Breakdown</CardTitle>
                             <Badge variant="secondary" className="text-xs">Year: {filterYear || "All"}</Badge>

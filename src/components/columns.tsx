@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 
 import { createColumnHelper } from "@tanstack/react-table";
-import { type StaffPayload, type VolunteersPayload } from "../utils/types";
+import { type HistoryTable, type StaffPayload, type VolunteersPayload } from "../utils/types";
 import { Active } from "./Tags";
 import { Inactive } from "./Tags";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ type ActionsCellProps = {
     target?: string
 };
 
-function ActionsCell({ id, target="volunteers", onDelete }: ActionsCellProps) {
+function ActionsCell({ id, target = "volunteers", onDelete }: ActionsCellProps) {
     const navigate = useNavigate();
 
     return (
@@ -111,8 +111,34 @@ export const sColumns = (onDelete: (id: number) => void) => [
     sColumnHelper.display({
         id: 'actions',
         header: 'Actions',
-        cell: props => <ActionsCell id={props.row.original.id}
-        target="staff"
-        onDelete={() => onDelete(props.row.original.id)} />
+        cell: props => <ActionsCell
+            id={props.row.original.id}
+            target="staff"
+            onDelete={() => onDelete(props.row.original.id)}
+        />
+    })
+]
+
+// For history table
+const hColumnHelper = createColumnHelper<HistoryTable>()
+
+export const hColumns = (onDelete: (tag: string) => void) => [
+    hColumnHelper.accessor('tag', {
+        cell: prop => prop.getValue(),
+        header: 'Tag'
+    }),
+    hColumnHelper.accessor('count', {
+        cell: prop => prop.getValue(),
+        header: 'Count'
+    }),
+    hColumnHelper.display({
+        id: 'actions',
+        header: 'Actions',
+        cell: props => <Button
+            variant='ghost'
+            onClick={() => onDelete(props.row.original.tag)}
+            size="icon">
+            <Trash2 />
+        </Button>
     })
 ]

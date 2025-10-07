@@ -15,19 +15,30 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate, NavLink } from "react-router";
 import { useGetPrograms } from "@/hooks/use-dashboard";
 import { useQueryClient } from "@tanstack/react-query";
+import { SpinnerCustom } from "@/components/Loader";
 
 
 export default function Student() {
     const { studentId } = useParams();
-    const { state } = useLocation()
+    const { state }: {
+        state: {
+            from: string,
+            openModal: boolean,
+            query: string
+        }
+    } = useLocation()
+
     const navigate = useNavigate()
 
     const queryClient = useQueryClient()
     const programs = useGetPrograms()
 
+    // variable to tell if user navigates from students page or search page
+    const isFromSearchPage: boolean = state.from === 'search'
+
     const [editData, setEditData] = useState<Partial<EditStudentPayload>>({});
-    const [addGradesData, setAddGradesData] = useState<GradeAddData>({
-        year: 0,
+    const [addGradesData, setAddGradesData] = useState<Partial<GradeAddData>>({
+
     })
     const [editGradesData, setEditGradesData] = useState<GradeEditData>({})
     const [editParticipationData, setEditParticipationData] = useState<ParticipationEditData>({})
@@ -37,7 +48,7 @@ export default function Student() {
     const [pId, setPId] = useState<number>()
     const [gradeId, setGradeId] = useState<number>()
 
-    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state ?? false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state.openModal ?? false)
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
 
     const [isEditGradeModalOpen, setIsEditGradeModalOpen] = useState<boolean>(false)
@@ -55,7 +66,7 @@ export default function Student() {
 
 
     const updateGradeMutation = useUpdateGrades(String(editGradesData.id), editGradesData, refetch)
-    const addGradeMutation = useAddGrades(Number(studentId), addGradesData, refetch)
+    const addGradeMutation = useAddGrades(Number(studentId), addGradesData as GradeAddData, refetch)
     const deleteGradeMutation = useDeleteGrades(gradeId!, refetch)
 
     const updateParticipationMutation = useUpdateStudentParticipation(studentId!, editParticipationData, refetch)
@@ -162,7 +173,7 @@ export default function Student() {
     }
 
     if (isLoading || programs.isLoading) {
-        return <div>Loading...</div>;
+        return   <SpinnerCustom />;
     }
 
     if (isError) {
@@ -174,10 +185,10 @@ export default function Student() {
     }
 
     if (isPending || updateGradeMutation.isPending || addGradeMutation.isPending || updateParticipationMutation.isPending || addPartipationMutation.isPending || deleteParticipationMutation.isPending || deleteGradeMutation.isPending || deleteStudentMutation.isPending) {
-        return <div>Update Loading...</div>;
+        return   <SpinnerCustom />;
     }
 
-    const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, fatherLastName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades, } = data
+    const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades, } = data
 
 
     return (
@@ -190,7 +201,7 @@ export default function Student() {
                     <div className="py-6 px-10 bg-white rounded-2xl space-y-10">
 
                         <div>
-                            <NavLink to="/students" className="flex items-center gap-2 text-[#171717] font-light text-xs">
+                            <NavLink to={isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state.query}>
                                 <ChevronLeft color="#171717" size={14} />
                                 Back to Dashboard
                             </NavLink>
@@ -260,7 +271,7 @@ export default function Student() {
                                     <div className="space-y-2">
                                         <Row
                                             label="Father's Name"
-                                            value={fatherLastName}
+                                            value={fatherFirstName}
                                         />
 
                                         <Row
@@ -289,6 +300,14 @@ export default function Student() {
                                         <Row
                                             label="House Address"
                                             value={address}
+                                        />
+                                        <Row
+                                            label="Father's Phone Number"
+                                            value={fatherPhone}
+                                        />
+                                        <Row
+                                            label="Mother's Phone Number"
+                                            value={motherPhone}
                                         />
                                     </div>
                                 </div>

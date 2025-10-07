@@ -11,19 +11,22 @@ import {
 } from "@/components/ui/pagination"
 import StudentTable from "@/components/Table"
 import { SearchForm } from "@/components/SearchForm"
-import { useNavigate } from "react-router"
+import { useNavigate, useLocation } from "react-router"
 import { useDeleteStudent, useGetAllStudents } from "@/hooks/use-students"
 import { Button } from "@/components/ui/button"
 import { CircleFadingPlus, Trash2 } from "lucide-react"
 import Container from "@/components/Container"
 import Modal from "@/components/Dialog"
 import { useQueryClient } from "@tanstack/react-query"
+import { SpinnerCustom } from "@/components/Loader"
 
 export default function Students() {
 
   const [token] = useState(() => {
     return window.sessionStorage.getItem("myToken")
   })
+
+  const { state } = useLocation()
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -36,7 +39,7 @@ export default function Students() {
   }
 
   const [meta, setMeta] = useState<StudentPagination>({
-    page: 1,
+    page: state ? Number(state) : 1,
     limit: 10
   })
 
@@ -69,7 +72,7 @@ export default function Students() {
 
 
   if (isPending) {
-    return <span>Loading...</span>
+    return <SpinnerCustom />
   }
 
   if (isError) {
@@ -96,7 +99,7 @@ export default function Students() {
         </Button>
       </div>
 
-      <StudentTable data={students} remove={selectStudent} />
+      <StudentTable data={students} remove={selectStudent} query={meta.page.toString()} />
       <div className="flex justify-between items-baseline">
         <p className="text-sm font-light">Page {meta.page} of {info.totalPages}</p>
         <div className="w-fit">
@@ -112,7 +115,15 @@ export default function Students() {
                   }}
                 />
               </PaginationItem>
-              {
+              {info.totalPages <= 3 ?
+                Array.from({ length: info.totalPages }).map((_, i) => i + 1).map(x => (<PaginationItem
+                  key={x}>
+                  <PaginationLink
+                    className={`text-[#808080] ${x === meta.page ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
+                    isActive={x === meta.page}
+                    onClick={() => setMeta({ ...meta, page: x })}
+                  >{x}</PaginationLink>
+                </PaginationItem>)) :
                 [1, 2, 3].map(x => (<PaginationItem
                   key={x}>
                   <PaginationLink
@@ -122,39 +133,19 @@ export default function Students() {
                   >{x}</PaginationLink>
                 </PaginationItem>))
               }
-              {/* {
-                info.totalPages > 5 ? (<>
-                  {
-                    [1, 2, 3].map(x => (<PaginationItem
-                      key={x}>
-                      <PaginationLink
-                        className="text-[#808080]"
-                        isActive={x === meta.page}
-                        onClick={() => setMeta({ ...meta, page: x })}
-                      >{x}</PaginationLink>
-                    </PaginationItem>))
-                  }
-
-                  <PaginationItem className="text-[#808080]">
-                    <PaginationEllipsis />
+              {
+                info.totalPages > 3 && (
+                  <PaginationItem
+                  >
+                    <PaginationLink
+                      className={`text-[#808080]  ${!info.hasNextPage ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
+                      // isActive={x === meta.page}
+                      onClick={() => setMeta({ ...meta, page: info.totalPages })}
+                    >{info.totalPages}</PaginationLink>
                   </PaginationItem>
-                </>
+                )
+              }
 
-                ) : Array(info.totalPages).fill(0).map((_, i) => i + 1).map(x => (<PaginationItem key={x}>
-                  <PaginationLink
-                    isActive={x === meta.page}
-                    onClick={() => setMeta({ ...meta, page: x })}
-                  >{x}</PaginationLink>
-                </PaginationItem>))
-              } */}
-              <PaginationItem
-              >
-                <PaginationLink
-                  className={`text-[#808080]  ${!info.hasNextPage ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
-                  // isActive={x === meta.page}
-                  onClick={() => setMeta({ ...meta, page: info.totalPages })}
-                >{info.totalPages}</PaginationLink>
-              </PaginationItem>
               <PaginationItem className="text-[#808080]">
                 <PaginationNext
                   isActive={info.hasNextPage}
@@ -169,6 +160,8 @@ export default function Students() {
           </Pagination>
         </div>
       </div>
+
+      {/* Delete student modal */}
       <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
         <div className="space-y-10">
           <div className="space-y-8">

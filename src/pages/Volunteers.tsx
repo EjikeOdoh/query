@@ -1,5 +1,6 @@
 import Container from "@/components/Container"
 import Modal from "@/components/Dialog"
+import { SpinnerCustom } from "@/components/Loader"
 import { Button } from "@/components/ui/button"
 import VolunteerTable from "@/components/VolunteerTable"
 import { useDeleteVolunteer, useGetAllVolunteers } from "@/hooks/use-admin"
@@ -33,7 +34,7 @@ export default function Volunteers() {
     }
 
     if (isLoading) {
-        return <span>Loading...</span>
+        return   <SpinnerCustom />
     }
 
     if (isError) {

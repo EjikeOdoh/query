@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
 import Heading from "@/components/Heading";
+import { SpinnerCustom } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -48,13 +49,19 @@ export default function AddVolunteer() {
         setStep(prev => prev - 1)
     }
 
-    const { mutate } = useAddVolunteer(createDto as CreateVolunteer, cleanUp)
+    const { mutate, isPending } = useAddVolunteer(createDto as CreateVolunteer, cleanUp)
 
     useEffect(() => {
         if ((createDto.type === 'PROGRAM' && step === 3) || step === 4) {
             mutate()
         }
     }, [step, createDto, mutate])
+
+    if (isPending) {
+        return (
+            <SpinnerCustom />
+        )
+    }
 
     return (
         <Container label="Add Volunteer">

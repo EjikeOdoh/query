@@ -6,10 +6,12 @@ import { useNavigate } from "react-router"
 
 interface StudentTableProps {
   data: Student[],
-  remove: (id: number) => void
+  remove: (id: number) => void,
+  source?: string,
+  query?: string
 }
 
-export default function StudentTable({ data, remove }: StudentTableProps) {
+export default function StudentTable({ data, remove, source, query }: StudentTableProps) {
   const navigate = useNavigate()
 
   return (
@@ -34,12 +36,25 @@ export default function StudentTable({ data, remove }: StudentTableProps) {
             <TableCell className="text-[#171717] text-sm font-light">{student.country}</TableCell>
             <TableCell className="flex items-center justify-center gap-2">
               <Button variant="ghost" size='icon'
-                onClick={() => navigate(`/students/${student.id}`)}
+                onClick={() => navigate(`/students/${student.id}`, {
+                  state: {
+                    from: source,
+                    openModal: false,
+                    query: query
+                  },
+
+                })}
               >
                 <Eye color="#171717" />
               </Button>
               <Button variant="ghost" size="icon"
-                onClick={() => navigate(`/students/${student.id}`, { state: true })}
+                onClick={() => navigate(`/students/${student.id}`, {
+                  state: {
+                    from: source,
+                    openModal: true,
+                    query: query
+                  }
+                })}
               >
                 <Pencil color="#171717" />
               </Button>

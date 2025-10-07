@@ -21,6 +21,8 @@ import Dashboard from "./Dashboard";
 import Upload from "./Upload";
 import Target from "./Target";
 import PartnerDetails from "./PartnerDetails";
+import BulkUploads from "./BulkUploads";
+import { SpinnerCustom } from "@/components/Loader";
 
 export default function Navigation() {
 
@@ -31,7 +33,7 @@ export default function Navigation() {
     const { data, isLoading, isError, error, isSuccess } = useGetProfile(token as string)
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <SpinnerCustom />
     }
 
     if (isError) {
@@ -81,6 +83,7 @@ export default function Navigation() {
                                     {/* Admin routes */}
                                     <Route path='/upload' element={<Upload />} />
                                     <Route path='/target' element={<Target />} />
+                                    <Route path='/upload-history' element={<BulkUploads />} />
                                 </>
                             )
                         }

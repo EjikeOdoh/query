@@ -1,5 +1,6 @@
 import Container from "@/components/Container"
 import Modal from "@/components/Dialog"
+import { SpinnerCustom } from "@/components/Loader"
 import StaffTable from "@/components/StaffTable"
 import { Button } from "@/components/ui/button"
 import { useDeleteStaff, useGetAllStaff } from "@/hooks/use-admin"
@@ -28,7 +29,7 @@ export default function Staff() {
     }
 
     if (isLoading) {
-        return <span>Loading...</span>
+        return <SpinnerCustom />
     }
 
     if (isError) {

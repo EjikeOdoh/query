@@ -14,7 +14,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { NavLink, useLocation } from 'react-router'
-import { ChartLine, FileUp, GraduationCap, Handshake, LogOut, Target, User, UserRoundPlus } from 'lucide-react'
+import { ChartLine, FileUp, GraduationCap, Handshake, History, LogOut, Target, User, UserRoundPlus } from 'lucide-react'
 
 
 export default function MySidebar({ profile, logout }: { profile: ProfileState, logout: CallFn }) {
@@ -99,26 +99,36 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                                 <SidebarGroup>
                                     <SidebarGroupLabel>Admin</SidebarGroupLabel>
                                     <SidebarGroupContent className='space-y-2'>
-                                    <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className={pathname === "/upload" ? activeLink : normalLink} asChild>
-                                        <NavLink to='/upload'>
-                                            <FileUp />
-                                            <span>
-                                                Upload attendance
-                                            </span>
-                                        </NavLink>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                                <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className={pathname === "/target" ? activeLink : normalLink} asChild>
-                                        <NavLink to='/target'>
-                                            <Target />
-                                            <span>
-                                                Target
-                                            </span>
-                                        </NavLink>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
+                                        <SidebarMenuItem className='w-full'>
+                                            <SidebarMenuButton className={pathname === "/upload" ? activeLink : normalLink} asChild>
+                                                <NavLink to='/upload'>
+                                                    <FileUp />
+                                                    <span>
+                                                        Upload attendance
+                                                    </span>
+                                                </NavLink>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                        <SidebarMenuItem className='w-full'>
+                                            <SidebarMenuButton className={pathname === "/target" ? activeLink : normalLink} asChild>
+                                                <NavLink to='/target'>
+                                                    <Target />
+                                                    <span>
+                                                        Target
+                                                    </span>
+                                                </NavLink>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                        <SidebarMenuItem className='w-full'>
+                                            <SidebarMenuButton className={pathname === "/upload-history" ? activeLink : normalLink} asChild>
+                                                <NavLink to='/upload-history'>
+                                                    <History />
+                                                    <span>
+                                                        History
+                                                    </span>
+                                                </NavLink>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
                                     </SidebarGroupContent>
                                 </SidebarGroup>
                             </>

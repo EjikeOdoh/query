@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
+import { SpinnerCustom } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,7 +25,7 @@ export default function AddStudent() {
 
     const navigate = useNavigate()
     const queryClient = useQueryClient()
-    
+
     const [step, setStep] = useState<number>(1)
 
     const [type, setType] = useState<boolean>(false)
@@ -77,7 +78,7 @@ export default function AddStudent() {
     function cleanUp() {
         queryClient.invalidateQueries({ queryKey: ['students'] })
         queryClient.invalidateQueries({ queryKey: ['stats'] })
-       setIsSuccessModalOpen(true)
+        setIsSuccessModalOpen(true)
     }
 
     function closeModal() {
@@ -85,7 +86,7 @@ export default function AddStudent() {
         navigate('/students', { replace: true })
     }
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: () => createStudent(data),
         onSuccess: cleanUp
     })
@@ -110,6 +111,12 @@ export default function AddStudent() {
             mutate()
         }
     }, [step, mutate])
+
+    if (isPending) {
+        return (
+            <SpinnerCustom />
+        )
+    }
 
     return (
         <Container label="Add New Student">

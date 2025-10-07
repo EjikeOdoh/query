@@ -94,7 +94,7 @@ export interface StudentDetail {
   participations: Participation[];
 }
 
-export type EditStudentPayload = Omit<StudentDetail, 'id'|'grades' | 'participations'>
+export type EditStudentPayload = Omit<StudentDetail, 'id' | 'grades' | 'participations'>
 
 export interface SearchResult {
   count: number
@@ -122,10 +122,11 @@ export type Program = "ASCG" | "CBC" | "DSC" | "SSC"
 export interface DashStats {
   year: string | number
   totalCount: number
-  countByCountry: ({ country: string, count: number } )[]
+  countByCountry: ({ country: string, count: number })[]
   countByProgram: ({ program: Program, count: number })[]
   countByYear: ({ year: number, count: number })[]
   uniqueCount: number
+  highestYearlyCount: number
   target: number
 }
 
@@ -266,7 +267,7 @@ export interface VolunteerDetails extends CreateVolunteer {
   participations: VolunteerParticipation[]
 }
 
-export type EditVolunteerDto = Partial<Omit<CreateVolunteer, 'programId' | 'year' | 'quarter'>> 
+export type EditVolunteerDto = Partial<Omit<CreateVolunteer, 'programId' | 'year' | 'quarter'>>
 
 export interface CreateStaff extends Omit<CreateVolunteer, 'program'> {
   staffId: string
@@ -350,6 +351,11 @@ export type EditPartnerDetailsDto = Partial<PartnerDetails>
 export interface CreateSponsorshipDto extends Omit<Sponsorship, 'program' | 'id'> {
   partnerId: number
   programId: number
+}
+
+export type HistoryTable = {
+  tag: string
+  count: number
 }
 
 export type EditSponsorshipDto = Partial<CreateSponsorshipDto>

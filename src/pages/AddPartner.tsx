@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
+import { SpinnerCustom } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -43,7 +44,7 @@ export default function AddPartner() {
 
     if (isPending) {
         return (
-            <div>Loading...</div>
+            <SpinnerCustom />
         )
     }
 

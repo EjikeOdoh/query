@@ -1,6 +1,7 @@
 import Modal from "@/components/Dialog";
 import Header from "@/components/Header";
 import Heading from "@/components/Heading";
+import { SpinnerCustom } from "@/components/Loader";
 import Row from "@/components/Row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,7 +65,7 @@ export default function StaffDetails() {
     }, [data])
 
     if (isLoading || updateStaffMutation.isPending) {
-        return <span>Loading...</span>
+        return  <SpinnerCustom />
     }
 
     if (isError) {

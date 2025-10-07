@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
 import Heading from "@/components/Heading";
+import { SpinnerCustom } from "@/components/Loader";
 import TargetsTable from "@/components/TargetsTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,7 +68,7 @@ export default function Target() {
 
 
     if (isLoading) {
-        return <span>Loading...</span>
+        return   <SpinnerCustom />
     }
 
     if (isError) {

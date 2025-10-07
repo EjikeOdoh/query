@@ -2,14 +2,15 @@ import { SearchForm } from "@/components/SearchForm";
 import StudentTable from "@/components/Table";
 import type { Student } from "@/utils/types";
 import { searchStudent } from "@/utils/fn";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router";
 import Container from "@/components/Container";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Trash2 } from "lucide-react";
 import { useDeleteStudent } from "@/hooks/use-students";
 import Modal from "@/components/Dialog";
 import { Button } from "@/components/ui/button";
+import { SpinnerCustom } from "@/components/Loader";
 
 export default function Search() {
     const { state }: { state: string } = useLocation()
@@ -25,7 +26,8 @@ export default function Search() {
     const { isLoading, isError, error, data, refetch } = useQuery({
         queryKey: ['search', name],
         queryFn: () => searchStudent(name),
-        enabled: name !== ""
+        placeholderData: keepPreviousData,
+        staleTime: 5 * 60 * 1000,
     })
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
@@ -40,8 +42,8 @@ export default function Search() {
 
     function cleanUp() {
         refetch()
-        queryClient.invalidateQueries({queryKey:['stats']})
-        queryClient.invalidateQueries({queryKey:['students']})
+        queryClient.invalidateQueries({ queryKey: ['stats'] })
+        queryClient.invalidateQueries({ queryKey: ['students'] })
     }
 
     const deleteStudentMutation = useDeleteStudent(sId!, cleanUp)
@@ -56,14 +58,12 @@ export default function Search() {
 
 
     if (isLoading) {
-        return <span>why Loading...</span>
+        return <SpinnerCustom />
     }
 
     if (isError) {
         return <span>Error: {error.message}</span>
     }
-
-    console.log(data)
 
     return (
         <Container label="Student search">
@@ -75,15 +75,25 @@ export default function Search() {
             </div>
             <SearchForm action={logInput} />
             {
-                data && (data.students.length > 0 ? <StudentTable data={data.students} remove={selectStudent} /> : <p className="">Student with name: <span className="font-bold text-xl text-[#00AEEF]">{name}</span> not found.</p>)
+                data && (data.students.length > 0 ? <StudentTable data={data.students} remove={selectStudent} source="search" query={name} /> : <p className="">Student with name: <span className="font-bold text-xl text-[#00AEEF]">{name}</span> not found.</p>)
             }
-
             <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
-                Are you sure you want to delete {`${student.firstName} ${student.lastName}?`}
-                <p>This cannot be undone</p>
-                <Button variant="destructive" onClick={handleDeleteStudent}>Delete</Button>
-            </Modal>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <Trash2 size={90} className="mx-auto" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Delete Student</h3>
+                            <p className="font-light text-center">Are you sure you want to delete this student?</p>
 
+                        </div>
+
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
+                        <Button variant="destructive" className="flex-1" onClick={handleDeleteStudent}>Yes, Delete</Button>
+                    </div>
+                </div>
+            </Modal>
         </Container>
     )
 }

@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
 import Heading from "@/components/Heading";
+import { SpinnerCustom } from "@/components/Loader";
 import Row from "@/components/Row";
 import SponsorshipTable from "@/components/SponsorshipTable";
 import { Active, Inactive } from "@/components/Tags";
@@ -46,12 +47,12 @@ export default function PartnerDetails() {
         mutationFn: (x: FormData) => editPartner(Number(partnerId), x),
         onSuccess: refetch
     })
-    const updateStatusMutation = useUpdatePartner(Number(partnerId), editPartnerDto, ()=>{
+    const updateStatusMutation = useUpdatePartner(Number(partnerId), editPartnerDto, () => {
         refetch()
         queryClient.invalidateQueries({
-            queryKey:['partners']
+            queryKey: ['partners']
         })
-    } )
+    })
     const addSponsorshipMutation = useAddSponsorship(createSponsorshipDto, refetch)
     const editSponsorshipMutation = useEditSponsorship(sId!,
         { inkinddonation: editSponsorshipDto.inkinddonation, amount: editSponsorshipDto.amount, currency: editSponsorshipDto.currency, year: editSponsorshipDto.year }
@@ -124,7 +125,7 @@ export default function PartnerDetails() {
     }, [data])
 
     if (isLoading || isPending || updateStatusMutation.isPending) {
-        return <span>Loading...</span>
+        return <SpinnerCustom />
     }
 
     if (isError) {

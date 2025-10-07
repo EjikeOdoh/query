@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import { SpinnerCustom } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,13 +25,14 @@ export default function Upload() {
         mutationFn: uploadAttendance,
         onSuccess:()=>{
             queryClient.invalidateQueries({queryKey: ['stats']})
+            queryClient.invalidateQueries({queryKey:['tags']})
             navigate('/')
         }
     })
 
     if(uploadMutation.isPending) {
         return (
-            <div>Loading</div>
+              <SpinnerCustom />
         )
     }
 

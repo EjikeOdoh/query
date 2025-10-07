@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 
 // Fetchers
 export async function searchStudent(name: string): Promise<SearchResult> {
@@ -80,6 +80,11 @@ export async function getAllPartners(): Promise<Partner[]> {
 
 export async function getPartner(id: number): Promise<PartnerDetails> {
     const res = await client.get(`/partners/${id}`)
+    return res.data
+}
+
+export async function getAllTags(): Promise<HistoryTable[]> {
+    const res = await client.get('/tag')
     return res.data
 }
 
@@ -361,6 +366,11 @@ export async function deleteSponsorship(id: number) {
 
 export async function deletePartner(id: number) {
     const res = await client.delete(`/partners/${id}`)
+    return res.data
+}
+
+export async function deleteUploadTag(tag: string) {
+    const res = await client.delete(`/tag/${tag}`)
     return res.data
 }
 
