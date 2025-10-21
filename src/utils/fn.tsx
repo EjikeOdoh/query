@@ -1,6 +1,7 @@
 import type React from "react"
 import client from "./api"
-import type { CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import axios from "axios"
 
 // Fetchers
 export async function searchStudent(name: string): Promise<SearchResult> {
@@ -133,7 +134,7 @@ export async function createStudent(data: CreateStudentData) {
         const res = await client.post('/students', payload)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -143,7 +144,7 @@ export async function createGrade(studentId: number, data: GradeAddData) {
         const res = await client.post('/grades', payload)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -159,7 +160,7 @@ export async function addParticipation(data: ParticipationAddData) {
         const res = await client.post('/participation', payload)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -168,7 +169,7 @@ export async function addVolunteer(data: CreateVolunteer) {
         const res = await client.post('/volunteers', data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -177,7 +178,7 @@ export async function addVolunteerParticipation(data: VolunteerParticipation) {
         const res = await client.post('/volunteer-participation', data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -190,7 +191,7 @@ export async function uploadAttendance(data: FormData) {
         })
         return res.data
     } catch (error) {
-        console.log(error)
+       throw extractApiError(error)
     }
 }
 
@@ -199,7 +200,7 @@ export async function addTarget(data: CreateTargetDto) {
         const res = await client.post(`/target`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -208,7 +209,7 @@ export async function addSponsorship(data: CreateSponsorshipDto) {
         const res = await client.post(`/sponsorship`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -221,7 +222,7 @@ export async function addPartner(data: FormData) {
         })
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -230,7 +231,7 @@ export async function addStaff(data: CreateStaff) {
         const res = await client.post(`/staff`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -240,7 +241,7 @@ export async function updateStudent(id: string, data: EditStudentPayload) {
         const res = await client.patch(`/students/${id}`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -249,7 +250,7 @@ export async function updateGrade(id: string, data: GradeEditData) {
         const res = await client.patch(`/grades/${id}`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -263,7 +264,7 @@ export async function updateParticipation(id: string, data: ParticipationEditDat
         const res = await client.patch(`/participation/${data.participation_id}`, payload)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -273,7 +274,7 @@ export async function updateStaff(id: string, data: Partial<CreateStaff>) {
         const res = await client.patch(`/staff/${id}`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -283,7 +284,7 @@ export async function updateTarget(id: number, data: EditTargetDto) {
         const res = await client.patch(`/target/${id}`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -292,7 +293,7 @@ export async function updateVolunteer(id: string, data: EditVolunteerDto) {
         const res = await client.patch(`/volunteers/${id}`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -305,7 +306,7 @@ export async function editPartner(id: number, data: FormData) {
         })
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -314,7 +315,7 @@ export async function updatePartnerStatus(id: number, data: EditPartnerDetailsDt
         const res = await client.patch(`/partners/${id}/status`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -323,7 +324,7 @@ export async function updateSponsorship(id: number, data: EditSponsorshipDto) {
         const res = await client.patch(`/sponsorship/${id}`, data)
         return res.data
     } catch (error) {
-        console.log(error)
+      throw extractApiError(error)
     }
 }
 
@@ -376,12 +377,8 @@ export async function deleteUploadTag(tag: string) {
 
 // Auth functions
 export async function login(payload: LoginForm) {
-    try {
         const res = await client.post('/auth/login', payload)
         return res.data
-    } catch (error) {
-        console.log(error)
-    }
 }
 
 export function logout() {
@@ -422,3 +419,11 @@ export function dateFormatter(arg?: Date | string): string {
     }
     return ""
 }
+
+export function extractApiError(error: unknown): ApiError | null {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data as ApiError;
+    }
+    return null;
+  }
+  

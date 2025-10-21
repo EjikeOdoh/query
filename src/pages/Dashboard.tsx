@@ -30,9 +30,8 @@ export default function Dashboard() {
         return <div>Error: {error.message}</div>
     }
 
-    const years: number[] = data!.countByYear.map(x => x.year)
+    const years: number[] = data!.countByYear.map(x => x.year).sort((a, b) => b - a);
     const includesYear: boolean = years.includes(filterYear)
-    console.log(includesYear)
     const programData = data?.countByProgram.map(p => ({
         ...p,
         count: Number(p.count)

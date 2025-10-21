@@ -24,9 +24,7 @@ export default function AddVolunteer() {
     const queryClient = useQueryClient()
     const programs = queryClient.getQueryData(['programs']) as ProgramStat[]
 
-    const [createDto, setCreateDto] = useState<Partial<CreateVolunteer>>({
-        // active: false
-    })
+    const [createDto, setCreateDto] = useState<Partial<CreateVolunteer>>({})
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false)
 
     function cleanUp() {
@@ -75,7 +73,6 @@ export default function AddVolunteer() {
                             text="Volunteer Type"
                         />
                         <div className="flex flex-col gap-4">
-
                             <Select
                                 name="type"
                                 required={true}

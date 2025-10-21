@@ -359,3 +359,9 @@ export type HistoryTable = {
 }
 
 export type EditSponsorshipDto = Partial<CreateSponsorshipDto>
+
+export interface ApiError {
+  statusCode: number;
+  message: string | string[];
+  error: string;
+}

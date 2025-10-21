@@ -1,6 +1,5 @@
 import { SearchForm } from "@/components/SearchForm";
 import StudentTable from "@/components/Table";
-import type { Student } from "@/utils/types";
 import { searchStudent } from "@/utils/fn";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -32,11 +31,9 @@ export default function Search() {
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const [sId, setSId] = useState<number>()
-    const [student, setStudent] = useState<Partial<Student>>({})
 
     function selectStudent(id: number) {
         setSId(id)
-        setStudent(data?.students.find(s => s.id === id) as Student)
         openModal()
     }
 

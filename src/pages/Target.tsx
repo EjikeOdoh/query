@@ -77,8 +77,6 @@ export default function Target() {
     }
 
 
-
-    console.log(data)
     return (
         <Container label="Yearly Target">
             <div className="flex gap-5 items-center justify-between">
