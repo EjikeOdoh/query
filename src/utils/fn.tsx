@@ -254,9 +254,8 @@ export async function updateGrade(id: string, data: GradeEditData) {
     }
 }
 
-export async function updateParticipation(id: string, data: ParticipationEditData) {
+export async function updateParticipation(data: ParticipationEditData) {
     const payload = {
-        // programId: Number(data.program_program),
         quarter: Number(data.participation_quarter),
         year: Number(data.participation_year)
     }
