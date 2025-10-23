@@ -329,7 +329,6 @@ export async function updateSponsorship(id: number, data: EditSponsorshipDto) {
 }
 
 // Delete functions
-
 export async function deleteParticipation(id: number) {
     const res = await client.delete(`/participation/${id}`)
     return res.data
