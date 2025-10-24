@@ -229,7 +229,7 @@ export default function Student() {
 
                         </div>
 
-                        <div className="flex">
+                        <div className="flex flex-col md:flex-row gap-10 md:gap-0">
                             <div className="flex-1 space-y-5">
                                 <Heading
                                     text="Personal Details"
