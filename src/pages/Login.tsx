@@ -7,8 +7,9 @@ import { extractApiError, login } from "@/utils/fn";
 import type { ApiError, TokenAction } from "@/utils/types";
 import { useContext, type Dispatch, useState } from "react";
 import WhiteLogo from '../assets/whiteLogo.svg'
-import { Loader, ShieldOff } from "lucide-react";
+import { ShieldOff } from "lucide-react";
 import Modal from "@/components/Dialog";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function LoginPage() {
 
@@ -42,9 +43,6 @@ export default function LoginPage() {
         }
     }
 
-    if (isLoading) {
-        return <Loader />
-    }
 
     return (
         <>
@@ -60,7 +58,12 @@ export default function LoginPage() {
                         <CardDescription className="text-sm font-light">Kindly enter your login details</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form action={handleLogin}>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                const formData = new FormData(e.currentTarget);
+                                handleLogin(formData);
+                            }}>
                             <div className="grid gap-6">
                                 <div className="grid gap-6">
                                     <div className="grid gap-3">
@@ -86,7 +89,8 @@ export default function LoginPage() {
 
                                         />
                                     </div>
-                                    <Button type="submit" className="w-full p-5">
+                                    <Button type="submit" className="w-full p-5" disabled={isLoading}>
+                                        {isLoading && <Spinner />}
                                         Login
                                     </Button>
                                 </div>
