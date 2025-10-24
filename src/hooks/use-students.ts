@@ -36,9 +36,9 @@ export function useAddStudentParticipation(data: ParticipationAddData, refetch: 
    })
 }
 
-export function useUpdateStudentParticipation<T extends string>(id:T, data: ParticipationEditData, refetch: CallFn) {
+export function useUpdateStudentParticipation(data: ParticipationEditData, refetch: CallFn) {
    return useMutation({
-      mutationFn: () => updateParticipation(id, data),
+      mutationFn: () => updateParticipation(data),
       onSuccess: refetch
    })
 }

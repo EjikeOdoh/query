@@ -69,7 +69,7 @@ export default function Student() {
     const addGradeMutation = useAddGrades(Number(studentId), addGradesData as GradeAddData, refetch)
     const deleteGradeMutation = useDeleteGrades(gradeId!, refetch)
 
-    const updateParticipationMutation = useUpdateStudentParticipation(studentId!, editParticipationData, refetch)
+    const updateParticipationMutation = useUpdateStudentParticipation(editParticipationData, refetch)
     const addPartipationMutation = useAddStudentParticipation(addParticipationData, () => {
         refetch()
         queryClient.invalidateQueries({ queryKey: ['stats'] })
