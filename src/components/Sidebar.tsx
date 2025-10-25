@@ -12,9 +12,11 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar
 } from '@/components/ui/sidebar'
 import { NavLink, useLocation } from 'react-router'
 import { ChartLine, FileUp, GraduationCap, Handshake, History, LogOut, Target, User, UserRoundPlus } from 'lucide-react'
+
 
 
 export default function MySidebar({ profile, logout }: { profile: ProfileState, logout: CallFn }) {
@@ -23,6 +25,12 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
 
     const activeLink: string = "m-auto py-4 px-6 rounded-[6px] bg-[#00AEFF] border-2 border-[#B0E6FF] hover:bg-[#00AEFF] hover:text-white text-white"
     const normalLink: string = "m-auto py-4 px-6"
+
+    const { setOpenMobile } = useSidebar()
+
+    function closeSideBar() {
+        setOpenMobile(false)
+    }
 
     return (
         <Sidebar collapsible="icon" variant='sidebar' className='border-2'>
@@ -35,7 +43,7 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
             <SidebarContent className='p-10 group-data-[collapsible=icon]:p-0'>
                 <SidebarMenu className='gap-5 group-data-[collapsible=icon]:gap-3.5'>
                     <SidebarMenuItem className='w-full'>
-                        <SidebarMenuButton className={pathname === "/" ? activeLink : normalLink} asChild>
+                        <SidebarMenuButton className={pathname === "/" ? activeLink : normalLink} asChild onClick={closeSideBar}>
                             <NavLink to='/'>
                                 <ChartLine />
                                 <span>
@@ -48,7 +56,9 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                         (role === "admin" || role === "editor") && (
                             <>
                                 <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className={pathname === "/students" ? activeLink : normalLink} asChild>
+                                    <SidebarMenuButton className={pathname === "/students" ? activeLink : normalLink} asChild
+                                        onClick={closeSideBar}
+                                    >
                                         <NavLink to='/students'>
                                             <GraduationCap />
                                             <span>
@@ -65,7 +75,9 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                         role === 'admin' && (
                             <>
                                 <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className={pathname === "/volunteers" ? activeLink : normalLink} asChild>
+                                    <SidebarMenuButton className={pathname === "/volunteers" ? activeLink : normalLink} asChild
+                                        onClick={closeSideBar}
+                                    >
                                         <NavLink to='/volunteers'>
                                             <UserRoundPlus />
                                             <span>
@@ -75,7 +87,9 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                                 <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className={pathname === "/staff" ? activeLink : normalLink} asChild>
+                                    <SidebarMenuButton className={pathname === "/staff" ? activeLink : normalLink} asChild
+                                        onClick={closeSideBar}
+                                    >
                                         <NavLink to='/staff'>
                                             <User />
                                             <span>
@@ -85,7 +99,9 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                                 <SidebarMenuItem className='w-full'>
-                                    <SidebarMenuButton className={pathname === "/partners" ? activeLink : normalLink} asChild>
+                                    <SidebarMenuButton className={pathname === "/partners" ? activeLink : normalLink} asChild
+                                        onClick={closeSideBar}
+                                    >
                                         <NavLink to='/partners'>
                                             <Handshake />
                                             <span>
@@ -100,7 +116,9 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                                     <SidebarGroupLabel>Admin</SidebarGroupLabel>
                                     <SidebarGroupContent className='space-y-2'>
                                         <SidebarMenuItem className='w-full'>
-                                            <SidebarMenuButton className={pathname === "/upload" ? activeLink : normalLink} asChild>
+                                            <SidebarMenuButton className={pathname === "/upload" ? activeLink : normalLink} asChild
+                                                onClick={closeSideBar}
+                                            >
                                                 <NavLink to='/upload'>
                                                     <FileUp />
                                                     <span>
@@ -110,7 +128,8 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                                             </SidebarMenuButton>
                                         </SidebarMenuItem>
                                         <SidebarMenuItem className='w-full'>
-                                            <SidebarMenuButton className={pathname === "/target" ? activeLink : normalLink} asChild>
+                                            <SidebarMenuButton className={pathname === "/target" ? activeLink : normalLink} asChild
+                                                onClick={closeSideBar}>
                                                 <NavLink to='/target'>
                                                     <Target />
                                                     <span>
@@ -120,7 +139,7 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                                             </SidebarMenuButton>
                                         </SidebarMenuItem>
                                         <SidebarMenuItem className='w-full'>
-                                            <SidebarMenuButton className={pathname === "/upload-history" ? activeLink : normalLink} asChild>
+                                            <SidebarMenuButton className={pathname === "/upload-history" ? activeLink : normalLink} asChild onClick={closeSideBar}>
                                                 <NavLink to='/upload-history'>
                                                     <History />
                                                     <span>
