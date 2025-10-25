@@ -8,17 +8,17 @@ import { useState } from "react";
 import { SpinnerCustom } from "@/components/Loader";
 
 interface CardProps {
-    imgUrl: string,
+    imgUrl?: string,
     name?: string,
     onclick: CallFn
 }
 
-function Card({ imgUrl, onclick }: CardProps) {
+function Card({ imgUrl, name, onclick }: CardProps) {
     return (
         <button
             onClick={onclick}
             className="w-full flex flex-col h-[120px] items-center justify-center gap-2 cursor-pointer border-2 border-[#F5F5F5] rounded-2xl p-2 outline-2 outline-white bg-clip-padding overflow-hidden grayscale hover:grayscale-0 transition-all">
-            <img src={imgUrl} className="object-contain w-full" />
+            {imgUrl ? <img src={imgUrl} className="object-contain w-full" /> : name}
         </button>
     )
 }
@@ -53,29 +53,32 @@ export default function Partners() {
         />
     )) : <p>Partner record not added yet</p>
     return (
-        <Container label="Partners" bgColor="transparent">
-            <div className="flex items-center justify-between bg-white py-4 px-8 rounded-2xl">
-                <div className="flex items-center gap-5">
-                    <Button
-                        variant={filter === "all" ? 'default' : 'secondary'}
-                        className="font-light text-sm border border-[#E5E5E5]"
-                        onClick={() => setFilter('all')}
-                    >All</Button>
+        <Container label="Partners" bgColor="transparent" padding={0}>
+            <div className="flex flex-col-reverse md:flex-row md:items-center gap-5 md:gap-0 justify-between bg-white py-4 px-8 rounded-2xl">
+                {
+                    data!.length > 0 && <div className="flex items-center gap-5">
+                        <Button
+                            variant={filter === "all" ? 'default' : 'secondary'}
+                            className="font-light text-sm border border-[#E5E5E5]"
+                            onClick={() => setFilter('all')}
+                        >All</Button>
 
-                    <Button
-                        variant={filter === "active" ? 'default' : 'secondary'}
-                        className="font-light text-sm border border-[#E5E5E5]"
-                        onClick={() => setFilter('active')}
+                        <Button
+                            variant={filter === "active" ? 'default' : 'secondary'}
+                            className="font-light text-sm border border-[#E5E5E5]"
+                            onClick={() => setFilter('active')}
 
-                    >Active</Button>
+                        >Active</Button>
 
-                    <Button
-                        variant={filter === "inactive" ? 'default' : 'secondary'}
-                        className="font-light text-sm border border-[#E5E5E5]"
-                        onClick={() => setFilter('inactive')}
+                        <Button
+                            variant={filter === "inactive" ? 'default' : 'secondary'}
+                            className="font-light text-sm border border-[#E5E5E5]"
+                            onClick={() => setFilter('inactive')}
 
-                    >Inactive</Button>
-                </div>
+                        >Inactive</Button>
+                    </div>
+
+                }
                 <Button
                     className="text-sm"
                     onClick={() => navigate('/add-partner')}

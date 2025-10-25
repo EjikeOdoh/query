@@ -86,7 +86,7 @@ export default function Students() {
 
   return (
     <Container label="Students">
-      <div className="flex gap-5 items-center justify-between">
+      <div className="flex gap-5 flex-col-reverse md:flex-row md:items-center justify-between">
         <SearchForm
           placeholder="Search by student names"
           action={logInput} />
@@ -100,7 +100,7 @@ export default function Students() {
       </div>
 
       <StudentTable data={students} remove={selectStudent} query={meta.page.toString()} />
-      <div className="flex justify-between items-baseline">
+      <div className="flex flex-col md:flex-row gap-5 justify-between items-baseline">
         <p className="text-sm font-light">Page {meta.page} of {info.totalPages}</p>
         <div className="w-fit">
           <Pagination>

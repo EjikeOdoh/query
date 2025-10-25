@@ -136,7 +136,7 @@ export default function VolunteerDetails() {
 
             {
                 data?.type === "REGULAR" ? (
-                    <div className="flex gap-10">
+                    <div className="flex flex-col md:flex-row gap-10">
                         <div className="flex-1 flex flex-col gap-10">
                             <div>
                                 <Heading

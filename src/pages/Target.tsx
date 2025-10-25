@@ -51,24 +51,24 @@ export default function Target() {
         if (!createTargetDto.target || !createTargetDto.year) return
         closeModal()
         addMutation.mutate()
-        queryClient.invalidateQueries({ queryKey:['stats']})
+        queryClient.invalidateQueries({ queryKey: ['stats'] })
     }
 
     function handleEditTarget() {
         closeModal()
         editMutation.mutate()
-        queryClient.invalidateQueries({ queryKey:['stats']})
+        queryClient.invalidateQueries({ queryKey: ['stats'] })
     }
 
     function handleDeleteTarget(id: number) {
         setId(id)
         deleteMutation.mutate()
-        queryClient.invalidateQueries({ queryKey:['stats']})
+        queryClient.invalidateQueries({ queryKey: ['stats'] })
     }
 
 
     if (isLoading) {
-        return   <SpinnerCustom />
+        return <SpinnerCustom />
     }
 
     if (isError) {
@@ -88,10 +88,15 @@ export default function Target() {
                     <span>Add Target</span>
                 </Button>
             </div>
-            <TargetsTable data={data || []}
-                edit={openEditModal}
-                remove={handleDeleteTarget}
-            />
+            {
+                data!.length > 0 ? <TargetsTable data={data || []}
+                    edit={openEditModal}
+                    remove={handleDeleteTarget}
+                /> : <div>
+                    <h1>No Target record yet!</h1>
+                </div>
+            }
+
 
             {/* Add target modal */}
             <Modal isOpen={isAddModalOpen} onClose={closeModal}>

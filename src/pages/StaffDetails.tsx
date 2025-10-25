@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Heading from "@/components/Heading";
 import { SpinnerCustom } from "@/components/Loader";
 import Row from "@/components/Row";
+import { Active, Inactive } from "@/components/Tags";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -77,7 +78,7 @@ export default function StaffDetails() {
         <div className="flex flex-col">
             <Header label="Staff Information" />
             <div className="pb-10">
-                <div className="w-11/12 m-auto bg-white py-10 px-14 rounded-2xl space-y-10">
+                <div className="w-11/12 m-auto bg-white py-10 px-8 md:px-14 rounded-2xl space-y-10">
                     <div>
                         <NavLink to="/staff" className="flex items-center gap-2 text-[#171717] font-light text-xs">
                             <ChevronLeft color="#171717" size={14} />
@@ -91,9 +92,9 @@ export default function StaffDetails() {
                                     {data?.firstName[0]}{data?.lastName[0]}
                                 </p>
                             </div>
-                            <div>
+                            <div className="space-y-2">
                                 <h1 className="font-bold text-lg text-black">{data?.firstName} {data?.lastName}</h1>
-                                <small>{data?.role}</small>
+                                {data?.active ? <Active /> : <Inactive />}
                             </div>
                         </div>
 
@@ -108,7 +109,7 @@ export default function StaffDetails() {
 
                     </div>
 
-                    <div className="flex gap-10">
+                    <div className="flex flex-col md:flex-row gap-10">
 
                         <div className="flex-1 flex flex-col gap-10">
                             <div>
@@ -122,8 +123,8 @@ export default function StaffDetails() {
                                     />
 
                                     <Row
-                                        label="Status"
-                                        value={data?.active ? "Active" : "Inactive"}
+                                        label="Role"
+                                        value={data?.role}
                                     />
                                 </div>
                             </div>

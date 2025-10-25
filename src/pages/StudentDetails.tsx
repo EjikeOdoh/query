@@ -97,7 +97,6 @@ export default function Student() {
     }
 
     function openAddGradeModal() {
-        addGradeMutation.mutate()
         setIsAddGradeModalOpen(true)
     }
 
@@ -799,7 +798,7 @@ export default function Student() {
                             onChange={(e) => updateData(e, setEditGradesData)}
                             showLabel={true}
                         />
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="math"
                                 placeholder="Math Grade"
@@ -815,7 +814,7 @@ export default function Student() {
                                 showLabel={true}
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="chemistry"
                                 placeholder="Chemistry Grade"
@@ -831,7 +830,7 @@ export default function Student() {
                                 showLabel={true}
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="government"
                                 placeholder="Government Grade"
@@ -847,7 +846,7 @@ export default function Student() {
                                 showLabel={true}
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="biology"
                                 placeholder="Biology Grade"
@@ -862,7 +861,7 @@ export default function Student() {
                                 showLabel={true}
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="accounting"
                                 placeholder="Accounting Grade"
@@ -959,7 +958,7 @@ export default function Student() {
                             onChange={(e) => updateData(e, setAddGradesData)}
                             showLabel={true}
                         />
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="math"
                                 placeholder="Math Grade"
@@ -975,7 +974,7 @@ export default function Student() {
                                 showLabel={true}
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="chemistry"
                                 placeholder="Chemistry Grade"
@@ -991,7 +990,7 @@ export default function Student() {
                                 showLabel={true}
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="government"
                                 placeholder="Government Grade"
@@ -1007,7 +1006,7 @@ export default function Student() {
                                 showLabel={true}
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="biology"
                                 placeholder="Biology Grade"
@@ -1022,7 +1021,7 @@ export default function Student() {
                                 showLabel={true}
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             <Input
                                 name="accounting"
                                 placeholder="Accounting Grade"

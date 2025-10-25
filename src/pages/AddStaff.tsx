@@ -62,7 +62,7 @@ export default function AddStaff() {
     return (
         <div>
             <Header label="Add Staff" />
-            <div className="max-w-[600px] m-auto">
+            <div className="w-11/12 p-5 md:p-10 md:max-w-[600px] m-auto rounded-2xl bg-white">
                 {
                     step === 1 && (
                         <form action={handleFormSubmit}
@@ -79,6 +79,7 @@ export default function AddStaff() {
                                     className="flex-1"
                                     value={createStaffDto.firstName ?? ""}
                                     onChange={e => updateData(e, setCreateStaffDto)}
+                                    required
                                 />
 
                                 <Input
@@ -87,6 +88,7 @@ export default function AddStaff() {
                                     className="flex-1"
                                     value={createStaffDto.lastName ?? ""}
                                     onChange={e => updateData(e, setCreateStaffDto)}
+                                    required
                                 />
 
                                 <Input
@@ -97,6 +99,7 @@ export default function AddStaff() {
                                     onBlur={() => setType(false)}
                                     value={createStaffDto.startDate ? new Date(createStaffDto?.startDate).toISOString().split("T")[0] : ""}
                                     onChange={e => updateData(e, setCreateStaffDto)}
+                                    required
                                 />
 
                                 <Select
@@ -233,8 +236,8 @@ export default function AddStaff() {
                     <div className="space-y-8">
                         <CircleCheck size={90} className="mx-auto" />
                         <div>
-                            <h3 className="font-bold text-3xl text-center">Partner Added</h3>
-                            <p className="font-light text-center">The partner has been added successfully</p>
+                            <h3 className="font-bold text-3xl text-center">Staff Added</h3>
+                            <p className="font-light text-center">Staff added successfully</p>
                         </div>
                     </div>
                     <Button className="w-full" onClick={closeModal}>Okay</Button>

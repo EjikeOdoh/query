@@ -56,7 +56,7 @@ export default function Upload() {
 
     return (
         <Container label="Upload Student Attendance">
-            <div className="w-[600px] m-auto my-5">
+            <div className="w-full md:w-[600px] m-auto my-5">
                 <form action={handleSubmit} className="space-y-5">
                     <Input
                         name="file"

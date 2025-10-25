@@ -120,7 +120,7 @@ export default function AddStudent() {
 
     return (
         <Container label="Add New Student">
-            <div className="w-[600px] m-auto">
+            <div className="w-full md:w-[600px] m-auto">
                 {
                     step === 1 && (
                         <form action={handleFormSubmit}

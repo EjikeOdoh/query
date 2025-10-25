@@ -63,7 +63,7 @@ export default function AddVolunteer() {
 
     return (
         <Container label="Add Volunteer">
-            <div className="w-[600px] m-auto">
+            <div className="w-full md:w-[600px] m-auto">
 
                 {step === 0 && (
                     <form action={handleFormSubmit}
@@ -281,7 +281,7 @@ export default function AddVolunteer() {
                                     value={createDto.cpName1 ?? ""}
                                     onChange={e => updateData(e, setCreateDto)}
                                 />
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
 
                                     <Input
                                         placeholder="Relationship"
@@ -304,7 +304,7 @@ export default function AddVolunteer() {
                                     onChange={e => updateData(e, setCreateDto)}
 
                                 />
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         placeholder="Relationship"
                                         name="cpRel2"

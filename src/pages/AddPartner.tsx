@@ -56,7 +56,7 @@ export default function AddPartner() {
 
     return (
         <Container label="Add Partner">
-            <div className="w-[600px] m-auto">
+            <div className="w-full md:w-[600px] m-auto">
                 <form action={handleAddPartner} className="space-y-5">
                     <Input
                         name="name"
@@ -67,7 +67,7 @@ export default function AddPartner() {
                         name="desc"
                         placeholder="Description"
                     />
-                    <div className="flex gap-5">
+                    <div className="flex flex-col md:flex-row gap-5">
                         <Input
                             name="twitter"
                             placeholder="Twitter"
@@ -77,7 +77,7 @@ export default function AddPartner() {
                             placeholder="LinkedIn"
                         />
                     </div>
-                    <div className="flex gap-5">
+                    <div className="flex flex-col md:flex-row gap-5">
                         <Input
                             name="year"
                             type="number"

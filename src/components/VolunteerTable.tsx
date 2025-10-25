@@ -88,8 +88,8 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
 
     return (
         <div className="space-y-10">
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
+            <div className="flex flex-col md:flex-row gap-5 md:gap-0 justify-between items-center">
+                <div className="flex items-center gap-2 flex-wrap">
                     <Button
                         variant={filter === 'all' ? 'default':'secondary'}
                         className="font-light  text-sm border border-[#E5E5E5]"
@@ -136,7 +136,9 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
                     >Inactive</Button>
 
                 </div>
-                <div className="flex justify-between items-center border border-[#E5E5E5] min-w-1/2 rounded-lg max-w-sm px-4 py-2">
+                <div 
+                className="flex justify-between items-center border border-[#E5E5E5] w-full min-w-1/2 rounded-lg md:max-w-sm px-4 py-2"
+                >
                     <input
                         type="search"
                         value={globalFilter ?? ""}
@@ -145,7 +147,7 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
                             setGlobalFilter(e.target.value)
                         }}
                         placeholder="Search by name..."
-                        className="flex-1 border-none shadow-none outline-none focus:outline-none focus:border-none focus:ring-0 p-0 font-light text-[#808080]"
+                        className="w-full border-none shadow-none outline-none focus:outline-none focus:border-none focus:ring-0 p-0 font-light text-[#808080]"
                     />
                 </div>
             </div>

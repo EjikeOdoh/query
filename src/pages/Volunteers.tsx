@@ -34,7 +34,7 @@ export default function Volunteers() {
     }
 
     if (isLoading) {
-        return   <SpinnerCustom />
+        return <SpinnerCustom />
     }
 
     if (isError) {
@@ -62,7 +62,8 @@ export default function Volunteers() {
                     <>
                         <VolunteerTable data={data} onDelete={openDeleteModal} />
                     </>
-                ) : <div>
+                ) : 
+                <div>
                     <h1>No Volunteer record yet!</h1>
                 </div>
             }

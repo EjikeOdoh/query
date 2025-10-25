@@ -146,10 +146,13 @@ export default function PartnerDetails() {
                 </div>
 
                 <div className="flex items-start justify-between">
-                    <div className="flex gap-4 items-start">
-                        <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-clip">
-                            <img src={logoUrl} />
-                        </div>
+                    <div className="flex flex-col md:flex-row gap-4 items-start">
+                        {
+                            logoUrl && <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-clip">
+                                <img src={logoUrl} />
+                            </div>
+                        }
+
                         <div>
                             <h1 className="text-2xl font-bold">{name}</h1>
                             {(!!year) && <p className="text-xs">Since {year}</p>}
@@ -173,10 +176,10 @@ export default function PartnerDetails() {
                 </div>
 
                 {/* Meta data */}
-                <div className="flex justify-between items-start gap-20">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-10 md:gap-20">
                     <div className="flex-1 space-y-5">
                         <Heading text="Description" />
-                        <p>{desc}</p>
+                        <p>{desc || <span className="font-light text-sm text-[#171717] italic">Not provided</span>}</p>
                     </div>
 
                     <div className="flex-1 space-y-5">

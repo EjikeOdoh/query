@@ -28,7 +28,7 @@ export default function Staff() {
         setIsDeleteModalOpen(false)
     }
 
-    if (isLoading) {
+    if (isLoading || deleteMutation.isPending) {
         return <SpinnerCustom />
     }
 
@@ -53,7 +53,10 @@ export default function Staff() {
                     <span>Add Staff</span>
                 </Button>
             </div>
-            <StaffTable data={data!} onDelete={openModal} />
+            {data?.length ? <StaffTable data={data!} onDelete={openModal} /> : 
+            <div>
+                <h1>No Staff record yet!</h1>
+            </div>}
             {/* Delete modal */}
             <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
                 <div className="space-y-10">

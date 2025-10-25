@@ -83,7 +83,7 @@ export default function StaffTable({ data, onDelete }: TableProps) {
     return (
         <div className="space-y-10">
 
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-5 md:gap-0">
                 <div className="flex items-center gap-2">
                     <Button
                         variant={filter === 'all' ? 'default' : 'secondary'}
