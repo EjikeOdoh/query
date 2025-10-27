@@ -24,6 +24,13 @@ export default function PartnerDetails() {
 
     const { isLoading, isError, error, data, refetch } = useGetPartner(Number(partnerId))
 
+    function cleanUp() {
+        refetch()
+        queryClient.invalidateQueries({
+            queryKey: ['partners']
+        })
+    }
+
     // Partner details variables
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
     const [editPartnerDto, setEditPartnerDto] = useState<EditPartnerDetailsDto>({})
@@ -43,16 +50,15 @@ export default function PartnerDetails() {
     })
     const [editSponsorshipDto, setEditSponsorshipDto] = useState<EditSponsorshipDto>(data?.sponsorships?.find(x => x.id === sId) || {})
 
-    const { mutate, isPending } = useMutation({
+// Update picture and other properties
+    const { mutate, isPending,  } = useMutation({
         mutationFn: (x: FormData) => editPartner(Number(partnerId), x),
         onSuccess: refetch
     })
-    const updateStatusMutation = useUpdatePartner(Number(partnerId), editPartnerDto, () => {
-        refetch()
-        queryClient.invalidateQueries({
-            queryKey: ['partners']
-        })
-    })
+
+// Update status
+    const updateStatusMutation = useUpdatePartner(Number(partnerId), editPartnerDto, cleanUp)
+
     const addSponsorshipMutation = useAddSponsorship(createSponsorshipDto, refetch)
     const editSponsorshipMutation = useEditSponsorship(sId!,
         { inkinddonation: editSponsorshipDto.inkinddonation, amount: editSponsorshipDto.amount, currency: editSponsorshipDto.currency, year: editSponsorshipDto.year }
@@ -129,7 +135,6 @@ export default function PartnerDetails() {
     }
 
     if (isError) {
-        console.log(error)
         return <span>Error: {error.message}</span>
     }
 
@@ -396,13 +401,6 @@ export default function PartnerDetails() {
                 <form action={handleUpdateStatus}>
                     <Heading text="Update Partner Status" />
                     <div className="my-5">
-                        <Input
-                            name="name"
-                            placeholder="Name"
-                            showLabel={true}
-                            defaultValue={editPartnerDto.name}
-                            onChange={e => updateData(e, setEditPartnerDto)}
-                        />
                         <label className="text-sm text-[#3d3d3d]">Active?</label>
                         <Select
                             name="isActive"

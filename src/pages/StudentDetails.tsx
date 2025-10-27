@@ -938,7 +938,6 @@ export default function Student() {
             </Modal>
 
             {/* Add grade modal */}
-
             <Modal isOpen={isAddGradeModalOpen} onClose={closeEditModal} >
                 <form
                     className="flex flex-col gap-5"
