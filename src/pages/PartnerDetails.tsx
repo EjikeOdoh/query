@@ -184,7 +184,7 @@ export default function PartnerDetails() {
                 <div className="flex flex-col md:flex-row justify-between items-start gap-10 md:gap-20">
                     <div className="flex-1 space-y-5">
                         <Heading text="Description" />
-                        <p>{desc || <span className="font-light text-sm text-[#171717] italic">Not provided</span>}</p>
+                        <p className="text-sm text-[#171717]">{desc || <span className="font-light text-sm text-[#171717] italic">Not provided</span>}</p>
                     </div>
 
                     <div className="flex-1 space-y-5">

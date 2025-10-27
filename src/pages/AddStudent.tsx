@@ -195,7 +195,7 @@ export default function AddStudent() {
                                     value={data.currentClass}
                                     onChange={(e) => updateData(e, setData)}
                                 />
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="lastName"
                                         placeholder="Last Name"
@@ -211,7 +211,7 @@ export default function AddStudent() {
                                         onChange={(e) => updateData(e, setData)}
                                     />
                                 </div>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="dob"
                                         placeholder="Date of Birth"
@@ -230,7 +230,7 @@ export default function AddStudent() {
                                         onChange={(e) => updateData(e, setData)}
                                     />
                                 </div>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         type="email"
                                         name="email"
@@ -276,7 +276,7 @@ export default function AddStudent() {
                                 count={step}
                             />
                             <div className="flex flex-col gap-4">
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="fatherLastName"
                                         placeholder="Father's Last Name"
@@ -290,7 +290,7 @@ export default function AddStudent() {
                                         onChange={(e) => updateData(e, setData)}
                                     />
                                 </div>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="fatherEducation"
                                         placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
@@ -312,7 +312,7 @@ export default function AddStudent() {
                                 />
 
                                 {/* Mother's Info */}
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="motherLastName"
                                         placeholder="Mother's Last Name"
@@ -326,7 +326,7 @@ export default function AddStudent() {
                                         onChange={(e) => updateData(e, setData)}
                                     />
                                 </div>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="motherEducation"
                                         placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
@@ -423,12 +423,12 @@ export default function AddStudent() {
                             className="flex flex-col gap-10"
                         >
                             <Heading
-                                text="Additional Information"
+                                text="Academic Information"
                                 count={step}
                             />
                             <div className="flex flex-col gap-4">
 
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="math"
                                         placeholder="Math Grade"
@@ -442,7 +442,7 @@ export default function AddStudent() {
                                         onChange={(e) => updateData(e, setData)}
                                     />
                                 </div>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="chemistry"
                                         placeholder="Chemistry Grade"
@@ -456,7 +456,7 @@ export default function AddStudent() {
                                         onChange={(e) => updateData(e, setData)}
                                     />
                                 </div>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="government"
                                         placeholder="Government Grade"
@@ -470,7 +470,7 @@ export default function AddStudent() {
                                         onChange={(e) => updateData(e, setData)}
                                     />
                                 </div>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="biology"
                                         placeholder="Biology Grade"
@@ -483,7 +483,7 @@ export default function AddStudent() {
                                         onChange={(e) => updateData(e, setData)}
                                     />
                                 </div>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
                                     <Input
                                         name="accounting"
                                         placeholder="Accounting Grade"
