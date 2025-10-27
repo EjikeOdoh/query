@@ -421,7 +421,7 @@ export default function VolunteerDetails() {
                                     />
 
                                     <Input
-                                        name="cpPhone"
+                                        name="cpPhone1"
                                         placeholder="Phone Number"
                                         showLabel={true}
                                         value={editVolunteerDto?.cpPhone1 ?? ""}

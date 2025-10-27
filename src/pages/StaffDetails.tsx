@@ -66,7 +66,7 @@ export default function StaffDetails() {
     }, [data])
 
     if (isLoading || updateStaffMutation.isPending) {
-        return  <SpinnerCustom />
+        return <SpinnerCustom />
     }
 
     if (isError) {
@@ -125,6 +125,11 @@ export default function StaffDetails() {
                                     <Row
                                         label="Role"
                                         value={data?.role}
+                                    />
+
+                                    <Row
+                                        label="Staff ID"
+                                        value={data?.staffId}
                                     />
                                 </div>
                             </div>
@@ -324,7 +329,7 @@ export default function StaffDetails() {
                         />
 
                         <Input
-                            name="cpPhone"
+                            name="cpPhone1"
                             placeholder="Phone Number"
                             showLabel={true}
                             value={editStaffDto?.cpPhone1 ?? ""}
