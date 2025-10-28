@@ -17,17 +17,24 @@ export default function Search() {
 
     const [name, setName] = useState<string>(state)
 
-    function logInput(formData: FormData) {
-        const studentName = formData.get('name') as string;
-        setName(studentName)
-    }
+    // function logInput(formData: FormData) {
+    //     const studentName = formData.get('name') as string;
+    //     setName(studentName)
+    // }
 
     const { isLoading, isError, error, data, refetch } = useQuery({
         queryKey: ['search', name],
         queryFn: () => searchStudent(name),
-        placeholderData: keepPreviousData,
+        // placeholderData: keepPreviousData,
         staleTime: 5 * 60 * 1000,
     })
+
+    function logInput(formData: FormData) {
+        const studentName = formData.get('name') as string;
+        setName(studentName)
+        refetch()
+    }
+
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const [sId, setSId] = useState<number>()
