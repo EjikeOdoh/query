@@ -1,11 +1,11 @@
 import { SearchForm } from "@/components/SearchForm";
 import StudentTable from "@/components/Table";
 import { searchStudent } from "@/utils/fn";
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router";
 import Container from "@/components/Container";
-import { ChevronLeft, Trash2 } from "lucide-react";
+import { ChevronLeft, ShieldOff, Trash2 } from "lucide-react";
 import { useDeleteStudent } from "@/hooks/use-students";
 import Modal from "@/components/Dialog";
 import { Button } from "@/components/ui/button";
@@ -17,17 +17,14 @@ export default function Search() {
 
     const [name, setName] = useState<string>(state)
 
-    // function logInput(formData: FormData) {
-    //     const studentName = formData.get('name') as string;
-    //     setName(studentName)
-    // }
-
-    const { isLoading, isError, error, data, refetch } = useQuery({
+    const { isLoading, isError, error, data, refetch, } = useQuery({
         queryKey: ['search', name],
         queryFn: () => searchStudent(name),
-        // placeholderData: keepPreviousData,
         staleTime: 5 * 60 * 1000,
     })
+
+    const [isSearchError, setIsSearchError] = useState<boolean>(isError)
+
 
     function logInput(formData: FormData) {
         const studentName = formData.get('name') as string;
@@ -53,20 +50,18 @@ export default function Search() {
     const deleteStudentMutation = useDeleteStudent(sId!, cleanUp)
 
     function openModal() { setIsDeleteModalOpen(true) }
-    function closeModal() { setIsDeleteModalOpen(false) }
+    function closeModal() {
+        setIsDeleteModalOpen(false)
+        setIsSearchError(false)
+    }
 
     function handleDeleteStudent() {
         closeModal()
         deleteStudentMutation.mutate()
     }
 
-
     if (isLoading) {
         return <SpinnerCustom />
-    }
-
-    if (isError) {
-        return <span>Error: {error.message}</span>
     }
 
     return (
@@ -96,6 +91,20 @@ export default function Search() {
                         <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
                         <Button variant="destructive" className="flex-1" onClick={handleDeleteStudent}>Yes, Delete</Button>
                     </div>
+                </div>
+            </Modal>
+
+            {/* Error modal */}
+            <Modal isOpen={isSearchError} onClose={closeModal}>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <ShieldOff size={90} className="mx-auto" color="#D92121" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Error</h3>
+                            {error && <p className="font-light text-center">{error!.message}</p>}
+                        </div>
+                    </div>
+                    <Button variant='default' className="w-full" onClick={closeModal}>Close</Button>
                 </div>
             </Modal>
         </Container>
