@@ -57,7 +57,11 @@ export default function Student() {
     const [isAddParticipationModalOpen, setIsAddParticipationModalOpen] = useState<boolean>(false)
 
     const { isLoading, isError, error, data, refetch } = useGetStudentDetails(Number(studentId));
-    const { isPending, mutate } = useUpdateStudent(studentId!, editData as EditStudentPayload, refetch)
+    const { isPending, mutate } = useUpdateStudent(studentId!, editData as EditStudentPayload, () => {
+        refetch()
+        queryClient.invalidateQueries({ queryKey: ['students'] })
+        queryClient.invalidateQueries({ queryKey: ['search'] })
+    })
     const deleteStudentMutation = useDeleteStudent(Number(studentId), () => {
         queryClient.invalidateQueries({ queryKey: ['stats'] })
         queryClient.invalidateQueries({ queryKey: ['students'] })
@@ -171,10 +175,6 @@ export default function Student() {
         return <div>No student ID provided</div>;
     }
 
-    if (isLoading || programs.isLoading) {
-        return   <SpinnerCustom />;
-    }
-
     if (isError) {
         return <div>Error: {error.message}</div>;
     }
@@ -183,8 +183,8 @@ export default function Student() {
         return <div>No student data found</div>;
     }
 
-    if (isPending || updateGradeMutation.isPending || addGradeMutation.isPending || updateParticipationMutation.isPending || addPartipationMutation.isPending || deleteParticipationMutation.isPending || deleteGradeMutation.isPending || deleteStudentMutation.isPending) {
-        return   <SpinnerCustom />;
+    if (isLoading || programs.isLoading || isPending || updateGradeMutation.isPending || addGradeMutation.isPending || updateParticipationMutation.isPending || addPartipationMutation.isPending || deleteParticipationMutation.isPending || deleteGradeMutation.isPending || deleteStudentMutation.isPending) {
+        return <SpinnerCustom />;
     }
 
     const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades } = data
@@ -198,7 +198,6 @@ export default function Student() {
             <div className="pt-5 pb-20">
                 <div className="w-11/12 m-auto space-y-10">
                     <div className="py-6 px-10 bg-white rounded-2xl space-y-10">
-
                         <div>
                             <NavLink to={isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state.query}>
                                 <ChevronLeft color="#171717" size={14} />
@@ -316,7 +315,7 @@ export default function Student() {
 
                     {/* Grades table */}
                     {
-                       (!data.school || !data?.school.includes('University')) && (
+                        (!data.school || !data?.school.includes('University')) && (
                             <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
                                 <div className="flex justify-between items-center">
                                     <Heading text="Grades" />
@@ -545,30 +544,6 @@ export default function Student() {
                         />
 
                         <Input
-                            name="fatherLastName"
-                            placeholder="Father's Last Name"
-                            value={editData?.fatherLastName ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="fatherFirstName"
-                            placeholder="Father's First Name"
-                            value={editData?.fatherFirstName ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="fatherEducation"
-                            placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.fatherEducation ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
                             name="fatherPhone"
                             placeholder="Father's Phone Number"
                             value={editData?.fatherPhone ?? ""}
@@ -591,69 +566,13 @@ export default function Student() {
                             showLabel={true}
                             onChange={(e) => updateData(e, setEditData)}
                         />
-                        <Input
-                            name="motherFirstName"
-                            placeholder="Mother's First Name"
-                            value={editData?.motherFirstName ?? ""}
-                            showLabel={true}
-                            onChange={(e) => updateData(e, setEditData)}
-                        />
-
-
-                        <Input
-                            name="motherEducation"
-                            placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.motherEducation ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="motherPhone"
-                            placeholder="Mother's Phone Number"
-                            value={editData?.motherPhone ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="motherJob"
-                            placeholder="Mother's Job"
-                            value={editData?.motherJob ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="fatherPhone"
-                            placeholder="Father's Phone Number"
-                            value={editData?.fatherPhone ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="fatherJob"
-                            placeholder="Father's Job"
-                            value={editData?.fatherJob ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="motherLastName"
-                            placeholder="Mother's Last Name"
-                            value={editData?.motherLastName ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
 
                         <Input
                             name="motherFirstName"
                             placeholder="Mother's First Name"
                             value={editData?.motherFirstName ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
+                            onChange={(e) => updateData(e, setEditData)}
                         />
 
                         <Input
@@ -679,7 +598,6 @@ export default function Student() {
                             onChange={(e) => updateData(e, setEditData)}
                             showLabel={true}
                         />
-
 
                         <Input
                             name="noOfSisters"
