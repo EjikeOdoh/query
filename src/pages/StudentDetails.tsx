@@ -187,7 +187,7 @@ export default function Student() {
         return   <SpinnerCustom />;
     }
 
-    const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades, } = data
+    const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades } = data
 
 
     return (

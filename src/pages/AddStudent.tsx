@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { createStudent, updateData } from "@/utils/fn";
 import type { CreateStudentData } from "@/utils/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, ShieldOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -86,7 +86,7 @@ export default function AddStudent() {
         navigate('/students', { replace: true })
     }
 
-    const { mutate, isPending } = useMutation({
+    const { mutate, isPending, isError, error, reset } = useMutation({
         mutationFn: () => createStudent(data),
         onSuccess: cleanUp
     })
@@ -389,10 +389,6 @@ export default function AddStudent() {
                                 />
                                 <Select
                                     name="focus"
-                                // value={data.focus}
-                                // onValueChange={(x) => setData({
-                                //     ...data, focus: x
-                                // })}
                                 >
                                     <SelectTrigger className="flex-1 w-full">
                                         <SelectValue placeholder="Focus i.e Science, Art, Technology, Commercial" />
@@ -569,6 +565,20 @@ export default function AddStudent() {
                         </div>
                     </div>
                     <Button className="w-full" onClick={closeModal}>Okay</Button>
+                </div>
+            </Modal>
+
+            {/* Error modal */}
+            <Modal isOpen={isError} onClose={reset}>
+                <div className="space-y-10">
+                    <div className="space-y-8">
+                        <ShieldOff size={90} className="mx-auto" color="#D92121" />
+                        <div>
+                            <h3 className="font-bold text-3xl text-center">Error</h3>
+                            {error && <p className="font-light text-center">{error!.message}</p>}
+                        </div>
+                    </div>
+                    <Button variant='default' className="w-full" onClick={reset}>Close</Button>
                 </div>
             </Modal>
         </Container>
