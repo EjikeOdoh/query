@@ -675,7 +675,6 @@ export default function Student() {
 
                     <Button className="w-full">Submit</Button>
                 </form>
-
             </Modal>
 
             {/* Delete student modal */}
