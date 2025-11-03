@@ -134,7 +134,7 @@ export async function createStudent(data: CreateStudentData) {
         const res = await client.post('/students', payload)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -144,7 +144,7 @@ export async function createGrade(studentId: number, data: GradeAddData) {
         const res = await client.post('/grades', payload)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -160,7 +160,7 @@ export async function addParticipation(data: ParticipationAddData) {
         const res = await client.post('/participation', payload)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -169,7 +169,7 @@ export async function addVolunteer(data: CreateVolunteer) {
         const res = await client.post('/volunteers', data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -178,7 +178,7 @@ export async function addVolunteerParticipation(data: VolunteerParticipation) {
         const res = await client.post('/volunteer-participation', data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -191,7 +191,7 @@ export async function uploadAttendance(data: FormData) {
         })
         return res.data
     } catch (error) {
-       throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -200,7 +200,7 @@ export async function addTarget(data: CreateTargetDto) {
         const res = await client.post(`/target`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -209,7 +209,7 @@ export async function addSponsorship(data: CreateSponsorshipDto) {
         const res = await client.post(`/sponsorship`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -222,7 +222,7 @@ export async function addPartner(data: FormData) {
         })
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -231,7 +231,7 @@ export async function addStaff(data: CreateStaff) {
         const res = await client.post(`/staff`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -241,7 +241,7 @@ export async function updateStudent(id: string, data: EditStudentPayload) {
         const res = await client.patch(`/students/${id}`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -250,7 +250,7 @@ export async function updateGrade(id: string, data: GradeEditData) {
         const res = await client.patch(`/grades/${id}`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -263,7 +263,7 @@ export async function updateParticipation(data: ParticipationEditData) {
         const res = await client.patch(`/participation/${data.participation_id}`, payload)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -273,7 +273,7 @@ export async function updateStaff(id: string, data: Partial<CreateStaff>) {
         const res = await client.patch(`/staff/${id}`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -283,7 +283,7 @@ export async function updateTarget(id: number, data: EditTargetDto) {
         const res = await client.patch(`/target/${id}`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -292,7 +292,7 @@ export async function updateVolunteer(id: string, data: EditVolunteerDto) {
         const res = await client.patch(`/volunteers/${id}`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -305,7 +305,7 @@ export async function editPartner(id: number, data: FormData) {
         })
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -314,7 +314,7 @@ export async function updatePartnerStatus(id: number, data: EditPartnerDetailsDt
         const res = await client.patch(`/partners/${id}/status`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -323,7 +323,7 @@ export async function updateSponsorship(id: number, data: EditSponsorshipDto) {
         const res = await client.patch(`/sponsorship/${id}`, data)
         return res.data
     } catch (error) {
-      throw extractApiError(error)
+        throw extractApiError(error)
     }
 }
 
@@ -375,8 +375,8 @@ export async function deleteUploadTag(tag: string) {
 
 // Auth functions
 export async function login(payload: LoginForm) {
-        const res = await client.post('/auth/login', payload)
-        return res.data
+    const res = await client.post('/auth/login', payload)
+    return res.data
 }
 
 export function logout() {
@@ -387,6 +387,19 @@ export function logout() {
 
 
 // utility functions
+export function capitalize(str: string): string {
+    if (!str) return "";
+
+    return str
+        .trim()
+        .split(/\s+/) // split on any whitespace
+        .map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(" ");
+}
+
+
 export function updateData<T>(
     e: React.ChangeEvent<HTMLInputElement>,
     setData: React.Dispatch<React.SetStateAction<T>>
@@ -399,7 +412,10 @@ export function updateData<T>(
         processedValue = Number(value);
     } else if (type === "checkbox") {
         processedValue = (e.target as HTMLInputElement).checked;
+    } else if (type === "text") {
+        processedValue = String(processedValue).trim()
     }
+
 
     setData(prev => ({
         ...prev,
@@ -420,8 +436,8 @@ export function dateFormatter(arg?: Date | string): string {
 
 export function extractApiError(error: unknown): ApiError | null {
     if (axios.isAxiosError(error) && error.response?.data) {
-      return error.response.data as ApiError;
+        return error.response.data as ApiError;
     }
     return null;
-  }
-  
+}
+
