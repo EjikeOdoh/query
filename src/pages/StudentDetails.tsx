@@ -180,14 +180,14 @@ export default function Student() {
     }
 
     if (!data) {
-        return <div>No student data found</div>;
+        return <SpinnerCustom />;
     }
 
     if (isLoading || programs.isLoading || isPending || updateGradeMutation.isPending || addGradeMutation.isPending || updateParticipationMutation.isPending || addPartipationMutation.isPending || deleteParticipationMutation.isPending || deleteGradeMutation.isPending || deleteStudentMutation.isPending) {
         return <SpinnerCustom />;
     }
 
-    const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, email, participations, grades } = data
+    const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, careerChoice1, careerChoice2, email, participations, grades } = data
 
 
     return (
@@ -253,11 +253,25 @@ export default function Student() {
                                         value={currentClass}
                                     />
 
-                                    <Row label="Favorite Subject" value={favSubject} />
+                                    <Row
+                                        label="Favorite Subject"
+                                        value={favSubject}
+                                    />
 
+                                    <Row
+                                        label="Most Difficult Subject"
+                                        value={difficultSubject}
+                                    />
 
-                                    <Row label="Most Difficult Subject" value={difficultSubject} />
+                                    <Row
+                                        label="Career Choice 1"
+                                        value={careerChoice1}
+                                    />
 
+                                    <Row
+                                        label="Career Choice 2"
+                                        value={careerChoice2}
+                                    />
 
                                 </div>
                             </div>

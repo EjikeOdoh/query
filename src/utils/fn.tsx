@@ -21,7 +21,7 @@ export async function getAllStudents(meta: StudentPagination): Promise<StudentRe
 
 // export async function getAllParticipation(filterOptions: Participation): Promise<ParticipationData[]> {
 //     const query = Object.entries(filterOptions)
-//         .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+//         .filter(([_, va___lue]) => value !== undefined && value !== null && value !== '')
 //         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
 //         .join('&');
 //     return client.get('/participation/filter').then(res => res.data)
