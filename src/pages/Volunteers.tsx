@@ -3,7 +3,7 @@ import Modal from "@/components/Dialog"
 import { SpinnerCustom } from "@/components/Loader"
 import { Button } from "@/components/ui/button"
 import VolunteerTable from "@/components/VolunteerTable"
-import { useDeleteVolunteer, useGetAllVolunteers } from "@/hooks/use-admin"
+import { useAddUser, useDeleteUser, useDeleteVolunteer, useGetAllVolunteers } from "@/hooks/use-admin"
 import { CircleFadingPlus, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useNavigate } from "react-router"
@@ -13,6 +13,9 @@ export default function Volunteers() {
 
     const navigate = useNavigate()
     const { isLoading, isError, error, data, refetch } = useGetAllVolunteers()
+
+    const createUserMutation = useAddUser(refetch)
+    const deleteUserMutation = useDeleteUser(refetch)
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const [vId, setVId] = useState<number>()
@@ -33,9 +36,6 @@ export default function Volunteers() {
         setIsDeleteModalOpen(false)
     }
 
-    if (isLoading) {
-        return <SpinnerCustom />
-    }
 
     if (isError) {
         console.log(error)
@@ -46,26 +46,56 @@ export default function Volunteers() {
         deleteMutation.mutate()
     }
 
+    function addUser(id: number) {
+
+        const v = data!.find(x => x.id === id)!
+
+        createUserMutation.mutate({
+            firstName: v?.firstName,
+            lastName: v?.lastName,
+            role: "editor",
+            email: v?.email,
+            volunteerId: id
+        })
+    }
+
+    function removeUser(id: number) {
+        alert(id)
+    }
+
     return (
         <Container label="Volunteers">
-            <div className="flex gap-5 items-center justify-between">
-                <Button
-                    className="text-sm"
-                    onClick={() => navigate('/add-volunteer')}
-                >
-                    <CircleFadingPlus />
-                    <span>Add Volunteer</span>
-                </Button>
-            </div>
             {
-                data?.length ? (
+                (isLoading || createUserMutation.isPending) ?
+                    <SpinnerCustom />
+                    :
                     <>
-                        <VolunteerTable data={data} onDelete={openDeleteModal} />
+                        <div className="flex gap-5 items-center justify-between">
+                            <Button
+                                className="text-sm"
+                                onClick={() => navigate('/add-volunteer')}
+                            >
+                                <CircleFadingPlus />
+                                <span>Add Volunteer</span>
+                            </Button>
+                        </div>
+                        {
+                            data?.length ? (
+                                <>
+                                    <VolunteerTable
+                                        data={data}
+                                        onDelete={openDeleteModal}
+                                        onCreate={addUser}
+                                        onRemove={removeUser}
+                                    />
+                                </>
+                            ) :
+                                <div>
+                                    <h1>No Volunteer record yet!</h1>
+                                </div>
+                        }
+
                     </>
-                ) : 
-                <div>
-                    <h1>No Volunteer record yet!</h1>
-                </div>
             }
 
             <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>

@@ -3,7 +3,7 @@ import Modal from "@/components/Dialog"
 import { SpinnerCustom } from "@/components/Loader"
 import StaffTable from "@/components/StaffTable"
 import { Button } from "@/components/ui/button"
-import { useDeleteStaff, useGetAllStaff } from "@/hooks/use-admin"
+import { useAddUser, useDeleteStaff, useDeleteUser, useGetAllStaff } from "@/hooks/use-admin"
 import { CircleFadingPlus, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useNavigate } from "react-router"
@@ -13,6 +13,9 @@ export default function Staff() {
     const navigate = useNavigate()
 
     const { isLoading, isError, error, data, refetch } = useGetAllStaff()
+
+    const createUserMutation = useAddUser(refetch)
+    const deleteUserMutation = useDeleteUser(refetch)
 
     const [sId, setSId] = useState<number>()
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
@@ -28,10 +31,6 @@ export default function Staff() {
         setIsDeleteModalOpen(false)
     }
 
-    if (isLoading || deleteMutation.isPending) {
-        return <SpinnerCustom />
-    }
-
     if (isError) {
         console.log(error)
         return <span>Error: {error.message}</span>
@@ -42,21 +41,52 @@ export default function Staff() {
         deleteMutation.mutate()
     }
 
+    function addUser(id: number) {
+
+        const staff = data!.find(x => x.id === id)!
+
+        createUserMutation.mutate({
+            firstName: staff?.firstName,
+            lastName: staff?.lastName,
+            role: "editor",
+            email: staff?.email,
+            staffId: id
+        })
+    }
+
+    function removeUser(id: number) {
+        alert(id)
+    }
+
     return (
         <Container label="Staff">
-            <div className="flex gap-5 items-center justify-between">
-                <Button
-                    className="bg-[#00AEFF] text-white text-sm"
-                    onClick={() => navigate('/add-staff')}
-                >
-                    <CircleFadingPlus />
-                    <span>Add Staff</span>
-                </Button>
-            </div>
-            {data?.length ? <StaffTable data={data!} onDelete={openModal} /> : 
-            <div>
-                <h1>No Staff record yet!</h1>
-            </div>}
+            {
+                (isLoading || deleteMutation.isPending || createUserMutation.isPending) ?
+                    <SpinnerCustom />
+                    :
+                    <>
+                        <div className="flex gap-5 items-center justify-between">
+                            <Button
+                                className="bg-[#00AEFF] text-white text-sm"
+                                onClick={() => navigate('/add-staff')}
+                            >
+                                <CircleFadingPlus />
+                                <span>Add Staff</span>
+                            </Button>
+                        </div>
+                        {data?.length ?
+                            <StaffTable
+                                data={data!}
+                                onDelete={openModal}
+                                onCreate={addUser}
+                                onRemove={removeUser}
+                            /> :
+                            <div>
+                                <h1>No Staff record yet!</h1>
+                            </div>}
+                    </>
+            }
+
             {/* Delete modal */}
             <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
                 <div className="space-y-10">

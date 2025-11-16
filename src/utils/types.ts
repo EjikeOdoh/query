@@ -9,7 +9,7 @@ export interface Student {
 }
 
 export interface LoginForm {
-  name: string
+  email: string
   password: string
 }
 
@@ -265,6 +265,7 @@ export interface CreateVolunteer {
   cpName2?: string
   cpRel2?: string
   cpPhone2?: string
+  hasAccount?: boolean
 }
 
 export interface VolunteerDetails extends CreateVolunteer {
@@ -289,16 +290,20 @@ export interface StaffPayload {
   staffId: string
   firstName: string
   lastName: string
+  email: string
   active: boolean
   role: string
+  hasAccount: boolean
 }
 
 export interface VolunteersPayload {
   id: number
   firstName: string
   lastName: string
+  email: string
   active: boolean
   type: string
+  hasAccount: boolean
 }
 
 export interface VolunteerParticipation {

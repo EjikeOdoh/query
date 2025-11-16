@@ -19,6 +19,7 @@ export default function Users() {
     }
 
     function resetUser(id: number) {
+        
         updateUserMutation.mutate({ id, data: { password: 'password' } })
     }
 

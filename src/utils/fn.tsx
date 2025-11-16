@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProfileState, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateUserDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProfileState, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 import axios from "axios"
 
 // Fetchers
@@ -235,6 +235,16 @@ export async function addPartner(data: FormData) {
 export async function addStaff(data: CreateStaff) {
     try {
         const res = await client.post(`/staff`, data)
+        return res.data
+    } catch (error) {
+       throw extractApiError(error) 
+    }
+}
+
+
+export async function addUser(data: CreateUserDto) {
+    try {
+        const res = await client.post(`/users`, data)
         return res.data
     } catch (error) {
         throw extractApiError(error)

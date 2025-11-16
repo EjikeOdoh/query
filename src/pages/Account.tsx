@@ -39,22 +39,6 @@ export function Account() {
         extractInitials(profile.volunteer.firstName, profile.volunteer.lastName) : (profile.firstName && profile.lastName) ? extractInitials(profile.firstName, profile.lastName) : `VF`
 
 
-    // const { data, isLoading, error } = useQuery({
-    //     queryKey: ['account', profile.staff?.id ?? profile.volunteer?.id],
-    //     queryFn: async () => {
-    //       if (profile.staff?.id) {
-    //         return { type: 'staff' as const, data: await getStaff(profile.staff.id) };
-    //       }
-    //       if (profile.volunteer?.id) {
-    //         return { type: 'volunteer' as const, data: await getVolunteer(String(profile.volunteer.id)) };
-    //       }
-    //       throw new Error('No active profile');
-    //     },
-    //     enabled: !!profile.staff?.id || !!profile.volunteer?.id,
-    //   });
-
-
-
     return (
         <Container label="Account Information">
             <div className="space-y-10">
@@ -69,8 +53,7 @@ export function Account() {
                 </div>
                 <Button onClick={openModal}>Change Password</Button>
             </div>
-
-            {profile.staff && <>
+            <>
                 <div className="flex flex-col md:flex-row gap-10">
 
                     <div className="flex-1 flex flex-col gap-10">
@@ -81,18 +64,25 @@ export function Account() {
                             <div className="mt-4 flex flex-col gap-2">
                                 <Row
                                     label="Start Date"
-                                    value={dateFormatter(profile.staff.startDate ? profile.staff.startDate : "")}
+                                    value={dateFormatter(profile.staff?.startDate || profile.volunteer?.startDate) || ""}
                                 />
 
-                                <Row
-                                    label="Role"
-                                    value={profile.staff?.role}
-                                />
 
-                                <Row
-                                    label="Staff ID"
-                                    value={profile.staff?.staffId}
-                                />
+                                {profile.staff &&
+                                    <>
+                                        <Row
+                                            label="Role"
+                                            value={profile.staff?.role}
+                                        />
+
+                                        <Row
+                                            label="Staff ID"
+                                            value={profile.staff?.staffId}
+                                        />
+
+                                    </>}
+
+
                             </div>
                         </div>
 
@@ -103,22 +93,22 @@ export function Account() {
                             <div className="mt-4 flex flex-col gap-2">
                                 <Row
                                     label="Phone Number"
-                                    value={profile.staff?.phone}
+                                    value={profile.staff?.phone || profile.volunteer?.phone}
                                 />
 
                                 <Row
                                     label="Email Address"
-                                    value={profile.staff?.email}
+                                    value={profile.staff?.email || profile.volunteer?.email}
                                 />
 
                                 <Row
                                     label="Location"
-                                    value={profile.staff?.location}
+                                    value={profile.staff?.location || profile.volunteer?.location}
                                 />
 
                                 <Row
                                     label="House Address"
-                                    value={profile.staff?.address}
+                                    value={profile.staff?.address || profile.volunteer?.address}
                                 />
                             </div>
                         </div>
@@ -132,17 +122,17 @@ export function Account() {
 
                                 <Row
                                     label="Name"
-                                    value={profile.staff?.cpName1}
+                                    value={profile.staff?.cpName1 || profile.volunteer?.cpName1}
                                 />
 
                                 <Row
                                     label="Relation"
-                                    value={profile.staff?.cpRel1}
+                                    value={profile.staff?.cpRel1 || profile.volunteer?.cpRel1}
                                 />
 
                                 <Row
                                     label="Contact"
-                                    value={profile.staff?.cpPhone1}
+                                    value={profile.staff?.cpPhone1 || profile.volunteer?.cpPhone1}
                                 />
                             </div>
                         </div>
@@ -154,17 +144,17 @@ export function Account() {
 
                                 <Row
                                     label="Name"
-                                    value={profile.staff?.cpName2}
+                                    value={profile.staff?.cpName2 || profile.volunteer?.cpName2}
                                 />
 
                                 <Row
                                     label="Relation"
-                                    value={profile.staff?.cpRel2}
+                                    value={profile.staff?.cpRel2 || profile.volunteer?.cpRel2}
                                 />
 
                                 <Row
                                     label="Contact"
-                                    value={profile.staff?.cpPhone2}
+                                    value={profile.staff?.cpPhone2 || profile.volunteer?.cpPhone2}
                                 />
                             </div>
                         </div>
@@ -172,7 +162,7 @@ export function Account() {
 
 
                 </div>
-            </>}
+            </>
 
             {/* Change password modal */}
             <Modal isOpen={isModalOpen} onClose={closeModal}>

@@ -23,11 +23,11 @@ export default function LoginPage() {
     }
 
     async function handleLogin(formData: FormData) {
-        const name = formData.get('name') as string
+        const email = formData.get('email') as string
         const password = formData.get('password') as string
         try {
             setIsLoading(true)
-            const res: { token: string } | null = await login({ name, password })
+            const res: { token: string } | null = await login({ email, password })
             if (res !== null) {
                 window.sessionStorage.setItem("myToken", res.token)
                 dispatch({
@@ -67,12 +67,12 @@ export default function LoginPage() {
                             <div className="grid gap-6">
                                 <div className="grid gap-6">
                                     <div className="grid gap-3">
-                                        <Label htmlFor="username">Username</Label>
+                                        <Label htmlFor="username">Email</Label>
                                         <Input
                                             id="username"
-                                            name="name"
-                                            type="text"
-                                            placeholder="Enter username"
+                                            name="email"
+                                            type="email"
+                                            placeholder="Enter email"
                                             required
                                         />
                                     </div>

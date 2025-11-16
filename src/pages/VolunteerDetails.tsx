@@ -92,7 +92,7 @@ export default function VolunteerDetails() {
     }, [data])
 
     if (isLoading || updateVolunteerMutation.isPending) {
-        return   <SpinnerCustom />
+        return <SpinnerCustom />
     }
 
     if (isError) {
@@ -361,6 +361,17 @@ export default function VolunteerDetails() {
                                 </SelectContent>
                             </Select>
                         </div>
+
+                        {!editVolunteerDto.active &&
+                            <Input
+                                name="endDate"
+                                type="date"
+                                placeholder="End Date"
+                                showLabel={true}
+                                value={editVolunteerDto?.startDate ? new Date(editVolunteerDto.endDate!).toISOString().split("T")[0] : ""
+                                }
+                                onChange={e => updateData(e, setEditVolunteerDto)}
+                            />}
 
                         <Input
                             name="phone"

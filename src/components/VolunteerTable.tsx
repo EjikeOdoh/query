@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
-import type { VolunteersPayload } from "@/utils/types"
+import type { Callback, VolunteersPayload } from "@/utils/types"
 import { useReactTable, getCoreRowModel, flexRender, getPaginationRowModel, getFilteredRowModel, type ColumnFiltersState } from "@tanstack/react-table"
 import { vColumns } from "./columns"
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "./ui/pagination"
@@ -8,11 +8,13 @@ import { Button } from "./ui/button"
 
 interface TableProps {
     data: VolunteersPayload[],
-    onDelete: (id: number) => void
+    onDelete: (id: number) => void,
+    onCreate: Callback,
+    onRemove: Callback
 }
 
 
-export default function VolunteerTable({ data, onDelete }: TableProps) {
+export default function VolunteerTable({ data, onDelete, onCreate, onRemove }: TableProps) {
 
     const [pagination, setPagination] = useState({
         pageIndex: 0,
@@ -22,7 +24,7 @@ export default function VolunteerTable({ data, onDelete }: TableProps) {
     const [globalFilter, setGlobalFilter] = useState('')
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-    const columns = vColumns(onDelete)
+    const columns = vColumns(onDelete, onCreate, onRemove)
 
     const table = useReactTable({
         data,

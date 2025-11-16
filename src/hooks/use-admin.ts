@@ -1,5 +1,5 @@
-import { addSponsorship, addStaff, addTarget, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteUploadTag, deleteUser, deleteVolunteer, getAllPartners, getAllStaff, getAllTags, getAllTargets, getAllUsers, getAllVolunteers, getPartner, getStaff, getVolunteer, updatePartnerStatus, updateSponsorship, updateStaff, updateTarget, updateUser, updateVolunteer, uploadAttendance } from "@/utils/fn";
-import type { CallFn, CreateSponsorshipDto, CreateStaff, CreateTargetDto, CreateVolunteer, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, EditUserDto, VolunteerParticipation } from "@/utils/types";
+import { addSponsorship, addStaff, addTarget, addUser, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteUploadTag, deleteUser, deleteVolunteer, getAllPartners, getAllStaff, getAllTags, getAllTargets, getAllUsers, getAllVolunteers, getPartner, getStaff, getVolunteer, updatePartnerStatus, updateSponsorship, updateStaff, updateTarget, updateUser, updateVolunteer, uploadAttendance } from "@/utils/fn";
+import type { CallFn, CreateSponsorshipDto, CreateStaff, CreateTargetDto, CreateUserDto, CreateVolunteer, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, EditUserDto, VolunteerParticipation } from "@/utils/types";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 
@@ -61,7 +61,6 @@ export function useGetVolunteerDetails(id: string) {
     return useQuery({
         queryKey: ['volunteer', id],
         queryFn: () => getVolunteer(id),
-        staleTime: 5 * 60 * 1000
     })
 }
 
@@ -200,6 +199,20 @@ export function useGetAllUsers() {
         queryKey: ['users'],
         queryFn: getAllUsers,
         staleTime: 5 * 60 * 1000
+    })
+}
+
+export function useAddUser(refetch?: CallFn) {
+    return useMutation({
+        mutationFn: async (data: CreateUserDto) => {
+            if (data.staffId) {
+               await updateStaff(String(data.staffId), { hasAccount: true })
+            } else if (data.volunteerId) {
+               await updateVolunteer(String(data.volunteerId), { hasAccount: true })
+            }
+            return addUser(data)
+        },
+        onSuccess: refetch
     })
 }
 

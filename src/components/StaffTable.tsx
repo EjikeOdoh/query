@@ -1,17 +1,19 @@
 import { Button } from "./ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
-import type { StaffPayload } from "@/utils/types"
+import type { Callback, StaffPayload } from "@/utils/types"
 import { sColumns } from "./columns"
 import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable, type ColumnFiltersState } from "@tanstack/react-table"
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "./ui/pagination"
 import { useState } from "react"
 
 interface TableProps {
-    data: StaffPayload[],
+    data: StaffPayload[]
     onDelete: (id: number) => void
+    onCreate: Callback
+    onRemove: Callback
 }
 
-export default function StaffTable({ data, onDelete }: TableProps) {
+export default function StaffTable({ data, onDelete, onCreate, onRemove }: TableProps) {
 
     const [pagination, setPagination] = useState({
         pageIndex: 0,
@@ -21,7 +23,7 @@ export default function StaffTable({ data, onDelete }: TableProps) {
     const [globalFilter, setGlobalFilter] = useState('')
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-    const columns = sColumns(onDelete)
+    const columns = sColumns(onDelete, onCreate, onRemove)
     const table = useReactTable({
         data,
         columns,

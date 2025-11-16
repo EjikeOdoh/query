@@ -22,7 +22,10 @@ export default function Dashboard() {
 
     if (isLoading) {
         return (
-            <SpinnerCustom />
+            <Container
+                label="Dashboard">
+                <SpinnerCustom />
+            </Container>
         )
     }
 

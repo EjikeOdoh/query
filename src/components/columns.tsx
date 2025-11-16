@@ -6,18 +6,23 @@ import { Active } from "./Tags";
 import { Inactive } from "./Tags";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
-import { Eye, Pencil, RotateCcw, Trash2 } from "lucide-react";
+import { Eye, Pencil, RotateCcw, Trash2, UserPlus, UserRoundX } from "lucide-react";
 import { TooltipButton } from "./ButtonWithTip";
 
 
 // Actions cell
 type ActionsCellProps = {
-    id: number;
-    onDelete: (id: number) => void;
+    id: number
+    onDelete: Callback
+    onCreate: Callback
+    onRemove: Callback
+    hasAccount?: boolean
+    active?: boolean
     target?: string
+
 };
 
-function ActionsCell({ id, target = "volunteers", onDelete }: ActionsCellProps) {
+function ActionsCell({ id, target = "volunteers", onDelete, onCreate, onRemove, hasAccount, active }: ActionsCellProps) {
     const navigate = useNavigate();
 
     return (
@@ -38,9 +43,32 @@ function ActionsCell({ id, target = "volunteers", onDelete }: ActionsCellProps) 
                 <Pencil color="#171717" />
             </Button>
 
-            <Button variant="ghost" size="icon" onClick={() => onDelete(id)}>
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onDelete(id)}>
                 <Trash2 color="#171717" />
             </Button>
+            {active && (!hasAccount ?
+                <TooltipButton
+                    tooltip="Create Account"
+                    size='icon'
+                    onClick={() => onCreate(id)}
+                >
+                    <UserPlus />
+                </TooltipButton>
+                :
+                <TooltipButton
+                    tooltip="Delete Account"
+                    size='icon'
+                    variant="destructive"
+                    onClick={() => onRemove(id)}
+                >
+                    <UserRoundX />
+                </TooltipButton>)
+            }
+
+
         </div>
     );
 }
@@ -49,7 +77,7 @@ function ActionsCell({ id, target = "volunteers", onDelete }: ActionsCellProps) 
 // For volunteer table
 const vColumnHelper = createColumnHelper<VolunteersPayload>()
 
-export const vColumns = (onDelete: (id: number) => void) => [
+export const vColumns = (onDelete: (id: number) => void, onCreate: Callback, onRemove: Callback) => [
     vColumnHelper.accessor('firstName', {
         cell: info => info.getValue(),
         header: 'First Name'
@@ -80,7 +108,14 @@ export const vColumns = (onDelete: (id: number) => void) => [
     vColumnHelper.display({
         id: 'actions',
         header: 'Actions',
-        cell: props => <ActionsCell id={props.row.original.id} onDelete={() => onDelete(props.row.original.id)} />
+        cell: props => <ActionsCell
+            id={props.row.original.id}
+            onDelete={() => onDelete(props.row.original.id)}
+            onCreate={() => onCreate(props.row.original.id)}
+            onRemove={() => onRemove(props.row.original.id)}
+            hasAccount={props.row.original.hasAccount}
+            active={props.row.original.active}
+        />
     })
 ]
 
@@ -88,7 +123,7 @@ export const vColumns = (onDelete: (id: number) => void) => [
 // For staff table
 const sColumnHelper = createColumnHelper<StaffPayload>()
 
-export const sColumns = (onDelete: (id: number) => void) => [
+export const sColumns = (onDelete: (id: number) => void, onCreate: Callback, onRemove: Callback) => [
     sColumnHelper.accessor('staffId', {
         cell: prop => prop.getValue(),
         header: 'Staff ID'
@@ -116,6 +151,10 @@ export const sColumns = (onDelete: (id: number) => void) => [
             id={props.row.original.id}
             target="staff"
             onDelete={() => onDelete(props.row.original.id)}
+            onCreate={() => onCreate(props.row.original.id)}
+            onRemove={() => onRemove(props.row.original.id)}
+            hasAccount={props.row.original.hasAccount}
+            active={props.row.original.active}
         />
     })
 ]
