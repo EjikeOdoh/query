@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditVolunteerDto, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProfileState, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 import axios from "axios"
 
 // Fetchers
@@ -86,6 +86,12 @@ export async function getPartner(id: number): Promise<PartnerDetails> {
 
 export async function getAllTags(): Promise<HistoryTable[]> {
     const res = await client.get('/tag')
+    return res.data
+}
+
+
+export async function getAllUsers() {
+    const res = await client.get('/users')
     return res.data
 }
 
@@ -327,6 +333,15 @@ export async function updateSponsorship(id: number, data: EditSponsorshipDto) {
     }
 }
 
+export async function updateUser(id: number, payload?: EditUserDto) {
+    try {
+        const res = await client.patch(`/users/${id}`, payload)
+        return res.data
+    } catch (error) {
+        throw extractApiError(error)
+    }
+}
+
 // Delete functions
 export async function deleteParticipation(id: number) {
     const res = await client.delete(`/participation/${id}`)
@@ -370,6 +385,11 @@ export async function deletePartner(id: number) {
 
 export async function deleteUploadTag(tag: string) {
     const res = await client.delete(`/tag/${tag}`)
+    return res.data
+}
+
+export async function deleteUser(id:number) {
+    const res = await client.delete(`/users/${id}`)
     return res.data
 }
 
@@ -441,3 +461,18 @@ export function extractApiError(error: unknown): ApiError | null {
     return null;
 }
 
+export function extractInitials(firstName: string, lastName: string) {
+    return `${firstName.toUpperCase().charAt(0)}${lastName.toUpperCase().charAt(0)}`
+}
+
+export function extractNames(data: ProfileState) {
+    if (data.staff) {
+        return data.staff.firstName + " " + data.staff.lastName
+    } else if (data.volunteer) {
+        return data.volunteer.firstName + " " + data.volunteer.lastName
+    } else if (data.firstName && data.lastName) {
+        return data.firstName + " " + data.lastName
+    } else {
+        return `VF`
+    }
+}

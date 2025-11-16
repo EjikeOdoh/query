@@ -7,5 +7,6 @@ export default function useGetProfile(token: string) {
         queryKey:['profile'],
         queryFn: getProfile,
         enabled: !!(token),
+        staleTime: 5 * 60 * 1000
     })
 }

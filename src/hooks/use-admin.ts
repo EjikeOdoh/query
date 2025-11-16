@@ -1,5 +1,5 @@
-import { addSponsorship, addStaff, addTarget, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteUploadTag, deleteVolunteer, getAllPartners, getAllStaff, getAllTags, getAllTargets, getAllVolunteers, getPartner, getStaff, getVolunteer, updatePartnerStatus, updateSponsorship, updateStaff, updateTarget, updateVolunteer, uploadAttendance } from "@/utils/fn";
-import type { CallFn, CreateSponsorshipDto, CreateStaff, CreateTargetDto, CreateVolunteer, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, VolunteerParticipation } from "@/utils/types";
+import { addSponsorship, addStaff, addTarget, addVolunteer, addVolunteerParticipation, deletePartner, deleteSponsorship, deleteStaff, deleteTarget, deleteUploadTag, deleteUser, deleteVolunteer, getAllPartners, getAllStaff, getAllTags, getAllTargets, getAllUsers, getAllVolunteers, getPartner, getStaff, getVolunteer, updatePartnerStatus, updateSponsorship, updateStaff, updateTarget, updateUser, updateVolunteer, uploadAttendance } from "@/utils/fn";
+import type { CallFn, CreateSponsorshipDto, CreateStaff, CreateTargetDto, CreateVolunteer, EditPartnerDetailsDto, EditSponsorshipDto, EditTargetDto, EditUserDto, VolunteerParticipation } from "@/utils/types";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 
@@ -191,6 +191,31 @@ export function useGetAllTags() {
 export function useDeleteTag(tag: string, refetch: CallFn) {
     return useMutation({
         mutationFn: () => deleteUploadTag(tag),
+        onSuccess: refetch
+    })
+}
+
+export function useGetAllUsers() {
+    return useQuery({
+        queryKey: ['users'],
+        queryFn: getAllUsers,
+        staleTime: 5 * 60 * 1000
+    })
+}
+
+export function useUpdateUser(refetch?: CallFn) {
+    return useMutation({
+        mutationFn: ({ id, data }: { id: number; data?: EditUserDto }) =>
+            updateUser(id, data),
+        onSuccess: refetch
+    })
+}
+
+
+export function useDeleteUser(refetch: CallFn) {
+    return useMutation({
+        mutationFn: ({ id }: { id: number }) =>
+            deleteUser(id),
         onSuccess: refetch
     })
 }

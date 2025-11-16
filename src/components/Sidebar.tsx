@@ -15,13 +15,14 @@ import {
     useSidebar
 } from '@/components/ui/sidebar'
 import { NavLink, useLocation } from 'react-router'
-import { ChartLine, FileUp, GraduationCap, Handshake, History, LogOut, Target, User, UserRoundPlus } from 'lucide-react'
+import { ChartLine, CircleUser, FileUp, GraduationCap, Handshake, History, LogOut, Target, User, UserRoundPlus, Users } from 'lucide-react'
 
 
 
 export default function MySidebar({ profile, logout }: { profile: ProfileState, logout: CallFn }) {
-    const { role } = profile
+    const { role} = profile
     const { pathname } = useLocation();
+
 
     const activeLink: string = "m-auto py-4 px-6 rounded-[6px] bg-[#00AEFF] border-2 border-[#B0E6FF] hover:bg-[#00AEFF] hover:text-white text-white"
     const normalLink: string = "m-auto py-4 px-6"
@@ -148,6 +149,16 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                                                 </NavLink>
                                             </SidebarMenuButton>
                                         </SidebarMenuItem>
+                                        <SidebarMenuItem className='w-full'>
+                                            <SidebarMenuButton className={pathname === "/accounts" ? activeLink : normalLink} asChild onClick={closeSideBar}>
+                                                <NavLink to='/accounts'>
+                                                <Users />
+                                                    <span>
+                                                       Users
+                                                    </span>
+                                                </NavLink>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
                                     </SidebarGroupContent>
                                 </SidebarGroup>
                             </>
@@ -155,7 +166,18 @@ export default function MySidebar({ profile, logout }: { profile: ProfileState, 
                     }
                 </SidebarMenu>
             </SidebarContent>
-            <SidebarFooter className='px-10 pb-10 group-data-[collapsible=icon]:px-0 '>
+            <SidebarFooter className='mt-5 px-10 pb-10 group-data-[collapsible=icon]:px-0 '>
+                <SidebarMenuItem className='w-full list-none'>
+                    <SidebarMenuButton className={pathname === "/profile" ? activeLink : normalLink} asChild onClick={closeSideBar}>
+                        <NavLink to='/profile'>
+                            <CircleUser />
+                            <span>
+                                Account
+                            </span>
+                        </NavLink>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+
                 <SidebarMenuButton className='py-4 px-6 m-auto' onClick={logout}>
                     <LogOut />
                     <span>

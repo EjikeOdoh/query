@@ -106,8 +106,13 @@ export type TokenState = {
 };
 
 export interface ProfileState {
+  id: number
   role: "admin" | "editor" | "viewer" | null
-  name?: string
+  email?: string
+  firstName?: string
+  lastName?: string
+  staff?: StaffDetails | null
+  volunteer?: VolunteerDetails | null
 }
 
 export interface ProfileAction {
@@ -267,6 +272,7 @@ export interface VolunteerDetails extends CreateVolunteer {
   participations: VolunteerParticipation[]
 }
 
+
 export type EditVolunteerDto = Partial<Omit<CreateVolunteer, 'programId' | 'year' | 'quarter'>>
 
 export interface CreateStaff extends Omit<CreateVolunteer, 'program'> {
@@ -306,6 +312,8 @@ export interface VolunteerParticipation {
 }
 
 export type CallFn = () => void
+
+export type Callback = (id: number) => void
 
 export interface YearStat {
   year: number
@@ -365,3 +373,25 @@ export interface ApiError {
   message: string | string[];
   error: string;
 }
+
+export type User = {
+  id: number
+  email: string
+  firstName: string
+  lastName: string
+  role: string
+  staff: { firstName: string, lastName: string } | null
+  volunteer: { firstName: string, lastName: string } | null
+}
+
+export type CreateUserDto = {
+  firstName?: string
+  lastName?: string
+  email: string
+  password?: string
+  role: string
+  staffId?: number
+  volunteerId?: number
+}
+
+export type EditUserDto = Partial<CreateUserDto>

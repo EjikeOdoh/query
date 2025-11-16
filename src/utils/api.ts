@@ -2,6 +2,9 @@ import axios from 'axios';
 
 const baseURL = 'https://mis-3myy.onrender.com';
 
+// Local
+// const baseURL = 'http://localhost:3000';
+
 const client = axios.create({
     baseURL,
     headers: {

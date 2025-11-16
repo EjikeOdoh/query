@@ -23,6 +23,8 @@ import Target from "./Target";
 import PartnerDetails from "./PartnerDetails";
 import BulkUploads from "./BulkUploads";
 import { SpinnerCustom } from "@/components/Loader";
+import { Account } from "./Account";
+import Users from "./Users";
 
 export default function Navigation() {
 
@@ -42,6 +44,7 @@ export default function Navigation() {
 
     if (isSuccess) {
         sessionStorage.setItem('profile', JSON.stringify(data))
+
     }
 
     const accountType: ProfileState = data
@@ -52,6 +55,7 @@ export default function Navigation() {
                 {token ? (
                     <Route path="/" element={<Protected />} >
                         <Route index element={<Dashboard />} />
+                        <Route path='/profile' element={<Account />} />
                         {
                             (accountType.role === "editor" || accountType.role === "admin") && <>
                                 {/* Routes for students */}
@@ -84,6 +88,7 @@ export default function Navigation() {
                                     <Route path='/upload' element={<Upload />} />
                                     <Route path='/target' element={<Target />} />
                                     <Route path='/upload-history' element={<BulkUploads />} />
+                                    <Route path='/accounts' element={<Users />} />
                                 </>
                             )
                         }
@@ -100,7 +105,7 @@ export default function Navigation() {
                         <Route path='/' element={<LoginPage />} />
                         <Route
                             path="*"
-                            element={<Dashboard />}
+                            element={<LoginPage />}
                         />
 
                     </>

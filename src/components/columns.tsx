@@ -1,12 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 
 import { createColumnHelper } from "@tanstack/react-table";
-import { type HistoryTable, type StaffPayload, type VolunteersPayload } from "../utils/types";
+import { type Callback, type HistoryTable, type StaffPayload, type User, type VolunteersPayload } from "../utils/types";
 import { Active } from "./Tags";
 import { Inactive } from "./Tags";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, RotateCcw, Trash2 } from "lucide-react";
+import { TooltipButton } from "./ButtonWithTip";
 
 
 // Actions cell
@@ -140,5 +141,53 @@ export const hColumns = (onDelete: (tag: string) => void) => [
             size="icon">
             <Trash2 />
         </Button>
+    })
+]
+
+
+// For user table
+const uColumnHelper = createColumnHelper<User>()
+
+export const uColumns = (onReset: Callback, onDelete: Callback, onUpdate: Callback) => [
+
+    uColumnHelper.accessor(
+        row => row.firstName || row.staff?.firstName || row.volunteer?.firstName,
+        {
+            id: 'firstName',
+            header: 'First Name',
+            cell: prop => prop.getValue()
+        }
+    ),
+    uColumnHelper.accessor(
+        row => row.lastName || row.staff?.lastName || row.volunteer?.lastName,
+        {
+            id: 'lastName',
+            header: 'Last Name',
+            cell: prop => prop.getValue()
+        }
+    ),
+    uColumnHelper.accessor('email', {
+        cell: prop => prop.getValue(),
+        header: 'Email'
+    }),
+    uColumnHelper.accessor('role', {
+        cell: prop => prop.getValue(),
+        header: 'Role'
+    }),
+    uColumnHelper.display({
+        id: 'actions',
+        header: 'Actions',
+        cell: props => (
+            <div className="space-x-2">
+                <TooltipButton tooltip="Edit user" onClick={() => onUpdate(props.row.original.id)}>
+                    <Pencil />
+                </TooltipButton>
+                <TooltipButton tooltip="Reset Password" variant="outline" onClick={() => onReset(props.row.original.id)}>
+                    <RotateCcw color="#00AEEF" />
+                </TooltipButton>
+                <TooltipButton tooltip="Delete User" variant="destructive" onClick={() => onDelete(props.row.original.id)}>
+                    <Trash2 />
+                </TooltipButton>
+            </div>)
     })
 ]
