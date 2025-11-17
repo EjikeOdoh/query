@@ -60,7 +60,7 @@ export default function Volunteers() {
     }
 
     function removeUser(id: number) {
-        alert(id)
+      deleteUserMutation.mutate({id})
     }
 
     return (

@@ -55,7 +55,7 @@ export default function Staff() {
     }
 
     function removeUser(id: number) {
-        alert(id)
+        deleteUserMutation.mutate({id})
     }
 
     return (

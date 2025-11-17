@@ -2,12 +2,9 @@ import Container from "@/components/Container";
 import { SpinnerCustom } from "@/components/Loader";
 import UsersTable from "@/components/UsersTable";
 import { useDeleteUser, useGetAllUsers, useUpdateUser } from "@/hooks/use-admin";
-import { type EditUserDto } from "@/utils/types";
-import { useState } from "react";
 
 export default function Users() {
     const { isLoading, data, refetch } = useGetAllUsers()
-    const [editUserDto, setEditUserDto] = useState<Partial<EditUserDto>>()
 
     const updateUserMutation = useUpdateUser(refetch)
 

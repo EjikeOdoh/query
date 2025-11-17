@@ -4,9 +4,9 @@ import Heading from "@/components/Heading";
 import Row from "@/components/Row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { dateFormatter, extractInitials, extractNames, getStaff, getVolunteer, updateData } from "@/utils/fn";
-import type { ProfileState, StaffDetails, VolunteerDetails } from "@/utils/types";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { dateFormatter, extractInitials, extractNames, updateData } from "@/utils/fn";
+import type { ProfileState } from "@/utils/types";
+import { useQueryClient} from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
