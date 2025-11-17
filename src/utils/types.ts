@@ -106,8 +106,8 @@ export type TokenState = {
 };
 
 export interface ProfileState {
-  id: number
   role: "admin" | "editor" | "viewer" | null
+  id?: number
   email?: string
   firstName?: string
   lastName?: string
