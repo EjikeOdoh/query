@@ -9,7 +9,7 @@ import { ChevronLeft, ShieldOff, Trash2 } from "lucide-react";
 import { useDeleteStudent } from "@/hooks/use-students";
 import Modal from "@/components/Dialog";
 import { Button } from "@/components/ui/button";
-import { SpinnerCustom } from "@/components/Loader";
+import LoadingLayout from "@/components/LoadingLayout";
 
 export default function Search() {
     const { state }: { state: string } = useLocation()
@@ -61,11 +61,11 @@ export default function Search() {
     }
 
     if (isLoading) {
-        return <SpinnerCustom />
+        return <LoadingLayout label="Student Search" />
     }
 
     return (
-        <Container label="Student search">
+        <Container label="Student Search">
             <div className="w-fit">
                 <NavLink to="/students" className="flex items-center gap-2 text-[#171717] font-light text-xs" replace={true}>
                     <ChevronLeft color="#171717" size={14} />
@@ -74,7 +74,12 @@ export default function Search() {
             </div>
             <SearchForm action={logInput} />
             {
-                data && (data.students.length > 0 ? <StudentTable data={data.students} remove={selectStudent} source="search" query={name} /> : <p className="">Student with name: <span className="font-bold text-xl text-[#00AEEF]">{name}</span> not found.</p>)
+                data && (data.students.length > 0 ? <StudentTable
+                    data={data.students}
+                    remove={selectStudent}
+                    source="search"
+                    query={name}
+                /> : <p className="">Student with name: <span className="font-bold text-xl text-[#00AEEF]">{name}</span> not found.</p>)
             }
             <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
                 <div className="space-y-10">

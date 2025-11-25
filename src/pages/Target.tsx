@@ -1,7 +1,8 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
+import ErrorLayout from "@/components/ErrorLayout";
 import Heading from "@/components/Heading";
-import { SpinnerCustom } from "@/components/Loader";
+import LoadingLayout from "@/components/LoadingLayout";
 import TargetsTable from "@/components/TargetsTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,95 +69,96 @@ export default function Target() {
 
 
     if (isLoading) {
-        return <SpinnerCustom />
+        return <LoadingLayout label="Yearly Target" />
     }
 
     if (isError) {
-        console.log(error)
-        return <span>Error: {error.message}</span>
+        return <ErrorLayout label="Yearly Target" text={error.message} />
     }
 
-
-    return (
-        <Container label="Yearly Target">
-            <div className="flex gap-5 items-center justify-between">
-                <Button
-                    className="text-sm"
-                    onClick={openAddModal}
-                >
-                    <CircleFadingPlus />
-                    <span>Add Target</span>
-                </Button>
-            </div>
-            {
-                data!.length > 0 ? <TargetsTable data={data || []}
-                    edit={openEditModal}
-                    remove={handleDeleteTarget}
-                /> : <div>
-                    <h1>No Target record yet!</h1>
+    if (data) {
+        return (
+            <Container label="Yearly Target">
+                <div className="flex gap-5 items-center justify-between">
+                    <Button
+                        className="text-sm"
+                        onClick={openAddModal}
+                    >
+                        <CircleFadingPlus />
+                        <span>Add Target</span>
+                    </Button>
                 </div>
-            }
-
-
-            {/* Add target modal */}
-            <Modal isOpen={isAddModalOpen} onClose={closeModal}>
-                <Heading text="Add Target" />
-                <form action={handleAddTarget}>
-                    <div className="flex flex-col gap-4 mb-5">
-                        <Input
-                            name="year"
-                            placeholder="Year"
-                            type="number"
-                            maxLength={4}
-                            required
-                            className="flex-1"
-                            showLabel={true}
-                            value={createTargetDto?.year ?? ""}
-                            onChange={e => updateData(e, setCreateTargetDto)}
-                        />
-                        <Input
-                            name="target"
-                            placeholder="Target"
-                            type="number"
-                            required
-                            className="flex-1"
-                            showLabel={true}
-                            value={createTargetDto?.target ?? ""}
-                            onChange={e => updateData(e, setCreateTargetDto)}
-                        />
+                {
+                    data!.length > 0 ? <TargetsTable data={data || []}
+                        edit={openEditModal}
+                        remove={handleDeleteTarget}
+                    /> : <div>
+                        <h1>No Target record yet!</h1>
                     </div>
-                    <Button className="w-full">Add Target</Button>
-                </form>
-            </Modal>
+                }
 
-            {/* Edit target modal */}
-            <Modal isOpen={isEditModalOpen} onClose={closeModal}>
-                <Heading text="Edit Target" />
-                <form action={handleEditTarget}>
-                    <div className="flex flex-col gap-4 mb-5">
-                        <Input
-                            name="year"
-                            placeholder="Year"
-                            type="number"
-                            className="flex-1"
-                            showLabel={true}
-                            value={editTargetDto?.year ?? ""}
-                            onChange={e => updateData(e, setEditTargetDto)}
-                        />
 
-                        <Input
-                            name="target"
-                            placeholder="Target"
-                            type="number"
-                            className="flex-1"
-                            showLabel={true}
-                            value={editTargetDto?.target ?? ""}
-                            onChange={e => updateData(e, setEditTargetDto)}
-                        />
-                    </div>
-                    <Button className="w-full">Edit Target</Button>
-                </form>
-            </Modal>
-        </Container>
-    )
+                {/* Add target modal */}
+                <Modal isOpen={isAddModalOpen} onClose={closeModal}>
+                    <Heading text="Add Target" />
+                    <form action={handleAddTarget}>
+                        <div className="flex flex-col gap-4 mb-5">
+                            <Input
+                                name="year"
+                                placeholder="Year"
+                                type="number"
+                                maxLength={4}
+                                required
+                                className="flex-1"
+                                showLabel={true}
+                                value={createTargetDto?.year ?? ""}
+                                onChange={e => updateData(e, setCreateTargetDto)}
+                            />
+                            <Input
+                                name="target"
+                                placeholder="Target"
+                                type="number"
+                                required
+                                className="flex-1"
+                                showLabel={true}
+                                value={createTargetDto?.target ?? ""}
+                                onChange={e => updateData(e, setCreateTargetDto)}
+                            />
+                        </div>
+                        <Button className="w-full">Add Target</Button>
+                    </form>
+                </Modal>
+
+                {/* Edit target modal */}
+                <Modal isOpen={isEditModalOpen} onClose={closeModal}>
+                    <Heading text="Edit Target" />
+                    <form action={handleEditTarget}>
+                        <div className="flex flex-col gap-4 mb-5">
+                            <Input
+                                name="year"
+                                placeholder="Year"
+                                type="number"
+                                className="flex-1"
+                                showLabel={true}
+                                value={editTargetDto?.year ?? ""}
+                                onChange={e => updateData(e, setEditTargetDto)}
+                            />
+
+                            <Input
+                                name="target"
+                                placeholder="Target"
+                                type="number"
+                                className="flex-1"
+                                showLabel={true}
+                                value={editTargetDto?.target ?? ""}
+                                onChange={e => updateData(e, setEditTargetDto)}
+                            />
+                        </div>
+                        <Button className="w-full">Edit Target</Button>
+                    </form>
+                </Modal>
+            </Container>
+        )
+    }
+
 }

@@ -15,7 +15,8 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate, NavLink } from "react-router";
 import { useGetPrograms } from "@/hooks/use-dashboard";
 import { useQueryClient } from "@tanstack/react-query";
-import { SpinnerCustom } from "@/components/Loader";
+import LoadingLayout from "@/components/LoadingLayout";
+import ErrorLayout from "@/components/ErrorLayout";
 
 
 export default function Student() {
@@ -27,6 +28,8 @@ export default function Student() {
             query: string
         }
     } = useLocation()
+
+    console.log(state)
 
     const navigate = useNavigate()
 
@@ -171,823 +174,656 @@ export default function Student() {
         }
     }, [data]);
 
-    if (!studentId) {
-        return <div>No student ID provided</div>;
-    }
 
     if (isError) {
-        return <div>Error: {error.message}</div>;
-    }
-
-    if (!data) {
-        return <SpinnerCustom />;
+        return <ErrorLayout label="Student Details" text={error.message} />
     }
 
     if (isLoading || programs.isLoading || isPending || updateGradeMutation.isPending || addGradeMutation.isPending || updateParticipationMutation.isPending || addPartipationMutation.isPending || deleteParticipationMutation.isPending || deleteGradeMutation.isPending || deleteStudentMutation.isPending) {
-        return <SpinnerCustom />;
+        return <LoadingLayout label="Student Details" />;
     }
 
-    const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, careerChoice1, careerChoice2, email, participations, grades } = data
-
-
-    return (
-        <div className="flex flex-col">
-            <Header
-                label="Student Information"
-            />
-            <div className="pt-5 pb-20">
-                <div className="w-11/12 m-auto space-y-10">
-                    <div className="py-6 px-10 bg-white rounded-2xl space-y-10">
-                        <div>
-                            <NavLink to={isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state.query}>
-                                <ChevronLeft color="#171717" size={14} />
-                                Back to Dashboard
-                            </NavLink>
-                        </div>
-
-                        <div className="flex justify-between items-start">
-                            <div className="flex items-center gap-4">
-                                <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
-                                    <p className="text-3xl font-semibold text-[#008BCC]">{firstName[0]}{lastName[0]}</p>
-                                </div>
-                                <div>
-                                    <h1 className="font-bold text-lg text-black">{firstName} {lastName}</h1>
-                                    <small>Since {yearJoined}</small>
-                                </div>
+    if (data) {
+        const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, careerChoice1, careerChoice2, email, participations, grades } = data
+    
+        return (
+            <div className="flex flex-col">
+                <Header
+                    label="Student Information"
+                />
+                <div className="pt-5 pb-20">
+                    <div className="w-11/12 m-auto space-y-10">
+                        <div className="py-6 px-10 bg-white rounded-2xl space-y-10">
+                            <div>
+                                <NavLink to={isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state.query}>
+                                    <ChevronLeft color="#171717" size={14} />
+                                    Back to Dashboard
+                                </NavLink>
                             </div>
-
-                            <div className="flex items-center justify-center gap-2">
-                                <Button variant="ghost" size="icon" onClick={openEditModal}>
-                                    <Pencil color="#171717" />
-                                </Button>
-                                <Button variant="ghost" size="icon" onClick={openDeleteModal}>
-                                    <Trash2 color="#171717" />
-                                </Button>
-                            </div>
-
-                        </div>
-
-                        <div className="flex flex-col md:flex-row gap-10 md:gap-0">
-                            <div className="flex-1 space-y-5">
-                                <Heading
-                                    text="Personal Details"
-                                />
-                                <div className="space-y-2">
-                                    <Row
-                                        label="Date of Birth"
-                                        value={dateFormatter(dob)}
-                                    />
-
-                                    <Row
-                                        label="Country"
-                                        value={country}
-                                    />
-
-                                    <Row
-                                        label="School"
-                                        value={school}
-                                    />
-
-                                    <Row
-                                        label="Class"
-                                        value={currentClass}
-                                    />
-
-                                    <Row
-                                        label="Favorite Subject"
-                                        value={favSubject}
-                                    />
-
-                                    <Row
-                                        label="Most Difficult Subject"
-                                        value={difficultSubject}
-                                    />
-
-                                    <Row
-                                        label="Career Choice 1"
-                                        value={careerChoice1}
-                                    />
-
-                                    <Row
-                                        label="Career Choice 2"
-                                        value={careerChoice2}
-                                    />
-
-                                </div>
-                            </div>
-                            <div className="flex-1 space-y-10">
-                                <div className="space-y-5">
-                                    <Heading
-                                        text="Parents Details"
-                                    />
-                                    <div className="space-y-2">
-                                        <Row
-                                            label="Father's Name"
-                                            value={fatherFirstName}
-                                        />
-
-                                        <Row
-                                            label="Mother's Name"
-                                            value={motherFirstName}
-                                        />
+    
+                            <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
+                                        <p className="text-3xl font-semibold text-[#008BCC]">{firstName[0]}{lastName[0]}</p>
+                                    </div>
+                                    <div>
+                                        <h1 className="font-bold text-lg text-black">{firstName} {lastName}</h1>
+                                        <small>Since {yearJoined}</small>
                                     </div>
                                 </div>
-                                <div className="space-y-5">
-                                    <Heading
-                                        text="Contacts"
-                                    />
-                                    <div className="space-y-2">
-
-                                        <Row
-                                            label="Email Address"
-                                            value={email}
-                                        />
-
-                                        <Row
-                                            label="Phone Number"
-                                            value={phone}
-                                        />
-
-
-                                        <Row
-                                            label="House Address"
-                                            value={address}
-                                        />
-                                        <Row
-                                            label="Father's Phone Number"
-                                            value={fatherPhone}
-                                        />
-                                        <Row
-                                            label="Mother's Phone Number"
-                                            value={motherPhone}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Grades table */}
-                    {
-                        (!data.school || !data?.school.includes('University')) && (
-                            <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
-                                <div className="flex justify-between items-center">
-                                    <Heading text="Grades" />
-                                    <Button onClick={openAddGradeModal}>
-                                        Add Grades
+    
+                                <div className="flex items-center justify-center gap-2">
+                                    <Button variant="ghost" size="icon" onClick={openEditModal}>
+                                        <Pencil color="#171717" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" onClick={openDeleteModal}>
+                                        <Trash2 color="#171717" />
                                     </Button>
                                 </div>
-
-                                {
-                                    data.school !== "University" && (
-                                        <Table className="rounded-xl overflow-hidden">
-                                            <TableHeader className="">
-                                                <TableRow className="bg-[#E6F7FF]">
-                                                    <TableHead className="text-[#808080] text-sm font-light">Year</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Mth</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Eng</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Chm</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Phy</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Bio</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Gov</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Eco</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Lit</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Act</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light min-w-10">Com</TableHead>
-                                                    <TableHead className="text-[#808080] text-sm font-light w-28">Actions</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody >
-                                                {grades.map(grade => (
-                                                    <TableRow key={grade.id}>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.year}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.math}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.english}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.chemistry}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.physics}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.biology}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.government}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.economics}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.literature}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.accounting}</TableCell>
-                                                        <TableCell className="text-[#171717] text-sm font-light">{grade.commerce}</TableCell>
-                                                        <TableCell className="flex items-center justify-center gap-2">
-                                                            <Button variant="ghost" size="icon" onClick={() => openEditGradeModal(grade.id)}>
-                                                                <Pencil color="#171717" />
-                                                            </Button>
-                                                            <Button variant="ghost" size="icon"
-                                                                onClick={() => handleDeleteGrade(grade.id)}
-                                                            >
-                                                                <Trash2 color="#171717" />
-                                                            </Button>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    )
-                                }
-
+    
                             </div>
-                        )
-                    }
-
-                    {/* Participation table */}
-                    <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
-                        <div className="flex justify-between items-center">
-                            <Heading text="Participations" />
-                            <Button onClick={openAddParticipationModal}>Add Participation</Button>
+    
+                            <div className="flex flex-col md:flex-row gap-10 md:gap-0">
+                                <div className="flex-1 space-y-5">
+                                    <Heading
+                                        text="Personal Details"
+                                    />
+                                    <div className="space-y-2">
+                                        <Row
+                                            label="Date of Birth"
+                                            value={dateFormatter(dob)}
+                                        />
+    
+                                        <Row
+                                            label="Country"
+                                            value={country}
+                                        />
+    
+                                        <Row
+                                            label="School"
+                                            value={school}
+                                        />
+    
+                                        <Row
+                                            label="Class"
+                                            value={currentClass}
+                                        />
+    
+                                        <Row
+                                            label="Favorite Subject"
+                                            value={favSubject}
+                                        />
+    
+                                        <Row
+                                            label="Most Difficult Subject"
+                                            value={difficultSubject}
+                                        />
+    
+                                        <Row
+                                            label="Career Choice 1"
+                                            value={careerChoice1}
+                                        />
+    
+                                        <Row
+                                            label="Career Choice 2"
+                                            value={careerChoice2}
+                                        />
+    
+                                    </div>
+                                </div>
+                                <div className="flex-1 space-y-10">
+                                    <div className="space-y-5">
+                                        <Heading
+                                            text="Parents Details"
+                                        />
+                                        <div className="space-y-2">
+                                            <Row
+                                                label="Father's Name"
+                                                value={fatherFirstName}
+                                            />
+    
+                                            <Row
+                                                label="Mother's Name"
+                                                value={motherFirstName}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-5">
+                                        <Heading
+                                            text="Contacts"
+                                        />
+                                        <div className="space-y-2">
+    
+                                            <Row
+                                                label="Email Address"
+                                                value={email}
+                                            />
+    
+                                            <Row
+                                                label="Phone Number"
+                                                value={phone}
+                                            />
+    
+    
+                                            <Row
+                                                label="House Address"
+                                                value={address}
+                                            />
+                                            <Row
+                                                label="Father's Phone Number"
+                                                value={fatherPhone}
+                                            />
+                                            <Row
+                                                label="Mother's Phone Number"
+                                                value={motherPhone}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <Table className="rounded-xl overflow-hidden">
-                            <TableHeader className="">
-                                <TableRow className="bg-[#E6F7FF]">
-                                    <TableHead className="text-[#808080] text-sm font-light min-w-28">Program</TableHead>
-                                    <TableHead className="text-[#808080] text-sm font-light min-w-28">Year</TableHead>
-                                    <TableHead className="text-[#808080] text-sm font-light min-w-28">Quarter</TableHead>
-                                    <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody >
-                                {participations.map(particpation => (
-                                    <TableRow key={particpation.participation_id}>
-                                        <TableCell className="text-[#171717] text-sm font-light">{particpation.program_program}</TableCell>
-                                        <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_year}</TableCell>
-                                        <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_quarter}</TableCell>
-                                        <TableCell className="flex items-center justify-center gap-2">
-
-                                            <Button variant="ghost" size="icon"
-                                                onClick={() => openEditParticipationModal(particpation.participation_id)} >
-                                                <Pencil color="#171717" />
-                                            </Button>
-                                            <Button variant="ghost" size="icon"
-                                                onClick={() => handleDeleteParticipation(particpation.participation_id)}
-                                            >
-                                                <Trash2 color="#171717" />
-                                            </Button>
-                                        </TableCell>
+    
+                        {/* Grades table */}
+                        {
+                            (!data.school || !data?.school.includes('University')) && (
+                                <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
+                                    <div className="flex justify-between items-center">
+                                        <Heading text="Grades" />
+                                        <Button onClick={openAddGradeModal}>
+                                            Add Grades
+                                        </Button>
+                                    </div>
+    
+                                    {
+                                        data.school !== "University" && (
+                                            <Table className="rounded-xl overflow-hidden">
+                                                <TableHeader className="">
+                                                    <TableRow className="bg-[#E6F7FF]">
+                                                        <TableHead className="text-[#808080] text-sm font-light">Year</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Mth</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Eng</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Chm</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Phy</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Bio</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Gov</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Eco</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Lit</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Act</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light min-w-10">Com</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light w-28">Actions</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody >
+                                                    {grades.map(grade => (
+                                                        <TableRow key={grade.id}>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.year}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.math}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.english}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.chemistry}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.physics}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.biology}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.government}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.economics}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.literature}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.accounting}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.commerce}</TableCell>
+                                                            <TableCell className="flex items-center justify-center gap-2">
+                                                                <Button variant="ghost" size="icon" onClick={() => openEditGradeModal(grade.id)}>
+                                                                    <Pencil color="#171717" />
+                                                                </Button>
+                                                                <Button variant="ghost" size="icon"
+                                                                    onClick={() => handleDeleteGrade(grade.id)}
+                                                                >
+                                                                    <Trash2 color="#171717" />
+                                                                </Button>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        )
+                                    }
+    
+                                </div>
+                            )
+                        }
+    
+                        {/* Participation table */}
+                        <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
+                            <div className="flex justify-between items-center">
+                                <Heading text="Participations" />
+                                <Button onClick={openAddParticipationModal}>Add Participation</Button>
+                            </div>
+    
+                            <Table className="rounded-xl overflow-hidden">
+                                <TableHeader className="">
+                                    <TableRow className="bg-[#E6F7FF]">
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28">Program</TableHead>
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28">Year</TableHead>
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28">Quarter</TableHead>
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28">Actions</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-
+                                </TableHeader>
+                                <TableBody >
+                                    {participations.map(particpation => (
+                                        <TableRow key={particpation.participation_id}>
+                                            <TableCell className="text-[#171717] text-sm font-light">{particpation.program_program}</TableCell>
+                                            <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_year}</TableCell>
+                                            <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_quarter}</TableCell>
+                                            <TableCell className="flex items-center justify-center gap-2">
+    
+                                                <Button variant="ghost" size="icon"
+                                                    onClick={() => openEditParticipationModal(particpation.participation_id)} >
+                                                    <Pencil color="#171717" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon"
+                                                    onClick={() => handleDeleteParticipation(particpation.participation_id)}
+                                                >
+                                                    <Trash2 color="#171717" />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+    
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            {/* Edit student modal */}
-            <Modal
-                isOpen={isEditModalOpen}
-                onClose={closeEditModal}
-            >
-
-                <Heading
-                    text="Edit Student's Details"
-                />
-
-                <form action={handleSubmitStudentData}>
-                    <div className="flex flex-col gap-4 py-5">
-                        <Input
-                            name="yearJoined"
-                            placeholder="Year Joined"
-                            type="number"
-                            maxLength={4}
-                            value={editData?.yearJoined ? String(editData?.yearJoined) : ""}
-                            onChange={e => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="school"
-                            placeholder="School"
-                            value={editData?.school ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="currentClass"
-                            placeholder="Current Class"
-                            value={editData?.currentClass ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="lastName"
-                            placeholder="Last Name"
-                            value={editData?.lastName ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="firstName"
-                            placeholder="First Name"
-                            value={editData?.firstName ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="dob"
-                            placeholder="Date of Birth"
-                            type="date"
-                            value={editData?.dob ? new Date(editData?.dob).toISOString().split("T")[0] : ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="phone"
-                            placeholder="Phone Number"
-                            type="tel"
-                            value={editData?.phone ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            type="email"
-                            name="email"
-                            placeholder="Email Address"
-                            value={editData?.email ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="country"
-                            placeholder="Country"
-                            value={editData?.country ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            type="text"
-                            name="address"
-                            placeholder="House Address"
-                            value={editData?.address ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="fatherLastName"
-                            placeholder="Father's Last Name"
-                            value={editData?.fatherLastName ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="fatherFirstName"
-                            placeholder="Father's First Name"
-                            value={editData?.fatherFirstName ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="fatherEducation"
-                            placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.fatherEducation ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="fatherPhone"
-                            placeholder="Father's Phone Number"
-                            value={editData?.fatherPhone ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="fatherJob"
-                            placeholder="Father's Job"
-                            value={editData?.fatherJob ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="motherLastName"
-                            placeholder="Mother's Last Name"
-                            value={editData?.motherLastName ?? ""}
-                            showLabel={true}
-                            onChange={(e) => updateData(e, setEditData)}
-                        />
-
-                        <Input
-                            name="motherFirstName"
-                            placeholder="Mother's First Name"
-                            value={editData?.motherFirstName ?? ""}
-                            showLabel={true}
-                            onChange={(e) => updateData(e, setEditData)}
-                        />
-
-                        <Input
-                            name="motherEducation"
-                            placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
-                            value={editData?.motherEducation ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="motherPhone"
-                            placeholder="Mother's Phone Number"
-                            value={editData?.motherPhone ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="motherJob"
-                            placeholder="Mother's Job"
-                            value={editData?.motherJob ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <Input
-                            name="noOfSisters"
-                            placeholder="Number of Sisters"
-                            value={editData?.noOfSisters ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-                        <Input
-                            name="noOfBrothers"
-                            placeholder="Number of Brothers"
-                            value={editData?.noOfBrothers ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-                        <Input
-                            name="position"
-                            placeholder="Position i.e Oldest, Second, Third, Youngest"
-                            value={editData?.position ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-
-                        <div>
-                            <label className="text-sm font-light">Focus i.e Science, Art, Technology, Commercial</label>
-                            <Select
-                                name="focus"
-                                value={editData?.focus ?? ""}
-                                onValueChange={(x) => setEditData({
-                                    ...editData, focus: x
-                                })}
-                            >
-                                <SelectTrigger className="flex-1 min-w-1/2 w-full">
-                                    <SelectValue placeholder="Focus i.e Science, Art, Technology, Commercial" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                    <SelectGroup>
-                                        <SelectItem value="Science">Science</SelectItem>
-                                        <SelectItem value="Arts">Arts</SelectItem>
-                                        <SelectItem value="Commerce">Commerce</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <Input
-                            name="favSubject"
-                            placeholder="Favorite Subject"
-                            value={editData?.favSubject ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-                        <Input
-                            name="difficultSubject"
-                            placeholder="Most Difficult Subject"
-                            value={editData?.difficultSubject ?? ""}
-                            showLabel={true}
-                            onChange={(e) => updateData(e, setEditData)}
-                        />
-                        <Input
-                            name="careerChoice1"
-                            placeholder="Career Choice 1"
-                            value={editData?.careerChoice1 ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-                        <Input
-                            name="careerChoice2"
-                            placeholder="Career Choice 2"
-                            value={editData?.careerChoice2 ?? ""}
-                            onChange={(e) => updateData(e, setEditData)}
-                            showLabel={true}
-                        />
-                    </div>
-
-                    <Button className="w-full">Submit</Button>
-                </form>
-            </Modal>
-
-            {/* Delete student modal */}
-            <Modal isOpen={isDeleteModalOpen} onClose={closeEditModal}>
-                <div className="space-y-10">
-                    <div className="space-y-8">
-                        <Trash2 size={90} className="mx-auto" />
-                        <div>
-                            <h3 className="font-bold text-3xl text-center">Delete Student</h3>
-                            <p className="font-light text-center">Are you sure you want to delete this student?</p>
-                        </div>
-
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Button variant='outline' className="flex-1" onClick={closeEditModal}>No</Button>
-                        <Button variant="destructive" className="flex-1" onClick={handleDeleteStudent}>Yes, Delete</Button>
-                    </div>
-                </div>
-            </Modal>
-
-            {/* Edit grade modal */}
-            <Modal isOpen={isEditGradeModalOpen} onClose={closeEditModal}>
-                <form
-                    className="flex flex-col gap-5"
-                    action={handleUpdateGrade}
+    
+                {/* Edit student modal */}
+                <Modal
+                    isOpen={isEditModalOpen}
+                    onClose={closeEditModal}
                 >
+    
                     <Heading
-                        text="Edit Grades"
-
+                        text="Edit Student's Details"
                     />
-                    <div className="flex flex-col gap-4">
-                        <Input
-                            name="year"
-                            placeholder="Year"
-                            type="number"
-                            maxLength={4}
-                            value={editGradesData.year! ?? ""}
-                            onChange={(e) => updateData(e, setEditGradesData)}
-                            showLabel={true}
-                        />
-                        <div className="flex flex-col md:flex-row gap-4">
+    
+                    <form action={handleSubmitStudentData}>
+                        <div className="flex flex-col gap-4 py-5">
                             <Input
-                                name="math"
-                                placeholder="Math Grade"
-                                value={editGradesData.math! ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
+                                name="yearJoined"
+                                placeholder="Year Joined"
+                                type="number"
+                                maxLength={4}
+                                value={editData?.yearJoined ? String(editData?.yearJoined) : ""}
+                                onChange={e => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="school"
+                                placeholder="School"
+                                value={editData?.school ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="currentClass"
+                                placeholder="Current Class"
+                                value={editData?.currentClass ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="lastName"
+                                placeholder="Last Name"
+                                value={editData?.lastName ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="firstName"
+                                placeholder="First Name"
+                                value={editData?.firstName ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="dob"
+                                placeholder="Date of Birth"
+                                type="date"
+                                value={editData?.dob ? new Date(editData?.dob).toISOString().split("T")[0] : ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="phone"
+                                placeholder="Phone Number"
+                                type="tel"
+                                value={editData?.phone ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                type="email"
+                                name="email"
+                                placeholder="Email Address"
+                                value={editData?.email ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="country"
+                                placeholder="Country"
+                                value={editData?.country ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                type="text"
+                                name="address"
+                                placeholder="House Address"
+                                value={editData?.address ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="fatherLastName"
+                                placeholder="Father's Last Name"
+                                value={editData?.fatherLastName ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="fatherFirstName"
+                                placeholder="Father's First Name"
+                                value={editData?.fatherFirstName ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="fatherEducation"
+                                placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
+                                value={editData?.fatherEducation ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="fatherPhone"
+                                placeholder="Father's Phone Number"
+                                value={editData?.fatherPhone ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="fatherJob"
+                                placeholder="Father's Job"
+                                value={editData?.fatherJob ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="motherLastName"
+                                placeholder="Mother's Last Name"
+                                value={editData?.motherLastName ?? ""}
+                                showLabel={true}
+                                onChange={(e) => updateData(e, setEditData)}
+                            />
+    
+                            <Input
+                                name="motherFirstName"
+                                placeholder="Mother's First Name"
+                                value={editData?.motherFirstName ?? ""}
+                                showLabel={true}
+                                onChange={(e) => updateData(e, setEditData)}
+                            />
+    
+                            <Input
+                                name="motherEducation"
+                                placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
+                                value={editData?.motherEducation ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="motherPhone"
+                                placeholder="Mother's Phone Number"
+                                value={editData?.motherPhone ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="motherJob"
+                                placeholder="Mother's Job"
+                                value={editData?.motherJob ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <Input
+                                name="noOfSisters"
+                                placeholder="Number of Sisters"
+                                value={editData?.noOfSisters ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
                             <Input
-                                name="english"
-                                placeholder="English Grade"
-                                value={editGradesData.english ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
+                                name="noOfBrothers"
+                                placeholder="Number of Brothers"
+                                value={editData?.noOfBrothers ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="position"
+                                placeholder="Position i.e Oldest, Second, Third, Youngest"
+                                value={editData?.position ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+    
+                            <div>
+                                <label className="text-sm font-light">Focus i.e Science, Art, Technology, Commercial</label>
+                                <Select
+                                    name="focus"
+                                    value={editData?.focus ?? ""}
+                                    onValueChange={(x) => setEditData({
+                                        ...editData, focus: x
+                                    })}
+                                >
+                                    <SelectTrigger className="flex-1 min-w-1/2 w-full">
+                                        <SelectValue placeholder="Focus i.e Science, Art, Technology, Commercial" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                        <SelectGroup>
+                                            <SelectItem value="Science">Science</SelectItem>
+                                            <SelectItem value="Arts">Arts</SelectItem>
+                                            <SelectItem value="Commerce">Commerce</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+    
+                            <Input
+                                name="favSubject"
+                                placeholder="Favorite Subject"
+                                value={editData?.favSubject ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="difficultSubject"
+                                placeholder="Most Difficult Subject"
+                                value={editData?.difficultSubject ?? ""}
+                                showLabel={true}
+                                onChange={(e) => updateData(e, setEditData)}
+                            />
+                            <Input
+                                name="careerChoice1"
+                                placeholder="Career Choice 1"
+                                value={editData?.careerChoice1 ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
+                                showLabel={true}
+                            />
+                            <Input
+                                name="careerChoice2"
+                                placeholder="Career Choice 2"
+                                value={editData?.careerChoice2 ?? ""}
+                                onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
                         </div>
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <Input
-                                name="chemistry"
-                                placeholder="Chemistry Grade"
-                                value={editGradesData.chemistry ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
-                                showLabel={true}
-                            />
-                            <Input
-                                name="physics"
-                                placeholder="Physics Grade"
-                                value={editGradesData.physics ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
-                                showLabel={true}
-                            />
+    
+                        <Button className="w-full">Submit</Button>
+                    </form>
+                </Modal>
+    
+                {/* Delete student modal */}
+                <Modal isOpen={isDeleteModalOpen} onClose={closeEditModal}>
+                    <div className="space-y-10">
+                        <div className="space-y-8">
+                            <Trash2 size={90} className="mx-auto" />
+                            <div>
+                                <h3 className="font-bold text-3xl text-center">Delete Student</h3>
+                                <p className="font-light text-center">Are you sure you want to delete this student?</p>
+                            </div>
+    
                         </div>
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <Input
-                                name="government"
-                                placeholder="Government Grade"
-                                value={editGradesData.government ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
-                                showLabel={true}
-                            />
-                            <Input
-                                name="economics"
-                                placeholder="Economics Grade"
-                                value={editGradesData.economics ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
-                                showLabel={true}
-                            />
-                        </div>
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <Input
-                                name="biology"
-                                placeholder="Biology Grade"
-                                value={editGradesData.biology ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
-                                showLabel={true}
-                            />
-                            <Input
-                                name="literature"
-                                placeholder="Literature in English Grade" value={editGradesData.literature ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
-                                showLabel={true}
-                            />
-                        </div>
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <Input
-                                name="accounting"
-                                placeholder="Accounting Grade"
-                                value={editGradesData.accounting ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
-                                showLabel={true}
-                            />
-                            <Input
-                                name="commerce"
-                                placeholder="Commerce Grade"
-                                value={editGradesData.commerce ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
-                                showLabel={true}
-                            />
+                        <div className="flex items-center gap-4">
+                            <Button variant='outline' className="flex-1" onClick={closeEditModal}>No</Button>
+                            <Button variant="destructive" className="flex-1" onClick={handleDeleteStudent}>Yes, Delete</Button>
                         </div>
                     </div>
-                    <Button className="w-full">Submit</Button>
-                </form>
-            </Modal>
-
-            {/* Edit participation modal */}
-            <Modal isOpen={isEditParticipationModalOpen} onClose={closeEditModal}>
-                <form action={handleEditParticipation}
-                    className="flex flex-col gap-5"
-                >
-                    <Heading
-                        text="Edit Participation"
-                    />
-                    <div className="flex flex-col gap-4">
-                        {/* Will fix this program dropdown later */}
-                        {/* <Select
-                            name="program"
-                            required
-                            value={String(editParticipationData.program_program) ?? ""}
-                            onValueChange={x => setEditParticipationData(prev => ({ ...prev, program_program: x }))}
-                        >
-                            <SelectTrigger className="w-full px-6">
-                                <SelectValue placeholder="Select program" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white py-4">
-                                <SelectGroup>
-                                    {programs.data?.map(program => (<SelectItem key={program.id} value={String(program.id)}>{program.program}</SelectItem>))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select> */}
-                        <Input
-                            name="year"
-                            type="number"
-                            placeholder="Year of Participation"
-                            required
-                            maxLength={4}
-                            value={editParticipationData.participation_year}
-                            onChange={(e) => setEditParticipationData(prev => ({ ...prev, participation_year: Number(e.target.value) }))}
+                </Modal>
+    
+                {/* Edit grade modal */}
+                <Modal isOpen={isEditGradeModalOpen} onClose={closeEditModal}>
+                    <form
+                        className="flex flex-col gap-5"
+                        action={handleUpdateGrade}
+                    >
+                        <Heading
+                            text="Edit Grades"
+    
                         />
-                        <Select
-                            name="quarter"
-                            onValueChange={x => setEditParticipationData(prev => ({ ...prev, participation_quarter: Number(x) }))}
-                        >
-                            <SelectTrigger className="w-full px-6">
-                                <SelectValue placeholder="Select Quarter" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white">
-                                <SelectGroup>
-                                    <SelectItem value="1">First</SelectItem>
-                                    <SelectItem value="2">Second</SelectItem>
-                                    <SelectItem value="3">Third</SelectItem>
-                                    <SelectItem value="4">Fourth</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <Button className="w-full">Submit</Button>
-                </form>
-            </Modal>
-
-            {/* Add grade modal */}
-            <Modal isOpen={isAddGradeModalOpen} onClose={closeEditModal} >
-                <form
-                    className="flex flex-col gap-5"
-                    action={handleAddGrade}
-                >
-                    <Heading
-                        text="Add Grades"
-
-                    />
-                    <div className="flex flex-col gap-4">
-                        <Input
-                            name="year"
-                            placeholder="Year"
-                            type="number"
-                            maxLength={4}
-                            value={addGradesData.year! ?? ""}
-                            onChange={(e) => updateData(e, setAddGradesData)}
-                            showLabel={true}
+                        <div className="flex flex-col gap-4">
+                            <Input
+                                name="year"
+                                placeholder="Year"
+                                type="number"
+                                maxLength={4}
+                                value={editGradesData.year! ?? ""}
+                                onChange={(e) => updateData(e, setEditGradesData)}
+                                showLabel={true}
+                            />
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="math"
+                                    placeholder="Math Grade"
+                                    value={editGradesData.math! ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="english"
+                                    placeholder="English Grade"
+                                    value={editGradesData.english ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="chemistry"
+                                    placeholder="Chemistry Grade"
+                                    value={editGradesData.chemistry ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="physics"
+                                    placeholder="Physics Grade"
+                                    value={editGradesData.physics ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="government"
+                                    placeholder="Government Grade"
+                                    value={editGradesData.government ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="economics"
+                                    placeholder="Economics Grade"
+                                    value={editGradesData.economics ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="biology"
+                                    placeholder="Biology Grade"
+                                    value={editGradesData.biology ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="literature"
+                                    placeholder="Literature in English Grade" value={editGradesData.literature ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="accounting"
+                                    placeholder="Accounting Grade"
+                                    value={editGradesData.accounting ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="commerce"
+                                    placeholder="Commerce Grade"
+                                    value={editGradesData.commerce ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                        </div>
+                        <Button className="w-full">Submit</Button>
+                    </form>
+                </Modal>
+    
+                {/* Edit participation modal */}
+                <Modal isOpen={isEditParticipationModalOpen} onClose={closeEditModal}>
+                    <form action={handleEditParticipation}
+                        className="flex flex-col gap-5"
+                    >
+                        <Heading
+                            text="Edit Participation"
                         />
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <Input
-                                name="math"
-                                placeholder="Math Grade"
-                                value={addGradesData.math! ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                            <Input
-                                name="english"
-                                placeholder="English Grade"
-                                value={addGradesData.english ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                        </div>
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <Input
-                                name="chemistry"
-                                placeholder="Chemistry Grade"
-                                value={addGradesData.chemistry ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                            <Input
-                                name="physics"
-                                placeholder="Physics Grade"
-                                value={addGradesData.physics ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                        </div>
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <Input
-                                name="government"
-                                placeholder="Government Grade"
-                                value={addGradesData.government ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                            <Input
-                                name="economics"
-                                placeholder="Economics Grade"
-                                value={addGradesData.economics ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                        </div>
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <Input
-                                name="biology"
-                                placeholder="Biology Grade"
-                                value={addGradesData.biology ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                            <Input
-                                name="literature"
-                                placeholder="Literature in English Grade" value={addGradesData.literature ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                        </div>
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <Input
-                                name="accounting"
-                                placeholder="Accounting Grade"
-                                value={addGradesData.accounting ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                            <Input
-                                name="commerce"
-                                placeholder="Commerce Grade"
-                                value={addGradesData.commerce ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
-                        </div>
-                    </div>
-                    <Button className="w-full">Submit</Button>
-                </form>
-            </Modal>
-
-            {/* Add participation modal */}
-            <Modal isOpen={isAddParticipationModalOpen} onClose={closeEditModal}>
-                <form action={handleAddParticipation}
-                    className="flex flex-col gap-5"
-                >
-                    <Heading
-                        text="Add Participation"
-                    />
-                    <div className="flex flex-col gap-4">
-                        <div>
-                            <label htmlFor="program" className="text-sm font-light">Select Program</label>
-                            <Select
+                        <div className="flex flex-col gap-4">
+                            {/* Will fix this program dropdown later */}
+                            {/* <Select
                                 name="program"
                                 required
-                                value={String(addParticipationData?.program_program)}
-                                onValueChange={x => setAddParticipationData(prev => ({ ...prev, program_program: Number(x) }))}
+                                value={String(editParticipationData.program_program) ?? ""}
+                                onValueChange={x => setEditParticipationData(prev => ({ ...prev, program_program: x }))}
                             >
                                 <SelectTrigger className="w-full px-6">
                                     <SelectValue placeholder="Select program" />
@@ -997,25 +833,19 @@ export default function Student() {
                                         {programs.data?.map(program => (<SelectItem key={program.id} value={String(program.id)}>{program.program}</SelectItem>))}
                                     </SelectGroup>
                                 </SelectContent>
-                            </Select>
-
-                        </div>
-                        <Input
-                            name="year"
-                            type="number"
-                            placeholder="Year of Participation"
-                            required
-                            maxLength={4}
-                            value={addParticipationData.participation_year ?? 0}
-                            onChange={(e) => setAddParticipationData(prev => ({ ...prev, participation_year: Number(e.target.value) }))}
-                            showLabel={true}
-                        />
-                        <div>
-                            <label htmlFor="program" className="text-sm font-light">Select Quarter</label>
+                            </Select> */}
+                            <Input
+                                name="year"
+                                type="number"
+                                placeholder="Year of Participation"
+                                required
+                                maxLength={4}
+                                value={editParticipationData.participation_year}
+                                onChange={(e) => setEditParticipationData(prev => ({ ...prev, participation_year: Number(e.target.value) }))}
+                            />
                             <Select
                                 name="quarter"
-                                value={String(addParticipationData.participation_quarter)}
-                                onValueChange={x => setAddParticipationData(prev => ({ ...prev, participation_quarter: Number(x) }))}
+                                onValueChange={x => setEditParticipationData(prev => ({ ...prev, participation_quarter: Number(x) }))}
                             >
                                 <SelectTrigger className="w-full px-6">
                                     <SelectValue placeholder="Select Quarter" />
@@ -1030,10 +860,177 @@ export default function Student() {
                                 </SelectContent>
                             </Select>
                         </div>
-                    </div>
-                    <Button className="w-full">Submit</Button>
-                </form>
-            </Modal>
-        </div >
-    );
+                        <Button className="w-full">Submit</Button>
+                    </form>
+                </Modal>
+    
+                {/* Add grade modal */}
+                <Modal isOpen={isAddGradeModalOpen} onClose={closeEditModal} >
+                    <form
+                        className="flex flex-col gap-5"
+                        action={handleAddGrade}
+                    >
+                        <Heading
+                            text="Add Grades"
+    
+                        />
+                        <div className="flex flex-col gap-4">
+                            <Input
+                                name="year"
+                                placeholder="Year"
+                                type="number"
+                                maxLength={4}
+                                value={addGradesData.year! ?? ""}
+                                onChange={(e) => updateData(e, setAddGradesData)}
+                                showLabel={true}
+                            />
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="math"
+                                    placeholder="Math Grade"
+                                    value={addGradesData.math! ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="english"
+                                    placeholder="English Grade"
+                                    value={addGradesData.english ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="chemistry"
+                                    placeholder="Chemistry Grade"
+                                    value={addGradesData.chemistry ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="physics"
+                                    placeholder="Physics Grade"
+                                    value={addGradesData.physics ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="government"
+                                    placeholder="Government Grade"
+                                    value={addGradesData.government ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="economics"
+                                    placeholder="Economics Grade"
+                                    value={addGradesData.economics ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="biology"
+                                    placeholder="Biology Grade"
+                                    value={addGradesData.biology ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="literature"
+                                    placeholder="Literature in English Grade" value={addGradesData.literature ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="accounting"
+                                    placeholder="Accounting Grade"
+                                    value={addGradesData.accounting ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="commerce"
+                                    placeholder="Commerce Grade"
+                                    value={addGradesData.commerce ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                            </div>
+                        </div>
+                        <Button className="w-full">Submit</Button>
+                    </form>
+                </Modal>
+    
+                {/* Add participation modal */}
+                <Modal isOpen={isAddParticipationModalOpen} onClose={closeEditModal}>
+                    <form action={handleAddParticipation}
+                        className="flex flex-col gap-5"
+                    >
+                        <Heading
+                            text="Add Participation"
+                        />
+                        <div className="flex flex-col gap-4">
+                            <div>
+                                <label htmlFor="program" className="text-sm font-light">Select Program</label>
+                                <Select
+                                    name="program"
+                                    required
+                                    value={String(addParticipationData?.program_program)}
+                                    onValueChange={x => setAddParticipationData(prev => ({ ...prev, program_program: Number(x) }))}
+                                >
+                                    <SelectTrigger className="w-full px-6">
+                                        <SelectValue placeholder="Select program" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white py-4">
+                                        <SelectGroup>
+                                            {programs.data?.map(program => (<SelectItem key={program.id} value={String(program.id)}>{program.program}</SelectItem>))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+    
+                            </div>
+                            <Input
+                                name="year"
+                                type="number"
+                                placeholder="Year of Participation"
+                                required
+                                maxLength={4}
+                                value={addParticipationData.participation_year ?? 0}
+                                onChange={(e) => setAddParticipationData(prev => ({ ...prev, participation_year: Number(e.target.value) }))}
+                                showLabel={true}
+                            />
+                            <div>
+                                <label htmlFor="program" className="text-sm font-light">Select Quarter</label>
+                                <Select
+                                    name="quarter"
+                                    value={String(addParticipationData.participation_quarter)}
+                                    onValueChange={x => setAddParticipationData(prev => ({ ...prev, participation_quarter: Number(x) }))}
+                                >
+                                    <SelectTrigger className="w-full px-6">
+                                        <SelectValue placeholder="Select Quarter" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                        <SelectGroup>
+                                            <SelectItem value="1">First</SelectItem>
+                                            <SelectItem value="2">Second</SelectItem>
+                                            <SelectItem value="3">Third</SelectItem>
+                                            <SelectItem value="4">Fourth</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                        <Button className="w-full">Submit</Button>
+                    </form>
+                </Modal>
+            </div >
+        );
+    }
 }

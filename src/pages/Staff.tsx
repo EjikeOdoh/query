@@ -1,5 +1,6 @@
 import Container from "@/components/Container"
 import Modal from "@/components/Dialog"
+import ErrorLayout from "@/components/ErrorLayout"
 import { SpinnerCustom } from "@/components/Loader"
 import StaffTable from "@/components/StaffTable"
 import { Button } from "@/components/ui/button"
@@ -31,20 +32,13 @@ export default function Staff() {
         setIsDeleteModalOpen(false)
     }
 
-    if (isError) {
-        console.log(error)
-        return <span>Error: {error.message}</span>
-    }
-
     function handleDelete() {
         closeModal()
         deleteMutation.mutate()
     }
 
     function addUser(id: number) {
-
         const staff = data!.find(x => x.id === id)!
-
         createUserMutation.mutate({
             firstName: staff?.firstName,
             lastName: staff?.lastName,
@@ -55,56 +49,64 @@ export default function Staff() {
     }
 
     function removeUser(id: number) {
-        deleteUserMutation.mutate({id})
+        deleteUserMutation.mutate({ id })
     }
 
-    return (
-        <Container label="Staff">
-            {
-                (isLoading || deleteMutation.isPending || createUserMutation.isPending) ?
-                    <SpinnerCustom />
-                    :
-                    <>
-                        <div className="flex gap-5 items-center justify-between">
-                            <Button
-                                className="bg-[#00AEFF] text-white text-sm"
-                                onClick={() => navigate('/add-staff')}
-                            >
-                                <CircleFadingPlus />
-                                <span>Add Staff</span>
-                            </Button>
-                        </div>
-                        {data?.length ?
-                            <StaffTable
-                                data={data!}
-                                onDelete={openModal}
-                                onCreate={addUser}
-                                onRemove={removeUser}
-                            /> :
-                            <div>
-                                <h1>No Staff record yet!</h1>
-                            </div>}
-                    </>
-            }
+    if (isLoading || deleteMutation.isPending || createUserMutation.isPending) {
+        return (
+            <Container label="Staff">
+                <SpinnerCustom />
+            </Container>
+        )
+    }
 
-            {/* Delete modal */}
-            <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
-                <div className="space-y-10">
-                    <div className="space-y-8">
-                        <Trash2 size={90} className="mx-auto" />
-                        <div>
-                            <h3 className="font-bold text-3xl text-center">Delete Staff</h3>
-                            <p className="font-light text-center">Are you sure you want to delete this staff?</p>
+    if (isError) {
+        return <ErrorLayout label="Staff" text={error.message} />
+    }
 
-                        </div>
-
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
-                        <Button variant="destructive" className="flex-1" onClick={handleDelete}>Yes, Delete</Button>
-                    </div>
+    if (data) {
+        return (
+            <Container label="Staff">
+                <div className="flex gap-5 items-center justify-between">
+                    <Button
+                        className="bg-[#00AEFF] text-white text-sm"
+                        onClick={() => navigate('/add-staff')}
+                    >
+                        <CircleFadingPlus />
+                        <span>Add Staff</span>
+                    </Button>
                 </div>
-            </Modal>
-        </Container>
-    )
+                {data?.length ?
+                    <StaffTable
+                        data={data!}
+                        onDelete={openModal}
+                        onCreate={addUser}
+                        onRemove={removeUser}
+                    /> :
+                    <div>
+                        <h1>No Staff record yet!</h1>
+                    </div>}
+
+                {/* Delete modal */}
+                <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
+                    <div className="space-y-10">
+                        <div className="space-y-8">
+                            <Trash2 size={90} className="mx-auto" />
+                            <div>
+                                <h3 className="font-bold text-3xl text-center">Delete Staff</h3>
+                                <p className="font-light text-center">Are you sure you want to delete this staff?</p>
+
+                            </div>
+
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
+                            <Button variant="destructive" className="flex-1" onClick={handleDelete}>Yes, Delete</Button>
+                        </div>
+                    </div>
+                </Modal>
+            </Container>
+        )
+    }
+
 }

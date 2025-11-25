@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import type { CallFn, EditStudentPayload, ParticipationAddData, ParticipationEditData, StudentPagination } from "../utils/types";
-import { addParticipation, deleteParticipation, deleteStudent, getAllStudents, getStudentDetails, updateParticipation, updateStudent } from "@/utils/fn";
+import type { CallFn, EditStudentPayload, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, StudentPagination } from "../utils/types";
+import { addParticipation, deleteParticipation, deleteStudent, getAllStudents, getFilteredResults, getStudentDetails, updateParticipation, updateStudent } from "@/utils/fn";
 import { useMutation } from "@tanstack/react-query";
 
 export function useGetAllStudents(meta: StudentPagination, token: string | null) {
@@ -13,16 +13,24 @@ export function useGetAllStudents(meta: StudentPagination, token: string | null)
    })
 }
 
+export function useGetFilteredStudents(input: ParticipationFilterDto) {
+   return useQuery({
+      queryKey: ['filter', input.country, input.year, input.page, input.limit],
+      queryFn: () => getFilteredResults(input),
+      staleTime: 5 * 60 * 1000,
+   })
+}
+
 export function useGetStudentDetails<T extends number>(id: T) {
    return useQuery({
-        queryKey:['student', id],
-        queryFn: () => getStudentDetails(id),
-        placeholderData: keepPreviousData
-    })
+      queryKey: ['student', id],
+      queryFn: () => getStudentDetails(id),
+      placeholderData: keepPreviousData
+   })
 }
 
 
-export function useUpdateStudent<T extends string>(id: T, data:EditStudentPayload, refetch: CallFn) {
+export function useUpdateStudent<T extends string>(id: T, data: EditStudentPayload, refetch: CallFn) {
    return useMutation({
       mutationFn: () => updateStudent(id, data),
       onSuccess: refetch
@@ -45,14 +53,14 @@ export function useUpdateStudentParticipation(data: ParticipationEditData, refet
 
 export function useDeleteStudentParticipation(id: number, refetch: CallFn) {
    return useMutation({
-      mutationFn: () =>deleteParticipation(id),
+      mutationFn: () => deleteParticipation(id),
       onSuccess: refetch
    })
 }
 
-export function useDeleteStudent(id:number, refetch: CallFn) {
+export function useDeleteStudent(id: number, refetch: CallFn) {
    return useMutation({
-      mutationFn: () =>deleteStudent(id),
+      mutationFn: () => deleteStudent(id),
       onSuccess: refetch
    })
 }

@@ -1,7 +1,8 @@
 import Modal from "@/components/Dialog";
+import ErrorLayout from "@/components/ErrorLayout";
 import Header from "@/components/Header";
 import Heading from "@/components/Heading";
-import { SpinnerCustom } from "@/components/Loader";
+import LoadingLayout from "@/components/LoadingLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -52,11 +53,11 @@ export default function AddStaff() {
     }, [step, mutate])
 
     if (isPending) {
-        return <SpinnerCustom />
+        return <LoadingLayout label="Add Staff" />
     }
 
     if (isError) {
-        return <div>Error: {error.message}</div>
+        return <ErrorLayout label="Add Staff" text={error.message} />
     }
 
     return (

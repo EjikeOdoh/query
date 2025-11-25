@@ -19,6 +19,7 @@ import Container from "@/components/Container"
 import Modal from "@/components/Dialog"
 import { useQueryClient } from "@tanstack/react-query"
 import { SpinnerCustom } from "@/components/Loader"
+import ErrorLayout from "@/components/ErrorLayout"
 
 export default function Students() {
 
@@ -68,7 +69,6 @@ export default function Students() {
   }
 
   if (isPending) {
-    console.log('Fetching')
     return (
       <Container label="Students">
         <SpinnerCustom />
@@ -77,120 +77,112 @@ export default function Students() {
   }
 
   if (isError) {
-    console.log(error)
-    return <span>Error: {error.message}</span>
+    return <ErrorLayout label="Filters" text={error.message} />
   }
 
-  const res: StudentResponse = data!
-  const students: Student[] = res.data
-  const info: Meta = res.meta
+  if (data) {
+    const res: StudentResponse = data!
+    const students: Student[] = res.data
+    const info: Meta = res.meta
 
-  return (
-    <Container label="Students">
+    return (
+      <Container label="Students">
+        <div className="flex gap-5 flex-col-reverse md:flex-row md:items-center justify-between">
+          <SearchForm
+            placeholder="Search by student names"
+            action={logInput} />
+          <Button
+            className="bg-[#00AEFF] text-white text-sm"
+            onClick={() => navigate('/add-student')}
+          >
+            <CircleFadingPlus />
+            <span>Add Student</span>
+          </Button>
+        </div>
 
-      {
-        isPending ?
-          <SpinnerCustom />
-          :
-          <>
-            <div className="flex gap-5 flex-col-reverse md:flex-row md:items-center justify-between">
-              <SearchForm
-                placeholder="Search by student names"
-                action={logInput} />
-              <Button
-                className="bg-[#00AEFF] text-white text-sm"
-                onClick={() => navigate('/add-student')}
-              >
-                <CircleFadingPlus />
-                <span>Add Student</span>
-              </Button>
-            </div>
-
-            <StudentTable data={students} remove={selectStudent} query={meta.page.toString()} />
-            <div className="flex flex-col md:flex-row gap-5 justify-between items-baseline">
-              <p className="text-sm font-light">Page {meta.page} of {info.totalPages}</p>
-              <div className="w-fit">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem className={`text-[#808080]`}>
-                      <PaginationPrevious
-                        isActive={info.hasPreviousPage}
-                        onClick={() => {
-                          if (info.hasPreviousPage) {
-                            setMeta({ ...meta, page: meta.page - 1 })
-                          }
-                        }}
-                      />
+        <StudentTable data={students} remove={selectStudent} query={meta.page.toString()} />
+        <div className="flex flex-col md:flex-row gap-5 justify-between items-baseline">
+          <p className="text-sm font-light">Page {meta.page} of {info.totalPages}</p>
+          <div className="w-fit">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem className={`text-[#808080]`}>
+                  <PaginationPrevious
+                    isActive={info.hasPreviousPage}
+                    onClick={() => {
+                      if (info.hasPreviousPage) {
+                        setMeta({ ...meta, page: meta.page - 1 })
+                      }
+                    }}
+                  />
+                </PaginationItem>
+                {info.totalPages <= 3 ?
+                  Array.from({ length: info.totalPages }).map((_, i) => i + 1).map(x => (<PaginationItem
+                    key={x}>
+                    <PaginationLink
+                      className={`text-[#808080] ${x === meta.page ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
+                      isActive={x === meta.page}
+                      onClick={() => setMeta({ ...meta, page: x })}
+                    >{x}</PaginationLink>
+                  </PaginationItem>)) :
+                  [1, 2, 3].map(x => (<PaginationItem
+                    key={x}>
+                    <PaginationLink
+                      className={`text-[#808080] ${x === meta.page ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
+                      isActive={x === meta.page}
+                      onClick={() => setMeta({ ...meta, page: x })}
+                    >{x}</PaginationLink>
+                  </PaginationItem>))
+                }
+                {
+                  info.totalPages > 3 && (
+                    <PaginationItem
+                    >
+                      <PaginationLink
+                        className={`text-[#808080]  ${!info.hasNextPage ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
+                        // isActive={x === meta.page}
+                        onClick={() => setMeta({ ...meta, page: info.totalPages })}
+                      >{info.totalPages}</PaginationLink>
                     </PaginationItem>
-                    {info.totalPages <= 3 ?
-                      Array.from({ length: info.totalPages }).map((_, i) => i + 1).map(x => (<PaginationItem
-                        key={x}>
-                        <PaginationLink
-                          className={`text-[#808080] ${x === meta.page ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
-                          isActive={x === meta.page}
-                          onClick={() => setMeta({ ...meta, page: x })}
-                        >{x}</PaginationLink>
-                      </PaginationItem>)) :
-                      [1, 2, 3].map(x => (<PaginationItem
-                        key={x}>
-                        <PaginationLink
-                          className={`text-[#808080] ${x === meta.page ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
-                          isActive={x === meta.page}
-                          onClick={() => setMeta({ ...meta, page: x })}
-                        >{x}</PaginationLink>
-                      </PaginationItem>))
-                    }
-                    {
-                      info.totalPages > 3 && (
-                        <PaginationItem
-                        >
-                          <PaginationLink
-                            className={`text-[#808080]  ${!info.hasNextPage ? 'text-[#009DE6] bg-[#D9F3FF]' : undefined}`}
-                            // isActive={x === meta.page}
-                            onClick={() => setMeta({ ...meta, page: info.totalPages })}
-                          >{info.totalPages}</PaginationLink>
-                        </PaginationItem>
-                      )
-                    }
+                  )
+                }
 
-                    <PaginationItem className="text-[#808080]">
-                      <PaginationNext
-                        isActive={info.hasNextPage}
-                        onClick={() => {
-                          if (info.hasNextPage) {
-                            setMeta({ ...meta, page: meta.page + 1 })
-                          }
-                        }}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            </div>
-          </>
-      }
-
-
-      {/* Delete student modal */}
-      <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
-        <div className="space-y-10">
-          <div className="space-y-8">
-            <Trash2 size={90} className="mx-auto" />
-            <div>
-              <h3 className="font-bold text-3xl text-center">Delete Student</h3>
-              <p className="font-light text-center">Are you sure you want to delete this student?</p>
-
-            </div>
-
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
-            <Button variant="destructive" className="flex-1" onClick={handleDeleteStudent}>Yes, Delete</Button>
+                <PaginationItem className="text-[#808080]">
+                  <PaginationNext
+                    isActive={info.hasNextPage}
+                    onClick={() => {
+                      if (info.hasNextPage) {
+                        setMeta({ ...meta, page: meta.page + 1 })
+                      }
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </div>
-      </Modal>
-    </Container>
+
+        {/* Delete student modal */}
+        <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
+          <div className="space-y-10">
+            <div className="space-y-8">
+              <Trash2 size={90} className="mx-auto" />
+              <div>
+                <h3 className="font-bold text-3xl text-center">Delete Student</h3>
+                <p className="font-light text-center">Are you sure you want to delete this student?</p>
+
+              </div>
+
+            </div>
+            <div className="flex items-center gap-4">
+              <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
+              <Button variant="destructive" className="flex-1" onClick={handleDeleteStudent}>Yes, Delete</Button>
+            </div>
+          </div>
+        </Modal>
+      </Container>
 
 
-  )
+    )
+  }
 }

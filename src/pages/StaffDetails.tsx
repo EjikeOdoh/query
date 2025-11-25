@@ -1,7 +1,8 @@
 import Modal from "@/components/Dialog";
+import ErrorLayout from "@/components/ErrorLayout";
 import Header from "@/components/Header";
 import Heading from "@/components/Heading";
-import { SpinnerCustom } from "@/components/Loader";
+import LoadingLayout from "@/components/LoadingLayout";
 import Row from "@/components/Row";
 import { Active, Inactive } from "@/components/Tags";
 import { Button } from "@/components/ui/button";
@@ -66,12 +67,11 @@ export default function StaffDetails() {
     }, [data])
 
     if (isLoading || updateStaffMutation.isPending) {
-        return <SpinnerCustom />
+        return <LoadingLayout label="Staff Details" />
     }
 
     if (isError) {
-        console.log(error)
-        return <span>Error: {error.message}</span>
+      return <ErrorLayout label="Staff Details" text={error.message} />
     }
 
     return (

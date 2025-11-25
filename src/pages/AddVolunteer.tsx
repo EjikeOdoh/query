@@ -1,7 +1,8 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
+import ErrorLayout from "@/components/ErrorLayout";
 import Heading from "@/components/Heading";
-import { SpinnerCustom } from "@/components/Loader";
+import LoadingLayout from "@/components/LoadingLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -47,7 +48,7 @@ export default function AddVolunteer() {
         setStep(prev => prev - 1)
     }
 
-    const { mutate, isPending } = useAddVolunteer(createDto as CreateVolunteer, cleanUp)
+    const { mutate, isPending, isError, error } = useAddVolunteer(createDto as CreateVolunteer, cleanUp)
 
     useEffect(() => {
         if ((createDto.type === 'PROGRAM' && step === 3) || step === 4) {
@@ -57,8 +58,12 @@ export default function AddVolunteer() {
 
     if (isPending) {
         return (
-            <SpinnerCustom />
+            <LoadingLayout label="Add Volunteer" />
         )
+    }
+
+    if (isError) {
+        return <ErrorLayout label="Add Volunteer" text={error.message} />
     }
 
     return (

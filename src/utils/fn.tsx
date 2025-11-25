@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateUserDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, Partner, PartnerDetails, ProfileState, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateUserDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, FilterStudentsPayload, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, Partner, PartnerDetails, ProfileState, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 import axios from "axios"
 
 // Fetchers
@@ -38,6 +38,16 @@ export async function getStats(year: number): Promise<DashStats> {
         res = await client.get(`/participation`)
     } else {
         res = await client.get(`/participation?year=${year}`)
+    }
+    return res.data
+}
+
+export async function getFilteredResults(input: ParticipationFilterDto): Promise<FilterStudentsPayload> {
+    let res;
+    if (input.year === 0 || !input.year) {
+        res = await client.get(`participation/filter-by-country?country=${input.country}&page=${input.page}&limit=${input.limit}`)
+    } else {
+        res = await client.get(`participation/filter-by-country?country=${input.country}&year=${input.year}&page=${input.page}&limit=${input.limit}`)
     }
     return res.data
 }
@@ -237,7 +247,7 @@ export async function addStaff(data: CreateStaff) {
         const res = await client.post(`/staff`, data)
         return res.data
     } catch (error) {
-       throw extractApiError(error) 
+        throw extractApiError(error)
     }
 }
 
@@ -398,7 +408,7 @@ export async function deleteUploadTag(tag: string) {
     return res.data
 }
 
-export async function deleteUser(id:number) {
+export async function deleteUser(id: number) {
     const res = await client.delete(`/users/${id}`)
     return res.data
 }

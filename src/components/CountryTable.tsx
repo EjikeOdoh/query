@@ -1,6 +1,8 @@
+import { NavLink } from "react-router";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 
-export default function CountryTable({ data }: { data: { country: string, count: number }[] }) {
+export default function CountryTable({ data, year }: { data: { country: string, count: number }[], year: number }) {
+
     return (
         <Table
             className="rounded-xl overflow-hidden"
@@ -20,8 +22,24 @@ export default function CountryTable({ data }: { data: { country: string, count:
             <TableBody>
                 {data.map(p => (
                     <TableRow key={p.country}>
-                        <TableCell>{p.country}</TableCell>
-                        <TableCell className="text-right font-bold">{p.count}</TableCell>
+                        <TableCell>
+                            <NavLink
+                                to="/student-filter"
+                                state={{ country: p.country, year }}
+                                className="flex"
+                            >
+                                {p.country}
+                            </NavLink>
+                        </TableCell>
+                        <TableCell align="right" className="font-bold">
+                            <NavLink
+                                to="/student-filter"
+                                state={{ country: p.country, year }}
+                                className="flex justify-end"
+                            >
+                                {p.count}
+                            </NavLink>
+                        </TableCell>
                     </TableRow>
                 ))}
             </TableBody>

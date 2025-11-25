@@ -5,7 +5,8 @@ import { CircleFadingPlus } from "lucide-react";
 import { useNavigate } from "react-router";
 import type { CallFn } from "@/utils/types";
 import { useState } from "react";
-import { SpinnerCustom } from "@/components/Loader";
+import LoadingLayout from "@/components/LoadingLayout";
+import ErrorLayout from "@/components/ErrorLayout";
 
 interface CardProps {
     imgUrl?: string,
@@ -31,67 +32,68 @@ export default function Partners() {
 
 
     if (isLoading) {
-        return <SpinnerCustom />
+        return <LoadingLayout label="Partners" />
     }
 
     if (isError) {
-        console.log(error)
-        return <span>Error: {error.message}</span>
+        return <ErrorLayout label="Partners" text={error.message} />
     }
 
-    const partners = filter === 'all' ? data!
-        : filter === 'active' ? data!.filter(x => x.isActive === true)
-            : filter === 'inactive' ? data!.filter(x => x.isActive !== true)
-                : data!
+    if (data) {
+        const partners = filter === 'all' ? data
+            : filter === 'active' ? data.filter(x => x.isActive === true)
+                : filter === 'inactive' ? data.filter(x => x.isActive !== true)
+                    : data!
 
-    const cards = partners.length > 0 ? partners.map(card => (
-        <Card
-            key={card.id}
-            imgUrl={card.logoUrl}
-            name={card.name}
-            onclick={() => navigate(`/partners/${card.id}`)}
-        />
-    )) : <p>Partner record not added yet</p>
-    return (
-        <Container label="Partners" bgColor="transparent" padding={0}>
-            <div className="flex flex-col-reverse md:flex-row md:items-center gap-5 md:gap-0 justify-between bg-white py-4 px-8 rounded-2xl">
-                {
-                    data!.length > 0 && <div className="flex items-center gap-5">
-                        <Button
-                            variant={filter === "all" ? 'default' : 'secondary'}
-                            className="font-light text-sm border border-[#E5E5E5]"
-                            onClick={() => setFilter('all')}
-                        >All</Button>
+        const cards = partners.length > 0 ? partners.map(card => (
+            <Card
+                key={card.id}
+                imgUrl={card.logoUrl}
+                name={card.name}
+                onclick={() => navigate(`/partners/${card.id}`)}
+            />
+        )) : <p>Partner record not added yet</p>
+        return (
+            <Container label="Partners" bgColor="transparent" padding={0}>
+                <div className="flex flex-col-reverse md:flex-row md:items-center gap-5 md:gap-0 justify-between bg-white py-4 px-8 rounded-2xl">
+                    {
+                        data!.length > 0 && <div className="flex items-center gap-5">
+                            <Button
+                                variant={filter === "all" ? 'default' : 'secondary'}
+                                className="font-light text-sm border border-[#E5E5E5]"
+                                onClick={() => setFilter('all')}
+                            >All</Button>
 
-                        <Button
-                            variant={filter === "active" ? 'default' : 'secondary'}
-                            className="font-light text-sm border border-[#E5E5E5]"
-                            onClick={() => setFilter('active')}
+                            <Button
+                                variant={filter === "active" ? 'default' : 'secondary'}
+                                className="font-light text-sm border border-[#E5E5E5]"
+                                onClick={() => setFilter('active')}
 
-                        >Active</Button>
+                            >Active</Button>
 
-                        <Button
-                            variant={filter === "inactive" ? 'default' : 'secondary'}
-                            className="font-light text-sm border border-[#E5E5E5]"
-                            onClick={() => setFilter('inactive')}
+                            <Button
+                                variant={filter === "inactive" ? 'default' : 'secondary'}
+                                className="font-light text-sm border border-[#E5E5E5]"
+                                onClick={() => setFilter('inactive')}
 
-                        >Inactive</Button>
-                    </div>
+                            >Inactive</Button>
+                        </div>
 
-                }
-                <Button
-                    className="text-sm"
-                    onClick={() => navigate('/add-partner')}
-                >
-                    <CircleFadingPlus />
-                    <span>Add Partner</span>
-                </Button>
-            </div>
+                    }
+                    <Button
+                        className="text-sm"
+                        onClick={() => navigate('/add-partner')}
+                    >
+                        <CircleFadingPlus />
+                        <span>Add Partner</span>
+                    </Button>
+                </div>
 
-            {/* List of partners */}
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-5">
-                {cards}
-            </div>
-        </Container>
-    )
+                {/* List of partners */}
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-5">
+                    {cards}
+                </div>
+            </Container>
+        )
+    }
 }

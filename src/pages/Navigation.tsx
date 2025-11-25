@@ -25,6 +25,7 @@ import BulkUploads from "./BulkUploads";
 import { SpinnerCustom } from "@/components/Loader";
 import { Account } from "./Account";
 import Users from "./Users";
+import StudentFilterPage from "./StudentFilterPage";
 
 export default function Navigation() {
 
@@ -35,7 +36,10 @@ export default function Navigation() {
     const { data, isLoading, isError, error, isSuccess } = useGetProfile(token as string)
 
     if (isLoading) {
-        return <SpinnerCustom />
+        return (
+            <div className="h-screen flex items-center justify-center bg-white">
+                <SpinnerCustom />
+            </div>)
     }
 
     if (isError) {
@@ -63,6 +67,7 @@ export default function Navigation() {
                                 <Route path='/students/search' element={<Search />} />
                                 <Route path='/add-student' element={<AddStudent />} />
                                 <Route path='/students/:studentId' element={<Student />} />
+                                <Route path='/student-filter' element={<StudentFilterPage />} />
                             </>
                         }
 

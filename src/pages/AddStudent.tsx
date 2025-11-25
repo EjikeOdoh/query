@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
-import { SpinnerCustom } from "@/components/Loader";
+import LoadingLayout from "@/components/LoadingLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -105,16 +105,16 @@ export default function AddStudent() {
         })
     }
 
-
     useEffect(() => {
         if (step === 7) {
             mutate()
         }
     }, [step, mutate])
 
+   
     if (isPending) {
         return (
-            <SpinnerCustom />
+            <LoadingLayout label="Add Student" />
         )
     }
 

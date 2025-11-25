@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
+import ErrorLayout from "@/components/ErrorLayout";
 import { SpinnerCustom } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,21 +38,21 @@ export default function AddPartner() {
     })
 
 
-
     function handleAddPartner(x: FormData) {
         mutate(x)
     }
 
-    if (isPending) {
-        return (
-            <SpinnerCustom />
-        )
-    }
+       if (isPending) {
+           return (
+               <Container
+                   label="Add Partner">
+                   <SpinnerCustom />
+               </Container>
+           )
+       }
 
     if (isError) {
-        return (
-            <div>Error: {error.message}</div>
-        )
+        return <ErrorLayout label="Add Partner" text={error.message} />
     }
 
     return (

@@ -400,3 +400,26 @@ export type CreateUserDto = {
 }
 
 export type EditUserDto = Partial<CreateUserDto>
+
+export interface FilterStudentDto {
+  id: number
+  firstName: string
+  lastName: string
+  dob: Date
+  country: string
+  program: string
+  quarter: string
+  year: number
+}
+
+export interface FilterStudentsPayload {
+  data: FilterStudentDto[]
+  meta: Meta
+}
+
+export interface ParticipationFilterDto {
+  country?: string;
+  year?: number;
+  page?: number;
+  limit?: number;
+}

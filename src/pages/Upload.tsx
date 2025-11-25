@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
 import Modal from "@/components/Dialog";
-import { SpinnerCustom } from "@/components/Loader";
+import LoadingLayout from "@/components/LoadingLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -49,10 +49,9 @@ export default function Upload() {
 
     if (uploadMutation.isPending) {
         return (
-            <SpinnerCustom />
+            <LoadingLayout label="Upload Student Attendance" />
         )
     }
-
 
     return (
         <Container label="Upload Student Attendance">
