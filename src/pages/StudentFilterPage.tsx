@@ -10,6 +10,7 @@ import { NavLink, useLocation } from "react-router";
 import { motion } from 'framer-motion'
 import { CalendarFold, ChevronLeft, Flag, Users } from "lucide-react";
 import ErrorLayout from "@/components/ErrorLayout";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function StudentFilterPage() {
     const { state } = useLocation()
@@ -114,7 +115,27 @@ export default function StudentFilterPage() {
                             query={input.page?.toString()}
                         />
                         <div className="flex flex-col md:flex-row gap-5 justify-between items-baseline">
-                            <p className="text-sm font-light">Page {input.page} of {data.meta.totalPages}</p>
+                            <div className="flex items-center gap-5">
+                                <Select onValueChange={(value) => {
+                                    setInput({
+                                        ...input, limit: Number(value)
+                                    })
+                                }} >
+                                    <SelectTrigger className="">
+                                        <SelectValue placeholder={input.limit} />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                        <SelectGroup>
+                                            <SelectLabel>Rows per page</SelectLabel>
+                                            <SelectItem value="10">10</SelectItem>
+                                            <SelectItem value="20">20</SelectItem>
+                                            <SelectItem value="50">50</SelectItem>
+                                            <SelectItem value="100">100</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-sm font-light">Page {input.page} of {data.meta.totalPages}</p>
+                            </div>
                             <div className="w-fit">
                                 <Pagination>
                                     <PaginationContent>

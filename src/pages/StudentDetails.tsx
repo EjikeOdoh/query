@@ -71,7 +71,6 @@ export default function Student() {
         navigate('/students', { replace: true })
     })
 
-
     const updateGradeMutation = useUpdateGrades(String(editGradesData.id), editGradesData, refetch)
     const addGradeMutation = useAddGrades(Number(studentId), addGradesData as GradeAddData, refetch)
     const deleteGradeMutation = useDeleteGrades(gradeId!, refetch)
@@ -197,7 +196,7 @@ export default function Student() {
                             <div>
                                 <NavLink to={isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state.query}>
                                     <ChevronLeft color="#171717" size={14} />
-                                    Back to Dashboard
+                                   { isFromSearchPage ? "Back to Search": "Back to Students" }
                                 </NavLink>
                             </div>
     
