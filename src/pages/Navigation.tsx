@@ -7,7 +7,7 @@ import Students from "./Students";
 import Search from "./Search";
 import Student from "./StudentDetails";
 import AddStudent from "./AddStudent";
-import useGetProfile from "@/hooks/useGetProfile";
+import {useGetProfile} from "@/hooks/useGetProfile";
 import type { ProfileState } from "@/utils/types";
 import Staff from "./Staff";
 import Volunteers from "./Volunteers";
@@ -48,11 +48,11 @@ export default function Navigation() {
 
     if (isSuccess) {
         sessionStorage.setItem('profile', JSON.stringify(data))
-
     }
 
-    const accountType: ProfileState = data
 
+    const accountType: ProfileState = data!
+    
     return (
         <BrowserRouter>
             <Routes>
@@ -120,4 +120,5 @@ export default function Navigation() {
 
         </BrowserRouter>
     )
-}
+
+    }

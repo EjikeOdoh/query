@@ -5,6 +5,7 @@ import LoadingLayout from "@/components/LoadingLayout"
 import { Button } from "@/components/ui/button"
 import VolunteerTable from "@/components/VolunteerTable"
 import { useAddUser, useDeleteUser, useDeleteVolunteer, useGetAllVolunteers } from "@/hooks/use-admin"
+import { useQueryClient } from "@tanstack/react-query"
 import { CircleFadingPlus, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useNavigate } from "react-router"
@@ -14,9 +15,9 @@ export default function Volunteers() {
 
     const navigate = useNavigate()
     const { isLoading, isError, error, data, refetch } = useGetAllVolunteers()
-
-    const createUserMutation = useAddUser(refetch)
-    const deleteUserMutation = useDeleteUser(refetch)
+    const queryClient = useQueryClient()
+    const createUserMutation = useAddUser(updateUsers)
+    const deleteUserMutation = useDeleteUser(updateUsers)
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const [vId, setVId] = useState<number>()
@@ -54,6 +55,11 @@ export default function Volunteers() {
 
     function removeUser(id: number) {
         deleteUserMutation.mutate({ id })
+    }
+
+    function updateUsers() {
+        refetch()
+        queryClient.invalidateQueries({queryKey:["users"]})
     }
 
     if (isLoading || createUserMutation.isPending) {

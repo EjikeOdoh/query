@@ -5,6 +5,7 @@ import { SpinnerCustom } from "@/components/Loader"
 import StaffTable from "@/components/StaffTable"
 import { Button } from "@/components/ui/button"
 import { useAddUser, useDeleteStaff, useDeleteUser, useGetAllStaff } from "@/hooks/use-admin"
+import { useQueryClient } from "@tanstack/react-query"
 import { CircleFadingPlus, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useNavigate } from "react-router"
@@ -12,11 +13,11 @@ import { useNavigate } from "react-router"
 export default function Staff() {
 
     const navigate = useNavigate()
-
+    const queryClient = useQueryClient()
     const { isLoading, isError, error, data, refetch } = useGetAllStaff()
 
-    const createUserMutation = useAddUser(refetch)
-    const deleteUserMutation = useDeleteUser(refetch)
+    const createUserMutation = useAddUser(cleanUp)
+    const deleteUserMutation = useDeleteUser(cleanUp)
 
     const [sId, setSId] = useState<number>()
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
@@ -50,6 +51,11 @@ export default function Staff() {
 
     function removeUser(id: number) {
         deleteUserMutation.mutate({ id })
+    }
+
+    function cleanUp() {
+        refetch()
+        queryClient.invalidateQueries({queryKey:["users"]})
     }
 
     if (isLoading || deleteMutation.isPending || createUserMutation.isPending) {

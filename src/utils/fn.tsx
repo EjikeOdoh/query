@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateUserDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, FilterStudentsPayload, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, Partner, PartnerDetails, ProfileState, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateUserDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, FilterStudentsPayload, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, Partner, PartnerDetails, ProfileState, ProgramStat, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, User, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 import axios from "axios"
 
 // Fetchers
@@ -27,7 +27,7 @@ export async function getAllStudents(meta: StudentPagination): Promise<StudentRe
 //     return client.get('/participation/filter').then(res => res.data)
 // }
 
-export async function getProfile() {
+export async function getProfile(): Promise<ProfileState> {
     const res = await client.get('/auth/profile')
     return res.data
 }
@@ -100,7 +100,7 @@ export async function getAllTags(): Promise<HistoryTable[]> {
 }
 
 
-export async function getAllUsers() {
+export async function getAllUsers(): Promise<User[]> {
     const res = await client.get('/users')
     return res.data
 }
@@ -454,6 +454,8 @@ export function updateData<T>(
         processedValue = (e.target as HTMLInputElement).checked;
     } else if (type === "text") {
         processedValue = String(processedValue).trim()
+    } else {
+        processedValue =  String(processedValue).trim()
     }
 
 

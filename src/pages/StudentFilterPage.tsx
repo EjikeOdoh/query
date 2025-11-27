@@ -32,14 +32,14 @@ export default function StudentFilterPage() {
 
     if (isLoading) {
         return (
-            <Container label="Students">
+            <Container label="Students Filter">
                 <SpinnerCustom />
             </Container>
         )
     }
 
     if (isError) {
-        return <ErrorLayout label="Filters" text={error.message} />
+        return <ErrorLayout label="Students Filters" text={error.message} />
     }
 
 
