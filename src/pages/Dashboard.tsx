@@ -6,13 +6,14 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Users, Target, Layers, PieChart as PieIcon, RefreshCw, BarChart2Icon, Map } from "lucide-react";
 import { motion } from "framer-motion";
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip as RTooltip, BarChart, Bar, CartesianGrid, XAxis, YAxis, Legend } from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip as RTooltip, BarChart, Bar, CartesianGrid, XAxis, YAxis, Legend, LineChart, Line } from "recharts";
 import Container from "@/components/Container";
 import { useDashboardStats, useGetProgramBreakdown, useGetPrograms } from "@/hooks/use-dashboard";
 import { Progress } from "@/components/ui/progress";
 import CountryTable from "@/components/CountryTable";
 import { SpinnerCustom } from "@/components/Loader";
 import ErrorLayout from "@/components/ErrorLayout";
+import StackedProgramChart from "@/components/BarChart";
 
 
 
@@ -179,9 +180,9 @@ export default function Dashboard() {
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
                                     <BarChart2Icon className="h-4 w-4" />
-                                    Yearly Impact</CardTitle>
+                                    Yearly Trend</CardTitle>
                             </CardHeader>
-                            <CardContent className="h-[320px]">
+                            {/* <CardContent className="h-[320px]">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={data?.countByYear} margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
                                         <CartesianGrid strokeDasharray="3 3" />
@@ -203,7 +204,45 @@ export default function Dashboard() {
                                         <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#009DE6" height={100} />
                                     </BarChart>
                                 </ResponsiveContainer>
+                            </CardContent> */}
+
+                            <CardContent className="h-[320px]">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={data?.countByYear} margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis
+                                            dataKey="year"
+                                            tick={{ fontSize: 10 }}
+                                            label={{
+                                                value: 'Year',
+                                                position: 'bottom',
+                                                offset: -10,
+                                                fontSize: 10,
+                                            }}
+                                        />
+                                        <YAxis
+                                            tick={{ fontSize: 10 }}
+                                            label={{
+                                                value: 'Count',
+                                                angle: -90,
+                                                position: 'insideLeft',
+                                                fontSize: 10,
+                                            }}
+                                            domain={[0, Math.ceil(data!.highestYearlyCount * 1.1)]}
+                                        />
+                                        <RTooltip formatter={(v) => v as number} />
+                                        <Line
+                                            type="monotone"
+                                            dataKey="count"
+                                            stroke="#00C950"
+                                            strokeWidth={2}
+                                            dot={{ r: 4 }}
+                                            activeDot={{ r: 6 }}
+                                        />
+                                    </LineChart>
+                                </ResponsiveContainer>
                             </CardContent>
+
                         </Card>
                     </div>
 
@@ -222,10 +261,11 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
                 </div>
-                
+
                 {!!(filterYear) &&
                     <Card>
                         {breakdownQuery.isLoading ? <SpinnerCustom /> : JSON.stringify(breakdownQuery.data)}
+                        <StackedProgramChart />
                     </Card>}
             </Container>
         );
