@@ -423,3 +423,19 @@ export interface ParticipationFilterDto {
   page?: number;
   limit?: number;
 }
+
+export type AgeGroup = {
+  range: string;
+  count: number;
+};
+
+export type ProgramBreakdown = {
+  year: number | null,
+  ageGroup: AgeGroup[]
+  programs: {
+    [program: string]: {
+      quarter: number
+      count: number
+    }[];
+  };
+};

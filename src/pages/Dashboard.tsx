@@ -8,7 +8,7 @@ import { Users, Target, Layers, PieChart as PieIcon, RefreshCw, BarChart2Icon, M
 import { motion } from "framer-motion";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip as RTooltip, BarChart, Bar, CartesianGrid, XAxis, YAxis, Legend } from "recharts";
 import Container from "@/components/Container";
-import { useDashboardStats, useGetPrograms } from "@/hooks/use-dashboard";
+import { useDashboardStats, useGetProgramBreakdown, useGetPrograms } from "@/hooks/use-dashboard";
 import { Progress } from "@/components/ui/progress";
 import CountryTable from "@/components/CountryTable";
 import { SpinnerCustom } from "@/components/Loader";
@@ -20,6 +20,7 @@ export default function Dashboard() {
     const [filterYear, setFilterYear] = useState<number>(0)
     const { isLoading, isError, error, data, } = useDashboardStats(filterYear)
     useGetPrograms()
+    const breakdownQuery = useGetProgramBreakdown(filterYear)
 
     if (isLoading) {
         return (
@@ -44,7 +45,7 @@ export default function Dashboard() {
         const COLORS = ["#009DE6", "#8B86B4", "#9EB707", "#D92121"];
         const countryCount = data?.countByCountry.length || 0;
         const currentYear = data?.countByYear.find(x => x.year === filterYear) || { count: 0 }
-    
+
         return (
             <Container
                 label="Dashboard"
@@ -79,7 +80,7 @@ export default function Dashboard() {
                                 </TooltipProvider>
                             </div>
                         </div>
-    
+
                         {/* KPI cards */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
@@ -132,12 +133,12 @@ export default function Dashboard() {
                                             </>
                                         )}
                                     </CardContent>
-    
+
                                 </Card>
                             </motion.div>
                         </div>
                     </Card>
-    
+
                     {/* Charts  */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <Card className="rounded-2xl shadow-sm">
@@ -173,7 +174,7 @@ export default function Dashboard() {
                                 </ResponsiveContainer>
                             </CardContent>
                         </Card>
-    
+
                         <Card className="rounded-2xl shadow-sm lg:col-span-2">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
@@ -205,7 +206,7 @@ export default function Dashboard() {
                             </CardContent>
                         </Card>
                     </div>
-    
+
                     {/* Country Breakdown table only */}
                     <Card className="rounded-2xl shadow-sm">
                         <CardHeader className="pb-2">
@@ -221,6 +222,11 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
                 </div>
+                
+                {!!(filterYear) &&
+                    <Card>
+                        {breakdownQuery.isLoading ? <SpinnerCustom /> : JSON.stringify(breakdownQuery.data)}
+                    </Card>}
             </Container>
         );
 

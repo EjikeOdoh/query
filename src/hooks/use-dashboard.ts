@@ -1,4 +1,4 @@
-import { getPrograms, getStats } from "@/utils/fn";
+import { getProgramBreakdown, getPrograms, getStats } from "@/utils/fn";
 import { useQuery } from "@tanstack/react-query";
 
 export function useDashboardStats(filterYear: number) {
@@ -14,5 +14,13 @@ export function useGetPrograms() {
         queryKey:['programs'],
         queryFn: getPrograms,
         staleTime: 5 * 60 * 1000,
+    })
+}
+
+export function useGetProgramBreakdown(filterYear: number) {
+    return useQuery({
+        queryKey:['breakdown', filterYear],
+        queryFn: () => getProgramBreakdown(filterYear),
+        enabled: !!(filterYear)
     })
 }
