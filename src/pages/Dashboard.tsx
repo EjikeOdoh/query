@@ -4,16 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Users, Target, Layers, PieChart as PieIcon, RefreshCw, BarChart2Icon, Map } from "lucide-react";
+import { Users, Target, Layers, PieChart as PieIcon, RefreshCw, BarChart2Icon, Map,  ChartBarBig, ChartColumnBig } from "lucide-react";
 import { motion } from "framer-motion";
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip as RTooltip, BarChart, Bar, CartesianGrid, XAxis, YAxis, Legend, LineChart, Line } from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip as RTooltip, CartesianGrid, XAxis, YAxis, Legend, LineChart, Line, BarChart, Bar, LabelList } from "recharts";
 import Container from "@/components/Container";
 import { useDashboardStats, useGetProgramBreakdown, useGetPrograms } from "@/hooks/use-dashboard";
 import { Progress } from "@/components/ui/progress";
 import CountryTable from "@/components/CountryTable";
 import { SpinnerCustom } from "@/components/Loader";
 import ErrorLayout from "@/components/ErrorLayout";
-import StackedProgramChart from "@/components/BarChart";
+import GroupedBarChart from "@/components/BarChart";
 
 
 
@@ -182,37 +182,13 @@ export default function Dashboard() {
                                     <BarChart2Icon className="h-4 w-4" />
                                     Yearly Trend</CardTitle>
                             </CardHeader>
-                            {/* <CardContent className="h-[320px]">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={data?.countByYear} margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="year" tick={{ fontSize: 10 }} label={{
-                                            value: 'Year',
-                                            position: 'bottom',
-                                            offset: -10,   // adjust as needed to avoid clipping
-                                            fontSize: 10
-                                        }} />
-                                        <YAxis
-                                            tick={{ fontSize: 10 }}
-                                            label={{
-                                                value: 'Count', angle: -90,
-                                                position: 'insideLeft', fontSize: 10
-                                            }}
-                                            domain={[0, Math.ceil(data!.highestYearlyCount * 1.1)]}
-                                        />
-                                        <RTooltip formatter={(v) => (v as number)} />
-                                        <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#009DE6" height={100} />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </CardContent> */}
-
                             <CardContent className="h-[320px]">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={data?.countByYear} margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis
                                             dataKey="year"
-                                            tick={{ fontSize: 10 }}
+                                            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
                                             label={{
                                                 value: 'Year',
                                                 position: 'bottom',
@@ -221,7 +197,7 @@ export default function Dashboard() {
                                             }}
                                         />
                                         <YAxis
-                                            tick={{ fontSize: 10 }}
+                                             tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
                                             label={{
                                                 value: 'Count',
                                                 angle: -90,
@@ -262,11 +238,79 @@ export default function Dashboard() {
                     </Card>
                 </div>
 
-                {!!(filterYear) &&
-                    <Card>
-                        {breakdownQuery.isLoading ? <SpinnerCustom /> : JSON.stringify(breakdownQuery.data)}
-                        <StackedProgramChart />
-                    </Card>}
+                {!!(filterYear) && (
+                    <div className="flex flex-col md:flex-row gap-6">
+                        <Card className="flex-1 rounded-2xl shadow-sm">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
+                                    <ChartBarBig className="h-4 w-4" /> Age Distribution - {filterYear}
+                                </CardTitle>
+                            </CardHeader>
+
+                            <CardContent className="h-[320px]">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart
+                                        data={breakdownQuery.data?.ageRanges}
+                                        layout="vertical"
+                                        margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis
+                                            type="number"
+                                            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+                                            label={{
+                                                value: 'COUNT',
+                                                position: 'bottom',
+                                                offset: -8,
+                                                fontSize: 10,
+
+                                            }}
+                                        />
+                                        <YAxis
+                                            type="category"
+                                            dataKey="range"
+                                            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+                                            label={{
+                                                value: 'AGE GROUP',
+                                                angle: -90,
+                                                position: 'insideLeft',
+                                                fontSize: 10,
+                                            }}
+                                        />
+                                        <RTooltip formatter={(v, n) => [v as number, n as string]} />
+                                        <Bar dataKey="count">
+                                            {breakdownQuery.data?.ageRanges?.map((_, idx) => (
+                                                <Cell
+                                                    key={idx}
+                                                    fill={COLORS[0]}
+                                                />
+                                            ))}
+                                            <LabelList
+                                                dataKey="count"
+                                                position="insideLeft"
+                                                offset={5}
+                                                fill="#000"
+                                                className="text-xs font-bold"
+                                            />
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+
+
+                        </Card>
+                        <Card className="flex-1">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
+                                    <ChartColumnBig className="h-4 w-4" /> Quarterly Breakdown - {filterYear}
+                                </CardTitle>
+                            </CardHeader>
+                            <GroupedBarChart data={breakdownQuery.data?.programs ?? []} />
+                        </Card>
+                    </div>
+
+                )
+                }
             </Container>
         );
 

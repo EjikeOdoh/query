@@ -429,13 +429,18 @@ export type AgeGroup = {
   count: number;
 };
 
-export type ProgramBreakdown = {
-  year: number | null,
-  ageGroup: AgeGroup[]
-  programs: {
-    [program: string]: {
-      quarter: number
-      count: number
-    }[];
-  };
+export type QuarterlyProgramBreakdown = {
+  year: number | null;
+  programs: QuarterGroup[];
+  ageRanges: AgeRangeSummary[];
+};
+
+export type QuarterGroup = {
+  quarter: string;            
+  [program: string]: number | string;
+};
+
+export type AgeRangeSummary = {
+  range: string;
+  count: number;
 };

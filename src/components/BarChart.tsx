@@ -1,93 +1,61 @@
 import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    Legend,
-  } from "recharts";
-  import { CardContent } from "@/components/ui/card";
-  
-  // Your raw data
-  const rawData = {
-    programs: {
-      ASCG: [
-        { quarter: 1, count: 535 },
-        { quarter: 2, count: 670 },
-        { quarter: 3, count: 3276 },
-      ],
-      CBC: [
-        { quarter: 2, count: 33 },
-        { quarter: 3, count: 42 },
-      ],
-    },
-  };
-  
-  // Transform into array suitable for Recharts stacked bar
-  const chartData = [
-    // Quarter 1
-    {
-      quarter: "Q1",
-      ASCG: 535,
-      CBC: 0, // or undefined if you prefer no stack
-    },
-    // Quarter 2
-    {
-      quarter: "Q2",
-      ASCG: 670,
-      CBC: 33,
-    },
-    // Quarter 3
-    {
-      quarter: "Q3",
-      ASCG: 3276,
-      CBC: 42,
-    },
-  ];
-  
-  export default function StackedProgramChart() {
-    return (
-      <CardContent className="h-[320px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={chartData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            
-            <XAxis 
-              dataKey="quarter" 
-              tick={{ fontSize: 12 }}
-              label={{ value: "Quarter", position: "insideBottom", offset: -5 }}
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { CardContent } from "@/components/ui/card";
+import type { QuarterGroup } from "@/utils/types";
+
+
+type Props = { data: QuarterGroup[] }
+const COLORS = ["#009DE6", "#8B86B4", "#9EB707", "#D92121"];
+
+export default function GroupedBarChart({ data }: Props) {
+
+  const programKeys = Array.from(
+    new Set(
+      data.flatMap(item => Object.keys(item).filter(key => key !== "quarter"))
+    )
+  );
+
+  return (
+    <CardContent className="h-[320px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          data={data}
+          margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
+        >
+          <CartesianGrid strokeDasharray="4 4" />
+          <XAxis
+            dataKey="quarter"
+            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+            label={{ value: "QUARTER", position: "insideBottom", offset: 2, fontSize:10 }}
+          />
+
+          <YAxis
+            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+            label={{ value: "COUNT", angle: -90, position: "insideLeft", fontSize:10}}
+          />
+
+          <Tooltip formatter={(value: number) => value.toLocaleString()} />
+          <Legend verticalAlign="top" height={24} />
+
+          {programKeys.map((program, idx) => (
+            <Bar
+              key={program}
+              dataKey={program}
+              fill={COLORS[idx % COLORS.length]}
+              name={program}
+              radius={[8, 8, 0, 0]}
             />
-            
-            <YAxis
-              tick={{ fontSize: 12 }}
-              label={{ value: "Count", angle: -90, position: "insideLeft" }}
-            />
-            
-            <Tooltip formatter={(value: number) => value.toLocaleString()} />
-            <Legend verticalAlign="top" height={36} />
-  
-            {/* Stacked bars */}
-            <Bar 
-              dataKey="ASCG" 
-              stackId="a" 
-              fill="#009DE6" 
-              radius={[0, 0, 0, 0]} 
-              name="ASCG"
-            />
-            <Bar 
-              dataKey="CBC" 
-              stackId="a" 
-              fill="#FF6B6B" 
-              radius={[8, 8, 0, 0]}   // rounded top only
-              name="CBC"
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </CardContent>
-    );
-  }
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
+    </CardContent>
+  );
+}
