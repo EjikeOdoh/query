@@ -29,8 +29,6 @@ export default function Student() {
         }
     } = useLocation()
 
-    console.log(state)
-
     const navigate = useNavigate()
 
     const queryClient = useQueryClient()

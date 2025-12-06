@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Users, Target, Layers, PieChart as PieIcon, RefreshCw, BarChart2Icon, Map,  ChartBarBig, ChartColumnBig } from "lucide-react";
+import { Users, Target, Layers, PieChart as PieIcon, RefreshCw, BarChart2Icon, Map, ChartBarBig, ChartColumnBig } from "lucide-react";
 import { motion } from "framer-motion";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip as RTooltip, CartesianGrid, XAxis, YAxis, Legend, LineChart, Line, BarChart, Bar, LabelList } from "recharts";
 import Container from "@/components/Container";
@@ -22,6 +22,8 @@ export default function Dashboard() {
     const { isLoading, isError, error, data, } = useDashboardStats(filterYear)
     useGetPrograms()
     const breakdownQuery = useGetProgramBreakdown(filterYear)
+
+
 
     if (isLoading) {
         return (
@@ -184,7 +186,14 @@ export default function Dashboard() {
                             </CardHeader>
                             <CardContent className="h-[320px]">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={data?.countByYear} margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
+                                    <LineChart
+                                        data={data?.countByYear}
+                                        margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
+                                        onClick={x => {
+                                            setFilterYear(x.activePayload![0]["payload"].year)
+                                        }}
+
+                                    >
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis
                                             dataKey="year"
@@ -197,7 +206,7 @@ export default function Dashboard() {
                                             }}
                                         />
                                         <YAxis
-                                             tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+                                            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
                                             label={{
                                                 value: 'Count',
                                                 angle: -90,
@@ -308,7 +317,6 @@ export default function Dashboard() {
                             <GroupedBarChart data={breakdownQuery.data?.programs ?? []} />
                         </Card>
                     </div>
-
                 )
                 }
             </Container>
