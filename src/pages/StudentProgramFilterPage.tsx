@@ -3,20 +3,19 @@ import { SpinnerCustom } from "@/components/Loader";
 import StudentTable from "@/components/Table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { useGetFilteredStudents } from "@/hooks/use-students";
+import { useGetFilteredByProgramStudents } from "@/hooks/use-students";
 import type { ParticipationFilterDto } from "@/utils/types";
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router";
 import { motion } from 'framer-motion'
-import { CalendarFold, ChevronLeft, Flag, Users } from "lucide-react";
+import { CalendarFold, ChevronLeft, Target, Users } from "lucide-react";
 import ErrorLayout from "@/components/ErrorLayout";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function StudentFilterPage() {
+export default function StudentProgramFilterPage() {
     const { state } = useLocation()
 
     const [input, setInput] = useState<ParticipationFilterDto>({
-        country: state.country,
         year: state.year,
         program: state.program,
         page: 1,
@@ -24,7 +23,7 @@ export default function StudentFilterPage() {
 
     })
 
-    const { isLoading, isError, data, error } = useGetFilteredStudents(input)
+    const { isLoading, isError, data, error } = useGetFilteredByProgramStudents(input)
 
     function selectStudent(id: number) {
         return id
@@ -47,7 +46,7 @@ export default function StudentFilterPage() {
     if (data) {
         return (
             <Container
-                label="Students By Countries"
+                label="Students By Programs"
                 bgColor="transparent"
                 padding={0}
             >
@@ -57,7 +56,6 @@ export default function StudentFilterPage() {
                             <NavLink
                                 to="/"
                                 className="flex items-center gap-2 font-light text-xs text-[#171717]"
-                            // state={state.query}
                             >
                                 <ChevronLeft color="#171717" size={14} />
                                 Back to Dashboard
@@ -68,12 +66,12 @@ export default function StudentFilterPage() {
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                                 <Card className="rounded-2xl bg-[#D9F3FF] shadow-sm h-40">
                                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                        <CardTitle className="text-sm font-medium">Country</CardTitle>
+                                        <CardTitle className="text-sm font-medium">Program</CardTitle>
 
-                                        <Flag className="h-5 w-5" />
+                                        <Target className="h-5 w-5" />
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold">{input.country}</div>
+                                        <div className="text-3xl font-bold">{input.program}</div>
                                     </CardContent>
                                 </Card>
                             </motion.div>

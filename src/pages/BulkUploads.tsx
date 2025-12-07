@@ -38,12 +38,12 @@ export default function BulkUploads() {
         deleteMutation.mutate()
     }
 
-    if (isLoading) {
+    if (isLoading || deleteMutation.isPending) {
         return <LoadingLayout label="Upload History" />
     }
 
-    if (isError) {
-        return <ErrorLayout label="Upload History" text={error.message} />
+    if (isError || deleteMutation.isError) {
+        return <ErrorLayout label="Upload History" text={error?.message || deleteMutation.error?.message || "Error"} />
     }
 
     if (data) {

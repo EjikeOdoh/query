@@ -57,6 +57,16 @@ export async function getFilteredResults(input: ParticipationFilterDto): Promise
     return res.data
 }
 
+export async function getFilteredByProgramResults(input: ParticipationFilterDto): Promise<FilterStudentsPayload> {
+    let res;
+    if (input.year === 0 || !input.year) {
+        res = await client.get(`participation/filter-by-program?program=${input.program}&page=${input.page}&limit=${input.limit}`)
+    } else {
+        res = await client.get(`participation/filter-by-program?program=${input.program}&year=${input.year}&page=${input.page}&limit=${input.limit}`)
+    }
+    return res.data
+}
+
 export async function getPrograms(): Promise<ProgramStat[]> {
     const res = await client.get('/programs')
     return res.data

@@ -10,10 +10,11 @@ import {
 } from "recharts";
 import { CardContent } from "@/components/ui/card";
 import type { QuarterGroup } from "@/utils/types";
+import { COLORS } from "@/utils/types";
 
 
 type Props = { data: QuarterGroup[] }
-const COLORS = ["#009DE6", "#8B86B4", "#9EB707", "#D92121"];
+// const COLORS = ["#009DE6", "#8B86B4", "#9EB707", "#D92121"];
 
 export default function GroupedBarChart({ data }: Props) {
 
@@ -45,11 +46,11 @@ export default function GroupedBarChart({ data }: Props) {
           <Tooltip formatter={(value: number) => value.toLocaleString()} />
           <Legend verticalAlign="top" height={24} />
 
-          {programKeys.map((program, idx) => (
+          {programKeys.map((program) => (
             <Bar
               key={program}
               dataKey={program}
-              fill={COLORS[idx % COLORS.length]}
+              fill={COLORS[program]}
               name={program}
               radius={[8, 8, 0, 0]}
             />

@@ -34,26 +34,26 @@ export interface StudentPagination {
 }
 
 export interface Grade {
-  id: number;
-  english?: string | null;
-  math?: string | null;
-  chemistry?: string | null;
-  physics?: string | null;
-  government?: string | null;
-  economics?: string | null;
-  biology?: string | null;
-  commerce?: string | null;
-  literature?: string | null;
-  accounting?: string | null;
-  year: number;
+  id: number
+  english?: string | null
+  math?: string | null
+  chemistry?: string | null
+  physics?: string | null
+  government?: string | null
+  economics?: string | null
+  biology?: string | null
+  commerce?: string | null
+  literature?: string | null
+  accounting?: string | null
+  year: number
 }
 export type GradeAddData = Omit<Grade, 'id'>
 export type GradeEditData = Partial<Grade>
 export interface Participation {
   participation_id: number
-  participation_year: number;
-  participation_quarter: number;
-  program_program: string | number;
+  participation_year: number
+  participation_quarter: number
+  program_program: string | number
 }
 export interface ParticipationAddData extends Partial<Omit<Participation, 'participation_id'>> {
   studentId: number
@@ -61,37 +61,37 @@ export interface ParticipationAddData extends Partial<Omit<Participation, 'parti
 export type ParticipationEditData = Partial<Participation>
 
 export interface StudentDetail {
-  id: number;
-  school: string;
-  currentClass: string;
-  firstName: string;
-  lastName: string;
+  id: number
+  school: string
+  currentClass: string
+  firstName: string
+  lastName: string
   dob: Date
-  address: string | null;
-  phone: string;
-  email: string | null;
-  fatherLastName: string | null;
-  country: string;
-  fatherFirstName: string | null;
-  fatherPhone: string | null;
-  fatherEducation: string | null;
-  fatherJob: string | null;
-  motherLastName: string | null;
-  motherFirstName: string | null;
-  motherPhone: string | null;
-  motherEducation: string | null;
-  motherJob: string | null;
-  noOfSisters: number | null;
-  noOfBrothers: number | null;
-  position: string | null;
-  focus: string | null;
-  favSubject: string | null;
-  difficultSubject: string | null;
-  careerChoice1: string | null;
-  careerChoice2: string | null;
-  yearJoined: number;
-  grades: Grade[];
-  participations: Participation[];
+  address: string | null
+  phone: string
+  email: string | null
+  fatherLastName: string | null
+  country: string
+  fatherFirstName: string | null
+  fatherPhone: string | null
+  fatherEducation: string | null
+  fatherJob: string | null
+  motherLastName: string | null
+  motherFirstName: string | null
+  motherPhone: string | null
+  motherEducation: string | null
+  motherJob: string | null
+  noOfSisters: number | null
+  noOfBrothers: number | null
+  position: string | null
+  focus: string | null
+  favSubject: string | null
+  difficultSubject: string | null
+  careerChoice1: string | null
+  careerChoice2: string | null
+  yearJoined: number
+  grades: Grade[]
+  participations: Participation[]
 }
 
 export type EditStudentPayload = Omit<StudentDetail, 'id' | 'grades' | 'participations'>
@@ -102,8 +102,8 @@ export interface SearchResult {
 }
 
 export type TokenState = {
-  token: string | null;
-};
+  token: string | null
+}
 
 export interface ProfileState {
   role: "admin" | "editor" | "viewer" | null
@@ -120,7 +120,10 @@ export interface ProfileAction {
   value?: ProfileState | null
 }
 
-export type TokenAction = { type: 'login' | 'logout'; value: string | null }
+export type TokenAction = {
+  type: 'login' | 'logout'
+  value: string | null
+}
 
 export type Program = "ASCG" | "CBC" | "DSC" | "SSC"
 
@@ -148,90 +151,90 @@ export interface ParticipationData {
 }
 
 export interface CreateStudentData {
-  school: string;
-  currentClass: string;
-  firstName: string;
-  lastName: string;
-  dob: string;
-  address?: string;
-  country: string;
-  phone?: string;
-  email?: string;
-  fatherLastName?: string;
-  fatherFirstName?: string;
-  fatherPhone?: string;
-  fatherEducation?: string;
-  fatherJob?: string;
-  motherLastName?: string;
-  motherFirstName?: string;
-  motherPhone?: string;
-  motherEducation?: string;
-  motherJob?: string;
-  noOfSisters?: string;
-  noOfBrothers?: string;
-  position?: string;
-  focus?: string;
-  favSubject?: string;
-  difficultSubject?: string;
-  careerChoice1?: string;
-  careerChoice2?: string;
-  program: string;
-  year: string;
-  quarter: string;
-  english?: string;
-  math?: string;
-  chemistry?: string;
-  physics?: string;
-  government?: string;
-  economics?: string;
-  biology?: string;
-  commerce?: string;
-  literature?: string;
-  accounting?: string;
+  school: string
+  currentClass: string
+  firstName: string
+  lastName: string
+  dob: string
+  address?: string
+  country: string
+  phone?: string
+  email?: string
+  fatherLastName?: string
+  fatherFirstName?: string
+  fatherPhone?: string
+  fatherEducation?: string
+  fatherJob?: string
+  motherLastName?: string
+  motherFirstName?: string
+  motherPhone?: string
+  motherEducation?: string
+  motherJob?: string
+  noOfSisters?: string
+  noOfBrothers?: string
+  position?: string
+  focus?: string
+  favSubject?: string
+  difficultSubject?: string
+  careerChoice1?: string
+  careerChoice2?: string
+  program: string
+  year: string
+  quarter: string
+  english?: string
+  math?: string
+  chemistry?: string
+  physics?: string
+  government?: string
+  economics?: string
+  biology?: string
+  commerce?: string
+  literature?: string
+  accounting?: string
 }
 
 export interface CreateStudentPayload {
-  school: string;
-  currentClass: string;
-  firstName: string;
-  lastName: string;
-  dob: string;
-  address?: string;
-  country: string;
-  phone?: string;
-  email?: string;
-  fatherLastName?: string;
-  fatherFirstName?: string;
-  fatherPhone?: string;
-  fatherEducation?: string;
-  fatherJob?: string;
-  motherLastName?: string;
-  motherFirstName?: string;
-  motherPhone?: string;
-  motherEducation?: string;
-  motherJob?: string;
-  noOfSisters?: number;
-  noOfBrothers?: number;
-  position?: string;
-  focus?: string;
-  favSubject?: string;
-  difficultSubject?: string;
-  careerChoice1?: string;
-  careerChoice2?: string;
-  program: string;
-  year: number;
-  quarter: number;
+  school: string
+  currentClass: string
+  firstName: string
+  lastName: string
+  dob: string
+  address?: string
+  country: string
+  phone?: string
+  email?: string
+  fatherLastName?: string
+  fatherFirstName?: string
+  fatherPhone?: string
+  fatherEducation?: string
+  fatherJob?: string
+  motherLastName?: string
+  motherFirstName?: string
+  motherPhone?: string
+  motherEducation?: string
+  motherJob?: string
+  noOfSisters?: number
+  noOfBrothers?: number
+  position?: string
+  focus?: string
+  favSubject?: string
+  difficultSubject?: string
+  careerChoice1?: string
+  careerChoice2?: string
+  program: string
+  year: number
+  quarter: number
   grades: {
-    english?: string;
-    math?: string;
-    chemistry?: string;
-    physics?: string;
-    government?: string;
-    economics?: string;
-    biology?: string;
-    commerce?: string;
-    literature?: string;
-    accounting?: string;
+    english?: string
+    math?: string
+    chemistry?: string
+    physics?: string
+    government?: string
+    economics?: string
+    biology?: string
+    commerce?: string
+    literature?: string
+    accounting?: string
   }
 }
 
@@ -374,9 +377,9 @@ export type HistoryTable = {
 export type EditSponsorshipDto = Partial<CreateSponsorshipDto>
 
 export interface ApiError {
-  statusCode: number;
-  message: string | string[];
-  error: string;
+  statusCode: number
+  message: string | string[]
+  error: string
 }
 
 export type User = {
@@ -418,29 +421,37 @@ export interface FilterStudentsPayload {
 }
 
 export interface ParticipationFilterDto {
-  country?: string;
-  year?: number;
-  page?: number;
-  limit?: number;
+  country?: string
+  program?: string
+  year?: number
+  page?: number
+  limit?: number
 }
 
 export type AgeGroup = {
-  range: string;
-  count: number;
-};
+  range: string
+  count: number
+}
 
 export type QuarterlyProgramBreakdown = {
-  year: number | null;
-  programs: QuarterGroup[];
-  ageRanges: AgeRangeSummary[];
-};
+  year: number | null
+  programs: QuarterGroup[]
+  ageRanges: AgeRangeSummary[]
+}
 
 export type QuarterGroup = {
-  quarter: string;            
-  [program: string]: number | string;
-};
+  quarter: string
+  [program: string]: number | string
+}
 
 export type AgeRangeSummary = {
-  range: string;
-  count: number;
-};
+  range: string
+  count: number
+}
+
+export const COLORS: Record<string, string> = {
+  ASCG: "#009DE6",
+  CBC: "#8B86B4",
+  SSC: "#9EB707",
+  DSC: "#D92121",
+}

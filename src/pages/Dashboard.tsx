@@ -14,6 +14,8 @@ import CountryTable from "@/components/CountryTable";
 import { SpinnerCustom } from "@/components/Loader";
 import ErrorLayout from "@/components/ErrorLayout";
 import GroupedBarChart from "@/components/BarChart";
+import { COLORS } from "@/utils/types";
+import { NavLink } from "react-router";
 
 
 
@@ -45,7 +47,6 @@ export default function Dashboard() {
             ...p,
             count: Number(p.count)
         }));
-        const COLORS = ["#009DE6", "#8B86B4", "#9EB707", "#D92121"];
         const countryCount = data?.countByCountry.length || 0;
         const currentYear = data?.countByYear.find(x => x.year === filterYear) || { count: 0 }
 
@@ -160,8 +161,8 @@ export default function Dashboard() {
                                             innerRadius={0}
                                             outerRadius={100}
                                         >
-                                            {programData?.map((_, idx) => (
-                                                <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
+                                            {programData?.map((p, idx) => (
+                                                <Cell key={idx} fill={COLORS[p.program]} />
                                             ))}
                                         </Pie>
                                         <RTooltip formatter={(v, n) => [v as number, n as string]} />
@@ -170,7 +171,14 @@ export default function Dashboard() {
                                             height={36}
                                             formatter={(value) => {
                                                 const programItem = programData?.find(p => p.program === value);
-                                                return <span className="text-xs font-semibold mr-2">{programItem?.program}: {programItem?.count}</span>;
+                                                return <NavLink
+                                                    className="text-xs font-semibold mr-2"
+                                                    to={`/program-filter`}
+                                                    state={{
+                                                        program: programItem?.program,
+                                                        year: filterYear
+                                                    }}
+                                                >{programItem?.program}: {programItem?.count}</NavLink>;
                                             }}
                                         />
                                     </PieChart>
@@ -291,7 +299,7 @@ export default function Dashboard() {
                                             {breakdownQuery.data?.ageRanges?.map((_, idx) => (
                                                 <Cell
                                                     key={idx}
-                                                    fill={COLORS[0]}
+                                                    fill={COLORS['ASCG']}
                                                 />
                                             ))}
                                             <LabelList

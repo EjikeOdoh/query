@@ -7,7 +7,7 @@ import Students from "./Students";
 import Search from "./Search";
 import Student from "./StudentDetails";
 import AddStudent from "./AddStudent";
-import {useGetProfile} from "@/hooks/useGetProfile";
+import { useGetProfile } from "@/hooks/useGetProfile";
 import type { ProfileState } from "@/utils/types";
 import Staff from "./Staff";
 import Volunteers from "./Volunteers";
@@ -26,6 +26,7 @@ import { SpinnerCustom } from "@/components/Loader";
 import { Account } from "./Account";
 import Users from "./Users";
 import StudentFilterPage from "./StudentFilterPage";
+import StudentProgramFilterPage from "./StudentProgramFilterPage";
 
 export default function Navigation() {
 
@@ -52,7 +53,7 @@ export default function Navigation() {
 
 
     const accountType: ProfileState = data!
-    
+
     return (
         <BrowserRouter>
             <Routes>
@@ -68,6 +69,7 @@ export default function Navigation() {
                                 <Route path='/add-student' element={<AddStudent />} />
                                 <Route path='/students/:studentId' element={<Student />} />
                                 <Route path='/student-filter' element={<StudentFilterPage />} />
+                                <Route path='/program-filter' element={<StudentProgramFilterPage />} />
                             </>
                         }
 
@@ -121,4 +123,4 @@ export default function Navigation() {
         </BrowserRouter>
     )
 
-    }
+}

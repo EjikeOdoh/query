@@ -45,7 +45,7 @@ export default function StudentTable<TData>({ data, remove, source, query, filte
               {
                 filter ? (
                 <Button variant="outline"
-                  onClick={() => navigate(`/students/${(student as any).id}`, {
+                  onClick={() => navigate(`/students/${(student as any).id || (student as any).studentId }`, {
                     state: {
                       from: source,
                       openModal: false,
