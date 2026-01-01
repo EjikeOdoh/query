@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import html2canvas from "html2canvas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ import CountryTable from "@/components/CountryTable";
 import { SpinnerCustom } from "@/components/Loader";
 import ErrorLayout from "@/components/ErrorLayout";
 import GroupedBarChart from "@/components/BarChart";
-import { COLORS } from "@/utils/types";
+import { COLORS, type ProfileState } from "@/utils/types";
 import { NavLink } from "react-router";
 
 
@@ -24,7 +25,45 @@ export default function Dashboard() {
     const { isLoading, isError, error, data, } = useDashboardStats(filterYear)
     useGetPrograms()
     const breakdownQuery = useGetProgramBreakdown(filterYear)
+    const hiddenRef = useRef(null);
 
+    const profile = JSON.parse(sessionStorage.getItem('profile')!) as ProfileState
+
+    const handleScreenshot = async () => {
+        if (!hiddenRef.current) return;
+
+        const canvas = await html2canvas(hiddenRef.current, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: "#ffffff",
+            // This is the magic fix
+            onclone: (clonedDoc) => {
+                // Replace all oklch() with equivalent rgb/hex or remove problematic styles
+                const styles = clonedDoc.querySelectorAll('*');
+                styles.forEach((el: any) => {
+                    const computed = clonedDoc.defaultView!.getComputedStyle(el);
+
+                    // Force color & background-color to rgb
+                    if (computed.color.includes('oklch')) {
+                        el.style.color = '#000000'; // fallback or compute proper rgb
+                    }
+                    if (computed.backgroundColor.includes('oklch')) {
+                        el.style.backgroundColor = 'transparent';
+                    }
+                    // Also handle border colors, shadows, etc.
+                    if (computed.borderColor.includes('oklch')) {
+                        el.style.borderColor = '#e5e7eb';
+                    }
+                });
+            },
+        });
+
+        const link = document.createElement('a');
+        link.download = `dashboard-${filterYear || 'all'}-${new Date().toISOString().split('T')[0]}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+    };
 
 
     if (isLoading) {
@@ -172,7 +211,7 @@ export default function Dashboard() {
                                             formatter={(value) => {
                                                 const programItem = programData?.find(p => p.program === value);
                                                 return <NavLink
-                                                    className="text-xs font-semibold mr-2"
+                                                    className="text-xs font-semibold mr-2 flex-1/2"
                                                     to={`/program-filter`}
                                                     state={{
                                                         program: programItem?.program,
@@ -200,7 +239,6 @@ export default function Dashboard() {
                                         onClick={x => {
                                             setFilterYear(x.activePayload![0]["payload"].year)
                                         }}
-
                                     >
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis
@@ -254,6 +292,7 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
                 </div>
+
 
                 {!!(filterYear) && (
                     <div className="flex flex-col md:flex-row gap-6">
@@ -327,6 +366,150 @@ export default function Dashboard() {
                     </div>
                 )
                 }
+
+                {
+                    (profile.role === "admin" && filterYear > 0) ? (
+                        <Button
+                            variant="default"
+                            onClick={handleScreenshot}>
+                            Download stats
+                        </Button>
+                    ) : undefined
+                }
+
+                {/* Parts to screenshot */}
+                {
+                    (filterYear && filterYear !== 0) ? (
+                        <div
+                            ref={hiddenRef}
+                            className="py-5 px-2 space-y-5 screenshot-safe w-full"
+                            style={{
+                                position: "absolute",
+                                left: "-9999px",
+                                top: 0,
+                            }}
+                        >
+                            <div className="flex flex-col md:flex-row gap-5 ">
+                                <Card className="flex-1 rounded-2xl shadow-sm">
+                                    <CardHeader className="pb-2">
+                                        <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
+                                            <PieIcon className="h-4 w-4" />
+                                            <p className="mt-[-18px]">Program Mix</p>
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="h-[320px]">
+                                        <ResponsiveContainer width="100%" height="90%">
+                                            <PieChart>
+                                                <Pie
+                                                    data={programData}
+                                                    dataKey="count"
+                                                    nameKey="program"
+                                                    innerRadius={0}
+                                                    outerRadius={100}
+                                                >
+                                                    {programData?.map((p, idx) => (
+                                                        <Cell key={idx} fill={COLORS[p.program]} />
+                                                    ))}
+                                                </Pie>
+                                                <RTooltip formatter={(v, n) => [v as number, n as string]} />
+                                                <Legend
+                                                    verticalAlign="top"
+                                                    height={36}
+                                                    className="flex items-center"
+                                                    formatter={(value) => {
+                                                        const programItem = programData?.find(p => p.program === value);
+                                                        return <NavLink
+                                                            className="text-xs font-semibold mr-2"
+                                                            to={`/program-filter`}
+                                                            state={{
+                                                                program: programItem?.program,
+                                                                year: filterYear
+                                                            }}
+                                                        >{programItem?.program}: {programItem?.count}</NavLink>;
+                                                    }}
+                                                />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+                                <Card className="flex-1 rounded-2xl shadow-sm">
+                                    <CardHeader className="pb-2">
+                                        <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
+                                            <ChartBarBig className="h-4 w-4" />
+                                            <p className="mt-[-18px]">Age Distribution - {filterYear}</p>
+                                        </CardTitle>
+                                    </CardHeader>
+
+                                    <CardContent className="h-[320px]">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                data={breakdownQuery.data?.ageRanges}
+                                                layout="vertical"
+                                                margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
+                                            >
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis
+                                                    type="number"
+                                                    tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+                                                    label={{
+                                                        value: 'COUNT',
+                                                        position: 'bottom',
+                                                        offset: -8,
+                                                        fontSize: 10,
+
+                                                    }}
+                                                />
+                                                <YAxis
+                                                    type="category"
+                                                    dataKey="range"
+                                                    tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+                                                    label={{
+                                                        value: 'AGE GROUP',
+                                                        angle: -90,
+                                                        position: 'insideLeft',
+                                                        fontSize: 10,
+                                                    }}
+                                                />
+                                                <RTooltip formatter={(v, n) => [v as number, n as string]} />
+                                                <Bar dataKey="count">
+                                                    {breakdownQuery.data?.ageRanges?.map((_, idx) => (
+                                                        <Cell
+                                                            key={idx}
+                                                            fill={COLORS['ASCG']}
+                                                        />
+                                                    ))}
+                                                    <LabelList
+                                                        dataKey="count"
+                                                        position="insideLeft"
+                                                        offset={5}
+                                                        fill="#000"
+                                                        className="text-xs font-bold"
+                                                    />
+                                                </Bar>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                            <Card className="rounded-2xl shadow-sm">
+                                <CardHeader className="pb-2">
+                                    <div className="flex items-center justify-between">
+                                        <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
+                                            <Map />
+                                            <p className="mt-[-18px]">Country Breakdown</p>
+                                        </CardTitle>
+                                        <Badge variant="secondary" className="text-xs py-2">Year: {filterYear || "All"}</Badge>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <CountryTable data={data?.countByCountry || []} year={filterYear} />
+                                </CardContent>
+                            </Card>
+                        </div>
+                    ) : undefined
+                }
+
+
             </Container>
         );
 

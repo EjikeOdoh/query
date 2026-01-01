@@ -25,7 +25,7 @@ export default function Header({ label }: { label?: string }) {
                         {label}
                     </h1>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="hidden md:flex items-center gap-2">
                     <div className="flex flex-col items-end">
                         <h6 className="text-[#171717] text-lg font-semibold">Welcome, {name}</h6>
                         <small className="text-[#808080] text-[10px]">{profile?.role}</small>

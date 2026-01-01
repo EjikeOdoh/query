@@ -282,7 +282,7 @@ export function Account() {
 
                 {/* Edit modal */}
                 <Modal isOpen={isEditModalOpen} onClose={closeModal}>
-                    <Heading text={`Edit ${isStaff ? "Staff" : "Volunteer"} Details`} />
+                    <Heading text={`Edit ${isStaff ? "Staff" : isVolunteer ? "Volunteer" : "Account"} Details`} />
 
                     <form action={handleUpdate}>
                         {
