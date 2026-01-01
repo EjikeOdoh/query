@@ -40,8 +40,8 @@ export default function Dashboard() {
             // This is the magic fix
             onclone: (clonedDoc) => {
                 // Replace all oklch() with equivalent rgb/hex or remove problematic styles
-                const styles = clonedDoc.querySelectorAll('*');
-                styles.forEach((el: any) => {
+                const styles = clonedDoc.querySelectorAll<HTMLElement>('*');
+                styles.forEach((el) => {
                     const computed = clonedDoc.defaultView!.getComputedStyle(el);
 
                     // Force color & background-color to rgb
