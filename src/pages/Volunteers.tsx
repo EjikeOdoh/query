@@ -55,14 +55,15 @@ export default function Volunteers() {
 
     function removeUser(id: number) {
         deleteUserMutation.mutate({ id })
+
     }
 
     function updateUsers() {
         refetch()
-        queryClient.invalidateQueries({queryKey:["users"]})
+        queryClient.invalidateQueries({ queryKey: ["users"] })
     }
 
-    if (isLoading || createUserMutation.isPending) {
+    if (isLoading || createUserMutation.isPending || deleteUserMutation.isPending || deleteMutation.isPending) {
         return <LoadingLayout label="Volunteers" />
     }
 
@@ -95,7 +96,6 @@ export default function Volunteers() {
                             <h1>No Volunteer record yet!</h1>
                         </div>
                 }
-
                 <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
                     <div className="space-y-10">
                         <div className="space-y-8">

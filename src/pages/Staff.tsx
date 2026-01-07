@@ -91,7 +91,8 @@ export default function Staff() {
                     /> :
                     <div>
                         <h1>No Staff record yet!</h1>
-                    </div>}
+                    </div>
+                    }
 
                 {/* Delete modal */}
                 <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
@@ -101,7 +102,6 @@ export default function Staff() {
                             <div>
                                 <h3 className="font-bold text-3xl text-center">Delete Staff</h3>
                                 <p className="font-light text-center">Are you sure you want to delete this staff?</p>
-
                             </div>
 
                         </div>
