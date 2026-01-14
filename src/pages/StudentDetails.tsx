@@ -181,8 +181,8 @@ export default function Student() {
     }
 
     if (data) {
-        const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, careerChoice1, careerChoice2, email, participations, grades } = data
-    
+        const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, careerChoice1, careerChoice2, email, participations, grades, motherEducation, motherJob, fatherEducation, fatherJob, noOfBrothers, noOfSisters, position } = data
+
         return (
             <div className="flex flex-col">
                 <Header
@@ -194,10 +194,10 @@ export default function Student() {
                             <div>
                                 <NavLink to={isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state.query}>
                                     <ChevronLeft color="#171717" size={14} />
-                                   { isFromSearchPage ? "Back to Search": "Back to Students" }
+                                    {isFromSearchPage ? "Back to Search" : "Back to Students"}
                                 </NavLink>
                             </div>
-    
+
                             <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-4">
                                     <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#B0E6FF] border-2 border-[#D9F3FF]">
@@ -208,7 +208,7 @@ export default function Student() {
                                         <small>Since {yearJoined}</small>
                                     </div>
                                 </div>
-    
+
                                 <div className="flex items-center justify-center gap-2">
                                     <Button variant="ghost" size="icon" onClick={openEditModal}>
                                         <Pencil color="#171717" />
@@ -217,11 +217,11 @@ export default function Student() {
                                         <Trash2 color="#171717" />
                                     </Button>
                                 </div>
-    
+
                             </div>
-    
-                            <div className="flex flex-col md:flex-row gap-10 md:gap-0">
-                                <div className="flex-1 space-y-5">
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-5">
                                     <Heading
                                         text="Personal Details"
                                     />
@@ -230,96 +230,128 @@ export default function Student() {
                                             label="Date of Birth"
                                             value={dateFormatter(dob)}
                                         />
-    
+
                                         <Row
                                             label="Country"
                                             value={country}
                                         />
-    
+
                                         <Row
                                             label="School"
                                             value={school}
                                         />
-    
+
                                         <Row
                                             label="Class"
                                             value={currentClass}
                                         />
-    
+
                                         <Row
                                             label="Favorite Subject"
                                             value={favSubject}
                                         />
-    
+
                                         <Row
                                             label="Most Difficult Subject"
                                             value={difficultSubject}
                                         />
-    
+
                                         <Row
                                             label="Career Choice 1"
                                             value={careerChoice1}
                                         />
-    
+
                                         <Row
                                             label="Career Choice 2"
                                             value={careerChoice2}
                                         />
-    
+
                                     </div>
                                 </div>
-                                <div className="flex-1 space-y-10">
-                                    <div className="space-y-5">
-                                        <Heading
-                                            text="Parents Details"
+
+                                <div className="space-y-5">
+                                    <Heading
+                                        text="Parent and Household Information"
+                                    />
+                                    <div className="space-y-2">
+                                        <Row
+                                            label="Father's Name"
+                                            value={fatherFirstName}
                                         />
-                                        <div className="space-y-2">
-                                            <Row
-                                                label="Father's Name"
-                                                value={fatherFirstName}
-                                            />
-    
-                                            <Row
-                                                label="Mother's Name"
-                                                value={motherFirstName}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-5">
-                                        <Heading
-                                            text="Contacts"
+                                        <Row
+                                            label="Father's Education"
+                                            value={fatherEducation}
                                         />
-                                        <div className="space-y-2">
-    
-                                            <Row
-                                                label="Email Address"
-                                                value={email}
-                                            />
-    
-                                            <Row
-                                                label="Phone Number"
-                                                value={phone}
-                                            />
-    
-    
-                                            <Row
-                                                label="House Address"
-                                                value={address}
-                                            />
-                                            <Row
-                                                label="Father's Phone Number"
-                                                value={fatherPhone}
-                                            />
-                                            <Row
-                                                label="Mother's Phone Number"
-                                                value={motherPhone}
-                                            />
-                                        </div>
+
+                                        <Row
+                                            label="Father's Job"
+                                            value={fatherJob}
+                                        />
+
+                                        <Row
+                                            label="Mother's Name"
+                                            value={motherFirstName}
+                                        />
+                                        <Row
+                                            label="Mother's Education"
+                                            value={motherEducation}
+                                        />
+
+                                        <Row
+                                            label="Mother's Job"
+                                            value={motherJob}
+                                        />
+
+                                        <Row
+                                            label="Number of Brothers"
+                                            value={String(noOfBrothers)}
+                                        />
+
+                                        <Row
+                                            label="Number of Sisters"
+                                            value={String(noOfSisters)}
+                                        />
+                                        <Row
+                                            label="Position in Family"
+                                            value={position}
+                                        />
                                     </div>
                                 </div>
+                                <div className="space-y-5">
+                                    <Heading
+                                        text="Contacts"
+                                    />
+                                    <div className="space-y-2">
+
+                                        <Row
+                                            label="Email Address"
+                                            value={email}
+                                        />
+
+                                        <Row
+                                            label="Phone Number"
+                                            value={phone}
+                                        />
+
+
+                                        <Row
+                                            label="House Address"
+                                            value={address}
+                                        />
+                                        <Row
+                                            label="Father's Phone Number"
+                                            value={fatherPhone}
+                                        />
+                                        <Row
+                                            label="Mother's Phone Number"
+                                            value={motherPhone}
+                                        />
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-    
+
                         {/* Grades table */}
                         {
                             (!data.school || !data?.school.includes('University')) && (
@@ -330,7 +362,7 @@ export default function Student() {
                                             Add Grades
                                         </Button>
                                     </div>
-    
+
                                     {
                                         data.school !== "University" && (
                                             <Table className="rounded-xl overflow-hidden">
@@ -380,18 +412,18 @@ export default function Student() {
                                             </Table>
                                         )
                                     }
-    
+
                                 </div>
                             )
                         }
-    
+
                         {/* Participation table */}
                         <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
                             <div className="flex justify-between items-center">
                                 <Heading text="Participations" />
                                 <Button onClick={openAddParticipationModal}>Add Participation</Button>
                             </div>
-    
+
                             <Table className="rounded-xl overflow-hidden">
                                 <TableHeader className="">
                                     <TableRow className="bg-[#E6F7FF]">
@@ -408,7 +440,7 @@ export default function Student() {
                                             <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_year}</TableCell>
                                             <TableCell className="text-[#171717] text-sm font-light">{particpation.participation_quarter}</TableCell>
                                             <TableCell className="flex items-center justify-center gap-2">
-    
+
                                                 <Button variant="ghost" size="icon"
                                                     onClick={() => openEditParticipationModal(particpation.participation_id)} >
                                                     <Pencil color="#171717" />
@@ -423,21 +455,21 @@ export default function Student() {
                                     ))}
                                 </TableBody>
                             </Table>
-    
+
                         </div>
                     </div>
                 </div>
-    
+
                 {/* Edit student modal */}
                 <Modal
                     isOpen={isEditModalOpen}
                     onClose={closeEditModal}
                 >
-    
+
                     <Heading
                         text="Edit Student's Details"
                     />
-    
+
                     <form action={handleSubmitStudentData}>
                         <div className="flex flex-col gap-4 py-5">
                             <Input
@@ -449,7 +481,7 @@ export default function Student() {
                                 onChange={e => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="school"
                                 placeholder="School"
@@ -457,7 +489,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="currentClass"
                                 placeholder="Current Class"
@@ -465,7 +497,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="lastName"
                                 placeholder="Last Name"
@@ -473,7 +505,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="firstName"
                                 placeholder="First Name"
@@ -481,7 +513,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="dob"
                                 placeholder="Date of Birth"
@@ -490,7 +522,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="phone"
                                 placeholder="Phone Number"
@@ -499,7 +531,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 type="email"
                                 name="email"
@@ -508,7 +540,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="country"
                                 placeholder="Country"
@@ -516,7 +548,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 type="text"
                                 name="address"
@@ -525,7 +557,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="fatherLastName"
                                 placeholder="Father's Last Name"
@@ -533,7 +565,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="fatherFirstName"
                                 placeholder="Father's First Name"
@@ -541,7 +573,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="fatherEducation"
                                 placeholder="Father's Education i.e SSCE, BSc, MSc, PHD"
@@ -549,7 +581,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="fatherPhone"
                                 placeholder="Father's Phone Number"
@@ -557,7 +589,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="fatherJob"
                                 placeholder="Father's Job"
@@ -565,7 +597,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="motherLastName"
                                 placeholder="Mother's Last Name"
@@ -573,7 +605,7 @@ export default function Student() {
                                 showLabel={true}
                                 onChange={(e) => updateData(e, setEditData)}
                             />
-    
+
                             <Input
                                 name="motherFirstName"
                                 placeholder="Mother's First Name"
@@ -581,7 +613,7 @@ export default function Student() {
                                 showLabel={true}
                                 onChange={(e) => updateData(e, setEditData)}
                             />
-    
+
                             <Input
                                 name="motherEducation"
                                 placeholder="Mother's Education i.e SSCE, BSc, MSc, PHD"
@@ -589,7 +621,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="motherPhone"
                                 placeholder="Mother's Phone Number"
@@ -597,7 +629,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="motherJob"
                                 placeholder="Mother's Job"
@@ -605,7 +637,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <Input
                                 name="noOfSisters"
                                 placeholder="Number of Sisters"
@@ -627,7 +659,7 @@ export default function Student() {
                                 onChange={(e) => updateData(e, setEditData)}
                                 showLabel={true}
                             />
-    
+
                             <div>
                                 <label className="text-sm font-light">Focus i.e Science, Art, Technology, Commercial</label>
                                 <Select
@@ -649,7 +681,7 @@ export default function Student() {
                                     </SelectContent>
                                 </Select>
                             </div>
-    
+
                             <Input
                                 name="favSubject"
                                 placeholder="Favorite Subject"
@@ -679,11 +711,11 @@ export default function Student() {
                                 showLabel={true}
                             />
                         </div>
-    
+
                         <Button className="w-full">Submit</Button>
                     </form>
                 </Modal>
-    
+
                 {/* Delete student modal */}
                 <Modal isOpen={isDeleteModalOpen} onClose={closeEditModal}>
                     <div className="space-y-10">
@@ -693,7 +725,7 @@ export default function Student() {
                                 <h3 className="font-bold text-3xl text-center">Delete Student</h3>
                                 <p className="font-light text-center">Are you sure you want to delete this student?</p>
                             </div>
-    
+
                         </div>
                         <div className="flex items-center gap-4">
                             <Button variant='outline' className="flex-1" onClick={closeEditModal}>No</Button>
@@ -701,7 +733,7 @@ export default function Student() {
                         </div>
                     </div>
                 </Modal>
-    
+
                 {/* Edit grade modal */}
                 <Modal isOpen={isEditGradeModalOpen} onClose={closeEditModal}>
                     <form
@@ -710,7 +742,7 @@ export default function Student() {
                     >
                         <Heading
                             text="Edit Grades"
-    
+
                         />
                         <div className="flex flex-col gap-4">
                             <Input
@@ -805,7 +837,7 @@ export default function Student() {
                         <Button className="w-full">Submit</Button>
                     </form>
                 </Modal>
-    
+
                 {/* Edit participation modal */}
                 <Modal isOpen={isEditParticipationModalOpen} onClose={closeEditModal}>
                     <form action={handleEditParticipation}
@@ -860,7 +892,7 @@ export default function Student() {
                         <Button className="w-full">Submit</Button>
                     </form>
                 </Modal>
-    
+
                 {/* Add grade modal */}
                 <Modal isOpen={isAddGradeModalOpen} onClose={closeEditModal} >
                     <form
@@ -869,7 +901,7 @@ export default function Student() {
                     >
                         <Heading
                             text="Add Grades"
-    
+
                         />
                         <div className="flex flex-col gap-4">
                             <Input
@@ -964,7 +996,7 @@ export default function Student() {
                         <Button className="w-full">Submit</Button>
                     </form>
                 </Modal>
-    
+
                 {/* Add participation modal */}
                 <Modal isOpen={isAddParticipationModalOpen} onClose={closeEditModal}>
                     <form action={handleAddParticipation}
@@ -991,7 +1023,7 @@ export default function Student() {
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-    
+
                             </div>
                             <Input
                                 name="year"
