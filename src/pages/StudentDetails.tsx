@@ -304,12 +304,12 @@ export default function Student() {
 
                                         <Row
                                             label="Number of Brothers"
-                                            value={String(noOfBrothers)}
+                                            value={noOfBrothers ? String(noOfBrothers) : null}
                                         />
 
                                         <Row
                                             label="Number of Sisters"
-                                            value={String(noOfSisters)}
+                                            value={noOfSisters ? String(noOfSisters) : null}
                                         />
                                         <Row
                                             label="Position in Family"
