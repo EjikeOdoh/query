@@ -60,6 +60,8 @@ export default function AddStudent() {
         program: "",
         year: "",
         quarter: "",
+        academicYear: "",
+        term: "",
         english: "",
         math: "",
         chemistry: "",
@@ -111,7 +113,7 @@ export default function AddStudent() {
         }
     }, [step, mutate])
 
-   
+
     if (isPending) {
         return (
             <LoadingLayout label="Add Student" />
@@ -134,8 +136,8 @@ export default function AddStudent() {
                                 <Select
                                     name="program"
                                     required
-                                // value={data.program}
-                                // onValueChange={(x) => setData({ ...data, program: x })}
+                                    // value={data.program}
+                                    onValueChange={(x) => setData({ ...data, program: x })}
                                 >
                                     <SelectTrigger className="w-full px-6">
                                         <SelectValue placeholder="Select program" />
@@ -423,6 +425,31 @@ export default function AddStudent() {
                                 count={step}
                             />
                             <div className="flex flex-col gap-4">
+                                <div className="flex flex-col md:flex-row gap-4">
+                                    <Input
+                                        name="academicYear"
+                                        placeholder="Academic Year"
+                                        value={data.academicYear}
+                                        onChange={(e) => updateData(e, setData)}
+                                    />
+                                    <Select
+                                        name="term"
+                                        required
+                                    // value={data.program}
+                                    // onValueChange={(x) => setData({ ...data, program: x })}
+                                    >
+                                        <SelectTrigger className="w-full px-6">
+                                            <SelectValue placeholder="Select program" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white py-4">
+                                            <SelectGroup>
+                                                <SelectItem value="first">First</SelectItem>
+                                                <SelectItem value="second">Second</SelectItem>
+                                                <SelectItem value="third">Third</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
 
                                 <div className="flex flex-col md:flex-row gap-4">
                                     <Input

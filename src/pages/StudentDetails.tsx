@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAddGrades, useDeleteGrades, useUpdateGrades } from "@/hooks/use-grades";
 import { useAddStudentParticipation, useDeleteStudent, useDeleteStudentParticipation, useGetStudentDetails, useUpdateStudent, useUpdateStudentParticipation } from "@/hooks/use-students";
-import { dateFormatter, updateData } from "@/utils/fn";
+import { capitalize, dateFormatter, updateData } from "@/utils/fn";
 import { type ParticipationAddData, type GradeAddData, type GradeEditData, type ParticipationEditData, type EditStudentPayload } from "@/utils/types";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -369,6 +369,7 @@ export default function Student() {
                                                 <TableHeader className="">
                                                     <TableRow className="bg-[#E6F7FF]">
                                                         <TableHead className="text-[#808080] text-sm font-light">Year</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light">Term</TableHead>
                                                         <TableHead className="text-[#808080] text-sm font-light min-w-10">Mth</TableHead>
                                                         <TableHead className="text-[#808080] text-sm font-light min-w-10">Eng</TableHead>
                                                         <TableHead className="text-[#808080] text-sm font-light min-w-10">Chm</TableHead>
@@ -386,6 +387,7 @@ export default function Student() {
                                                     {grades.map(grade => (
                                                         <TableRow key={grade.id}>
                                                             <TableCell className="text-[#171717] text-sm font-light">{grade.year}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{capitalize(grade.term)}</TableCell>
                                                             <TableCell className="text-[#171717] text-sm font-light">{grade.math}</TableCell>
                                                             <TableCell className="text-[#171717] text-sm font-light">{grade.english}</TableCell>
                                                             <TableCell className="text-[#171717] text-sm font-light">{grade.chemistry}</TableCell>
@@ -735,7 +737,7 @@ export default function Student() {
                 </Modal>
 
                 {/* Edit grade modal */}
-                <Modal isOpen={isEditGradeModalOpen} onClose={closeEditModal}>
+                <Modal width="sm:max-w-3xl" isOpen={isEditGradeModalOpen} onClose={closeEditModal}>
                     <form
                         className="flex flex-col gap-5"
                         action={handleUpdateGrade}
@@ -745,15 +747,38 @@ export default function Student() {
 
                         />
                         <div className="flex flex-col gap-4">
-                            <Input
-                                name="year"
-                                placeholder="Year"
-                                type="number"
-                                maxLength={4}
-                                value={editGradesData.year! ?? ""}
-                                onChange={(e) => updateData(e, setEditGradesData)}
-                                showLabel={true}
-                            />
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="year"
+                                    placeholder="Year"
+                                    type="number"
+                                    maxLength={4}
+                                    value={editGradesData.year! ?? ""}
+                                    onChange={(e) => updateData(e, setEditGradesData)}
+                                    showLabel={true}
+                                />
+
+                                <div className="flex-1 min-w-1/2 rounded-sm border bg-transparent py-1 text-sm">
+                                    <label className="text-sm font-light mb-2">Term</label>
+                                    <Select
+                                        name="term"
+                                        required
+                                        value={editGradesData.term! ?? ""}
+                                        onValueChange={(x) => setEditGradesData({ ...editGradesData, term: x })}
+                                    >
+                                        <SelectTrigger className="flex-1 flex min-h-12 min-w-full rounded-sm border bg-transparent px-6 py-1 text-sm">
+                                            <SelectValue placeholder="Select program" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white py-4">
+                                            <SelectGroup>
+                                                <SelectItem value="first">First</SelectItem>
+                                                <SelectItem value="second">Second</SelectItem>
+                                                <SelectItem value="third">Third</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
                             <div className="flex flex-col md:flex-row gap-4">
                                 <Input
                                     name="math"
@@ -894,7 +919,7 @@ export default function Student() {
                 </Modal>
 
                 {/* Add grade modal */}
-                <Modal isOpen={isAddGradeModalOpen} onClose={closeEditModal} >
+                <Modal width="sm:max-w-3xl" isOpen={isAddGradeModalOpen} onClose={closeEditModal} >
                     <form
                         className="flex flex-col gap-5"
                         action={handleAddGrade}
@@ -904,15 +929,25 @@ export default function Student() {
 
                         />
                         <div className="flex flex-col gap-4">
-                            <Input
-                                name="year"
-                                placeholder="Year"
-                                type="number"
-                                maxLength={4}
-                                value={addGradesData.year! ?? ""}
-                                onChange={(e) => updateData(e, setAddGradesData)}
-                                showLabel={true}
-                            />
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <Input
+                                    name="year"
+                                    placeholder="Year"
+                                    type="number"
+                                    maxLength={4}
+                                    value={addGradesData.year! ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+                                <Input
+                                    name="term"
+                                    placeholder="Term"
+                                    value={addGradesData.term! ?? ""}
+                                    onChange={(e) => updateData(e, setAddGradesData)}
+                                    showLabel={true}
+                                />
+
+                            </div>
                             <div className="flex flex-col md:flex-row gap-4">
                                 <Input
                                     name="math"

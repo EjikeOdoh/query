@@ -45,6 +45,7 @@ export interface Grade {
   commerce?: string | null
   literature?: string | null
   accounting?: string | null
+  term: string
   year: number
 }
 export type GradeAddData = Omit<Grade, 'id'>
@@ -181,6 +182,8 @@ export interface CreateStudentData {
   program: string
   year: string
   quarter: string
+  academicYear: string
+  term: string
   english?: string
   math?: string
   chemistry?: string
