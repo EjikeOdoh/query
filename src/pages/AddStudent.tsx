@@ -90,8 +90,14 @@ export default function AddStudent() {
 
     const { mutate, isPending, isError, error, reset } = useMutation({
         mutationFn: () => createStudent(data),
-        onSuccess: cleanUp
+        onSuccess: cleanUp,
+        
     })
+
+    function handleError() {
+        reset()
+        closeModal()
+    }
 
     function handleFormSubmit(x: FormData) {
         const entries = Object.fromEntries(x)
@@ -139,7 +145,7 @@ export default function AddStudent() {
                                     // value={data.program}
                                     onValueChange={(x) => setData({ ...data, program: x })}
                                 >
-                                    <SelectTrigger className="w-full px-6">
+                                    <SelectTrigger className="w-full px-6 min-h-12">
                                         <SelectValue placeholder="Select program" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white py-4">
@@ -160,7 +166,7 @@ export default function AddStudent() {
                                     required
                                     onValueChange={(x) => setData({ ...data, program: x })}
                                 >
-                                    <SelectTrigger className="w-full px-6">
+                                    <SelectTrigger className="w-full px-6 min-h-12">
                                         <SelectValue placeholder="Select Quarter" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white">
@@ -392,7 +398,7 @@ export default function AddStudent() {
                                 <Select
                                     name="focus"
                                 >
-                                    <SelectTrigger className="flex-1 w-full">
+                                    <SelectTrigger className="flex-1 w-full min-h-12">
                                         <SelectValue placeholder="Focus i.e Science, Art, Technology, Commercial" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white">
@@ -426,29 +432,31 @@ export default function AddStudent() {
                             />
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col md:flex-row gap-4">
-                                    <Input
-                                        name="academicYear"
-                                        placeholder="Academic Year"
-                                        value={data.academicYear}
-                                        onChange={(e) => updateData(e, setData)}
-                                    />
-                                    <Select
-                                        name="term"
-                                        required
-                                    // value={data.program}
-                                    // onValueChange={(x) => setData({ ...data, program: x })}
-                                    >
-                                        <SelectTrigger className="w-full px-6">
-                                            <SelectValue placeholder="Select program" />
-                                        </SelectTrigger>
-                                        <SelectContent className="bg-white py-4">
-                                            <SelectGroup>
-                                                <SelectItem value="first">First</SelectItem>
-                                                <SelectItem value="second">Second</SelectItem>
-                                                <SelectItem value="third">Third</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
+                                    <div className="flex-1">
+                                        <Input
+                                            name="academicYear"
+                                            placeholder="Academic Year"
+                                            value={data.academicYear}
+                                            onChange={(e) => updateData(e, setData)}
+                                        />
+                                    </div>
+                                    <div className="flex-1">
+                                        <Select
+                                            name="term"
+                                            required
+                                        >
+                                            <SelectTrigger className="flex min-h-12 min-w-full rounded-sm border bg-transparent px-6 py-1 text-sm">
+                                                <SelectValue placeholder="Select term" />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-white py-4">
+                                                <SelectGroup>
+                                                    <SelectItem value="first">First</SelectItem>
+                                                    <SelectItem value="second">Second</SelectItem>
+                                                    <SelectItem value="third">Third</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
 
                                 <div className="flex flex-col md:flex-row gap-4">
@@ -596,7 +604,7 @@ export default function AddStudent() {
             </Modal>
 
             {/* Error modal */}
-            <Modal isOpen={isError} onClose={reset}>
+            <Modal isOpen={isError} onClose={handleError}>
                 <div className="space-y-10">
                     <div className="space-y-8">
                         <ShieldOff size={90} className="mx-auto" color="#D92121" />
@@ -605,7 +613,7 @@ export default function AddStudent() {
                             {error && <p className="font-light text-center">{error!.message}</p>}
                         </div>
                     </div>
-                    <Button variant='default' className="w-full" onClick={reset}>Close</Button>
+                    <Button variant='default' className="w-full" onClick={handleError}>Close</Button>
                 </div>
             </Modal>
         </Container>

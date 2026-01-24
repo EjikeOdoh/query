@@ -767,7 +767,7 @@ export default function Student() {
                                         onValueChange={(x) => setEditGradesData({ ...editGradesData, term: x })}
                                     >
                                         <SelectTrigger className="flex-1 flex min-h-12 min-w-full rounded-sm border bg-transparent px-6 py-1 text-sm">
-                                            <SelectValue placeholder="Select program" />
+                                            <SelectValue placeholder="Select term" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-white py-4">
                                             <SelectGroup>
@@ -939,13 +939,27 @@ export default function Student() {
                                     onChange={(e) => updateData(e, setAddGradesData)}
                                     showLabel={true}
                                 />
-                                <Input
-                                    name="term"
-                                    placeholder="Term"
-                                    value={addGradesData.term! ?? ""}
-                                    onChange={(e) => updateData(e, setAddGradesData)}
-                                    showLabel={true}
-                                />
+
+                                <div className="flex-1 min-w-1/2 rounded-sm border bg-transparent py-1 text-sm">
+                                    <label className="text-sm font-light mb-2">Term</label>
+                                    <Select
+                                        name="term"
+                                        required
+                                        value={addGradesData.term! ?? ""}
+                                        onValueChange={(x) => setAddGradesData({ ...addGradesData, term: x })}
+                                    >
+                                        <SelectTrigger className="flex-1 flex min-h-12 min-w-full rounded-sm border bg-transparent px-6 py-1 text-sm">
+                                            <SelectValue placeholder="Select term" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white py-4">
+                                            <SelectGroup>
+                                                <SelectItem value="first">First</SelectItem>
+                                                <SelectItem value="second">Second</SelectItem>
+                                                <SelectItem value="third">Third</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
 
                             </div>
                             <div className="flex flex-col md:flex-row gap-4">
