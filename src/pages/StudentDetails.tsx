@@ -353,7 +353,7 @@ export default function Student() {
                         </div>
 
                         {/* Grades table */}
-                        {
+                        {grades.length > 0 &&
                             (!data.school || !data?.school.includes('University')) && (
                                 <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
                                     <div className="flex justify-between items-center">
