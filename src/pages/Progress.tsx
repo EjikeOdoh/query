@@ -3,25 +3,29 @@ import Container from "@/components/Container";
 import ErrorLayout from "@/components/ErrorLayout";
 import Heading from "@/components/Heading";
 import { SpinnerCustom } from "@/components/Loader";
+import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { CurrentYearContext } from "@/context/CurrentYearContext";
 import { useGetStudentsAcademicProgress } from "@/hooks/use-students";
 import type { ProgressFilterDto } from "@/utils/types";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 export default function Progress() {
 
+    const currentYear = useContext(CurrentYearContext)
     const { state } = useLocation()
 
     const navigate = useNavigate()
     const [input, setInput] = useState<ProgressFilterDto>({
-        year: state.year,
+        year: state.year || currentYear,
         page: 1,
         limit: 10,
 
     })
+
     const { data, isLoading, isError, error } = useGetStudentsAcademicProgress(input)
     if (isLoading) {
         return (
@@ -46,12 +50,11 @@ export default function Progress() {
                                 <TableHead className="text-[#808080] text-sm font-light min-w-28">First Name</TableHead>
                                 <TableHead className="text-[#808080] text-sm font-light min-w-28">Last Name</TableHead>
                                 <TableHead className="text-[#808080] text-sm font-light min-w-28">School</TableHead>
-
-                                <TableHead className="text-[#808080] text-sm font-light min-w-28">Terms</TableHead>
                                 <TableHead className="text-[#808080] text-sm font-light min-w-28">1st Term Avg</TableHead>
                                 <TableHead className="text-[#808080] text-sm font-light min-w-28">2nd Term Avg</TableHead>
                                 <TableHead className="text-[#808080] text-sm font-light min-w-28">3rd Term Avg</TableHead>
                                 <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28">Progress</TableHead>
+                                <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28 text-center">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody >
@@ -60,11 +63,16 @@ export default function Progress() {
                                     <TableCell className="text-[#171717] text-sm font-light" onClick={() => navigate(`/students/${p.studentId}`)}>{p.firstName}</TableCell>
                                     <TableCell className="text-[#171717] text-sm font-light">{p.lastName}</TableCell>
                                     <TableCell className="text-[#171717] text-sm font-light">{p.school}</TableCell>
-                                    <TableCell className="text-[#171717] text-sm font-light">{p.numberOfTerms}</TableCell>
                                     <TableCell className="text-[#171717] text-sm font-light">{p.firstTermAvg}</TableCell>
                                     <TableCell className="text-[#171717] text-sm font-light">{p.secondTermAvg}</TableCell>
                                     <TableCell className="text-[#171717] text-sm font-light">{p.thirdTermAvg}</TableCell>
                                     <TableCell className="text-[#171717] text-sm font-light">{p.madeProgress ? <Up /> : <Down />}</TableCell>
+                                    <TableCell className="flex items-center justify-center">
+                                        <Button variant="outline"
+                                            onClick={() => navigate(`/students/${p.studentId}`)}>
+                                            View Profile
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

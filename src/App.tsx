@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Navigation from './pages/Navigation'
 import TokenProvider from './context/TokenContext'
 import ProfileProvider from './context/ProfileContext'
+import CurrentYearProvider from './context/CurrentYearContext'
 
 const queryClient = new QueryClient()
 
@@ -15,7 +16,9 @@ function App() {
       <ReactQueryDevtools initialIsOpen={false} />
       <TokenProvider>
         <ProfileProvider>
-          <Navigation />
+          <CurrentYearProvider>
+            <Navigation />
+          </CurrentYearProvider>
         </ProfileProvider>
       </TokenProvider>
     </QueryClientProvider>

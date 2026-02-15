@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef, useContext } from "react";
 import html2canvas from "html2canvas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,7 @@ import ErrorLayout from "@/components/ErrorLayout";
 import GroupedBarChart from "@/components/BarChart";
 import { COLORS, type ProfileState } from "@/utils/types";
 import { NavLink, useNavigate } from "react-router";
+import { CurrentYearContext, CurrentYearReducerContext } from "@/context/CurrentYearContext";
 
 
 
@@ -24,10 +25,12 @@ export default function Dashboard() {
 
     const navigate = useNavigate()
 
-    const [filterYear, setFilterYear] = useState<number>(0)
-    const { isLoading, isError, error, data, } = useDashboardStats(filterYear)
+    const dispatch = useContext(CurrentYearReducerContext)
+    const selectedYear = useContext(CurrentYearContext)
+
+    const { isLoading, isError, error, data, } = useDashboardStats(selectedYear)
     useGetPrograms()
-    const breakdownQuery = useGetProgramBreakdown(filterYear)
+    const breakdownQuery = useGetProgramBreakdown(selectedYear)
     const hiddenRef = useRef(null);
 
     const profile = JSON.parse(sessionStorage.getItem('profile')!) as ProfileState
@@ -63,7 +66,7 @@ export default function Dashboard() {
         });
 
         const link = document.createElement('a');
-        link.download = `dashboard-${filterYear || 'all'}-${new Date().toISOString().split('T')[0]}.png`;
+        link.download = `dashboard-${selectedYear || 'all'}-${new Date().toISOString().split('T')[0]}.png`;
         link.href = canvas.toDataURL();
         link.click();
     };
@@ -84,13 +87,13 @@ export default function Dashboard() {
 
     if (data) {
         const years: number[] = data!.countByYear.map(x => x.year).sort((a, b) => b - a);
-        const includesYear: boolean = years.includes(filterYear)
+        const includesYear: boolean = years.includes(selectedYear)
         const programData = data?.countByProgram.map(p => ({
             ...p,
             count: Number(p.count)
         }));
         const countryCount = data?.countByCountry.length || 0;
-        const currentYear = data?.countByYear.find(x => x.year === filterYear) || { count: 0 }
+        const currentYear = data?.countByYear.find(x => x.year === selectedYear) || { count: 0 }
 
         return (
             <Container
@@ -103,10 +106,15 @@ export default function Dashboard() {
                         <div className="flex flex-col md:flex-row md:items-center justify-end gap-4 bg-white pb-6 border-b border-gray-200">
                             <div className="flex items-center gap-3">
                                 <Select
-                                    value={includesYear ? filterYear.toString() : '0'}
-                                    onValueChange={(value) => { setFilterYear(Number(value)) }}
+                                    value={includesYear ? selectedYear.toString() : '0'}
+                                    onValueChange={(value) => {
+                                        dispatch({
+                                            type: 'set',
+                                            value: Number(value)
+                                        })
+                                    }}
                                 >
-                                    <SelectTrigger className="w-[140px]"><SelectValue placeholder={includesYear ? filterYear : 'All'} /></SelectTrigger>
+                                    <SelectTrigger className="w-[140px]"><SelectValue placeholder={includesYear ? selectedYear : 'All'} /></SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="0">All</SelectItem>
                                         {
@@ -117,7 +125,12 @@ export default function Dashboard() {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Button variant="default" className="gap-2 border-2" onClick={() => { setFilterYear(0) }}>
+                                            <Button variant="default" className="gap-2 border-2" onClick={() => {
+                                                dispatch({
+                                                    type: 'set',
+                                                    value: 0
+                                                })
+                                            }}>
                                                 <RefreshCw className="h-4 w-4" /> Reset
                                             </Button>
                                         </TooltipTrigger>
@@ -128,7 +141,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* KPI cards */}
-                        <div className={`grid grid-cols-1 ${filterYear ? "md:grid-cols-2" : "md:grid-cols-3"} gap-4`}>
+                        <div className={`grid grid-cols-1 ${selectedYear ? "md:grid-cols-2" : "md:grid-cols-3"} gap-4`}>
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                                 <Card className="rounded-2xl bg-[#D9F3FF] shadow-sm min-h-40">
                                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -154,10 +167,10 @@ export default function Dashboard() {
                                 </Card>
                             </motion.div>
                             {
-                                filterYear ? <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                                selectedYear ? <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                                     <Card className="rounded-2xl bg-[#F9DEDE] shadow-sm min-h-40 hover:cursor-pointer"
                                         onClick={() => navigate('/progress', {
-                                            state: { year: filterYear }
+                                            state: { year: selectedYear }
                                         })}
                                     >
                                         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -238,7 +251,7 @@ export default function Dashboard() {
                                                     to={`/program-filter`}
                                                     state={{
                                                         program: programItem?.program,
-                                                        year: filterYear
+                                                        year: selectedYear
                                                     }}
                                                 >{programItem?.program}: {programItem?.count}</NavLink>;
                                             }}
@@ -260,7 +273,10 @@ export default function Dashboard() {
                                         data={data?.countByYear}
                                         margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
                                         onClick={x => {
-                                            setFilterYear(x.activePayload![0]["payload"].year)
+                                            dispatch({
+                                                type: 'set',
+                                                value: Number(x.activePayload![0]["payload"].year)
+                                            })
                                         }}
                                     >
                                         <CartesianGrid strokeDasharray="3 3" />
@@ -307,22 +323,22 @@ export default function Dashboard() {
                                 <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
                                     <Map />
                                     Country Breakdown</CardTitle>
-                                <Badge variant="secondary" className="text-xs">Year: {filterYear || "All"}</Badge>
+                                <Badge variant="secondary" className="text-xs">Year: {selectedYear || "All"}</Badge>
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <CountryTable data={data?.countByCountry || []} year={filterYear} />
+                            <CountryTable data={data?.countByCountry || []} year={selectedYear} />
                         </CardContent>
                     </Card>
                 </div>
 
 
-                {!!(filterYear) && (
+                {!!(selectedYear) && (
                     <div className="flex flex-col md:flex-row gap-6">
                         <Card className="flex-1 rounded-2xl shadow-sm">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
-                                    <ChartBarBig className="h-4 w-4" /> Age Distribution - {filterYear}
+                                    <ChartBarBig className="h-4 w-4" /> Age Distribution - {selectedYear}
                                 </CardTitle>
                             </CardHeader>
 
@@ -381,7 +397,7 @@ export default function Dashboard() {
                         <Card className="flex-1">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
-                                    <ChartColumnBig className="h-4 w-4" /> Quarterly Breakdown - {filterYear}
+                                    <ChartColumnBig className="h-4 w-4" /> Quarterly Breakdown - {selectedYear}
                                 </CardTitle>
                             </CardHeader>
                             <GroupedBarChart data={breakdownQuery.data?.programs ?? []} />
@@ -391,7 +407,7 @@ export default function Dashboard() {
                 }
 
                 {
-                    (profile.role === "admin" && filterYear > 0) ? (
+                    (profile.role === "admin" && selectedYear > 0) ? (
                         <Button
                             variant="default"
                             onClick={handleScreenshot}>
@@ -402,7 +418,7 @@ export default function Dashboard() {
 
                 {/* Parts to screenshot */}
                 {
-                    (filterYear && filterYear !== 0) ? (
+                    (selectedYear && selectedYear !== 0) ? (
                         <div
                             ref={hiddenRef}
                             className="py-5 px-2 space-y-5 screenshot-safe w-full"
@@ -446,7 +462,7 @@ export default function Dashboard() {
                                                             to={`/program-filter`}
                                                             state={{
                                                                 program: programItem?.program,
-                                                                year: filterYear
+                                                                year: selectedYear
                                                             }}
                                                         >{programItem?.program}: {programItem?.count}</NavLink>;
                                                     }}
@@ -459,7 +475,7 @@ export default function Dashboard() {
                                     <CardHeader className="pb-2">
                                         <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
                                             <ChartBarBig className="h-4 w-4" />
-                                            <p className="mt-[-18px]">Age Distribution - {filterYear}</p>
+                                            <p className="mt-[-18px]">Age Distribution - {selectedYear}</p>
                                         </CardTitle>
                                     </CardHeader>
 
@@ -521,11 +537,11 @@ export default function Dashboard() {
                                             <Map />
                                             <p className="mt-[-18px]">Country Breakdown</p>
                                         </CardTitle>
-                                        <Badge variant="secondary" className="text-xs py-2">Year: {filterYear || "All"}</Badge>
+                                        <Badge variant="secondary" className="text-xs py-2">Year: {selectedYear || "All"}</Badge>
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <CountryTable data={data?.countByCountry || []} year={filterYear} />
+                                    <CountryTable data={data?.countByCountry || []} year={selectedYear} />
                                 </CardContent>
                             </Card>
                         </div>
