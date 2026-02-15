@@ -27,6 +27,7 @@ import { Account } from "./Account";
 import Users from "./Users";
 import StudentFilterPage from "./StudentFilterPage";
 import StudentProgramFilterPage from "./StudentProgramFilterPage";
+import Progress from "./Progress";
 
 export default function Navigation() {
 
@@ -70,6 +71,7 @@ export default function Navigation() {
                                 <Route path='/students/:studentId' element={<Student />} />
                                 <Route path='/student-filter' element={<StudentFilterPage />} />
                                 <Route path='/program-filter' element={<StudentProgramFilterPage />} />
+                                <Route path='/progress' element={<Progress />} />
                             </>
                         }
 

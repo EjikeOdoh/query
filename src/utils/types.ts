@@ -48,6 +48,20 @@ export interface Grade {
   term: string
   year: number
 }
+
+export interface StudentProgress {
+  studentId: number
+  school: string
+  firstName: string
+  lastName: string
+  year: number;
+  numberOfTerms: number;
+  firstTermAvg: number;
+  secondTermAvg: number;
+  thirdTermAvg: number;
+  madeProgress: boolean;
+}
+
 export type GradeAddData = Omit<Grade, 'id'>
 export type GradeEditData = Partial<Grade>
 export interface Participation {
@@ -93,6 +107,7 @@ export interface StudentDetail {
   yearJoined: number
   grades: Grade[]
   participations: Participation[]
+  progress: Omit<StudentProgress,'firstName' | 'lastName' | 'school'>[]
 }
 
 export type EditStudentPayload = Omit<StudentDetail, 'id' | 'grades' | 'participations'>
@@ -137,6 +152,7 @@ export interface DashStats {
   uniqueCount: number
   highestYearlyCount: number
   target: number
+  progress: number
 }
 
 export interface ParticipationData {
@@ -423,6 +439,11 @@ export interface FilterStudentsPayload {
   meta: Meta
 }
 
+export interface ProgressResponseDto {
+  data: StudentProgress[]
+  meta: Meta
+}
+
 export interface ParticipationFilterDto {
   country?: string
   program?: string
@@ -457,4 +478,10 @@ export const COLORS: Record<string, string> = {
   CBC: "#8B86B4",
   SSC: "#9EB707",
   DSC: "#D92121",
+}
+
+export interface ProgressFilterDto {
+  year: number
+  page?: number
+  limit?: number
 }

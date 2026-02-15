@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateUserDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, FilterStudentsPayload, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, Partner, PartnerDetails, ProfileState, ProgramStat, QuarterlyProgramBreakdown, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, User, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateUserDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, FilterStudentsPayload, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, Partner, PartnerDetails, ProfileState, ProgramStat, ProgressFilterDto, ProgressResponseDto, QuarterlyProgramBreakdown, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, User, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 import axios from "axios"
 
 // Fetchers
@@ -54,6 +54,11 @@ export async function getFilteredResults(input: ParticipationFilterDto): Promise
     } else {
         res = await client.get(`participation/filter-by-country?country=${input.country}&year=${input.year}&page=${input.page}&limit=${input.limit}`)
     }
+    return res.data
+}
+
+export async function getYearlyAcademicProgress(input: ProgressFilterDto): Promise<ProgressResponseDto> {
+    const res = await client.get(`grades/progress?year=${input.year}&page=${input.page}&limit=${input.limit}`)
     return res.data
 }
 

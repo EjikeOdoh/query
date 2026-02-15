@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Users, Target, Layers, PieChart as PieIcon, RefreshCw, BarChart2Icon, Map, ChartBarBig, ChartColumnBig } from "lucide-react";
+import { Users, Target, Layers, PieChart as PieIcon, RefreshCw, BarChart2Icon, Map, ChartBarBig, ChartColumnBig, TrendingUpDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip as RTooltip, CartesianGrid, XAxis, YAxis, Legend, LineChart, Line, BarChart, Bar, LabelList } from "recharts";
 import Container from "@/components/Container";
@@ -16,11 +16,14 @@ import { SpinnerCustom } from "@/components/Loader";
 import ErrorLayout from "@/components/ErrorLayout";
 import GroupedBarChart from "@/components/BarChart";
 import { COLORS, type ProfileState } from "@/utils/types";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 
 
 
 export default function Dashboard() {
+
+    const navigate = useNavigate()
+
     const [filterYear, setFilterYear] = useState<number>(0)
     const { isLoading, isError, error, data, } = useDashboardStats(filterYear)
     useGetPrograms()
@@ -125,9 +128,9 @@ export default function Dashboard() {
                         </div>
 
                         {/* KPI cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className={`grid grid-cols-1 ${filterYear ? "md:grid-cols-2" : "md:grid-cols-3"} gap-4`}>
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                                <Card className="rounded-2xl bg-[#D9F3FF] shadow-sm h-40">
+                                <Card className="rounded-2xl bg-[#D9F3FF] shadow-sm min-h-40">
                                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                                         <CardTitle className="text-sm font-medium">Total students impacted</CardTitle>
                                         <Users className="h-5 w-5" />
@@ -139,7 +142,7 @@ export default function Dashboard() {
                                 </Card>
                             </motion.div>
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-                                <Card className="rounded-2xl bg-[#F0EFF7] shadow-sm h-40">
+                                <Card className="rounded-2xl bg-[#F0EFF7] shadow-sm min-h-40">
                                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                                         <CardTitle className="text-sm font-medium">Unique Participants</CardTitle>
                                         <Layers className="h-5 w-5" />
@@ -150,8 +153,28 @@ export default function Dashboard() {
                                     </CardContent>
                                 </Card>
                             </motion.div>
+                            {
+                                filterYear ? <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                                    <Card className="rounded-2xl bg-[#F9DEDE] shadow-sm min-h-40 hover:cursor-pointer"
+                                        onClick={() => navigate('/progress', {
+                                            state: { year: filterYear }
+                                        })}
+                                    >
+                                        <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                            <CardTitle className="text-sm font-medium">Academic Progress</CardTitle>
+                                            <TrendingUpDown className="h-5 w-5" />
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="text-3xl font-bold">{data?.progress}%</div>
+                                            <p className="text-xs text-muted-foreground pb-2">of students with at least two recorded terms demonstrated measurable academic improvement from the beginning to the end of the year.</p>
+                                        </CardContent>
+
+                                    </Card>
+                                </motion.div> : undefined
+                            }
+
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                                <Card className="rounded-2xl bg-[#F3F7DA] shadow-sm h-40">
+                                <Card className="rounded-2xl bg-[#F3F7DA] shadow-sm min-h-40">
                                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                                         <CardTitle className="text-sm font-medium">Target</CardTitle>
                                         <Target className="h-5 w-5" />

@@ -17,15 +17,16 @@ import { useGetPrograms } from "@/hooks/use-dashboard";
 import { useQueryClient } from "@tanstack/react-query";
 import LoadingLayout from "@/components/LoadingLayout";
 import ErrorLayout from "@/components/ErrorLayout";
+import { Down, Up } from "@/components/AcademicProgess";
 
 
 export default function Student() {
     const { studentId } = useParams();
     const { state }: {
         state: {
-            from: string,
-            openModal: boolean,
-            query: string
+            from?: string,
+            openModal?: boolean,
+            query?: string
         }
     } = useLocation()
 
@@ -35,7 +36,7 @@ export default function Student() {
     const programs = useGetPrograms()
 
     // variable to tell if user navigates from students page or search page
-    const isFromSearchPage: boolean = state.from === 'search'
+    const isFromSearchPage: boolean = state != null && state.from === 'search'
 
     const [editData, setEditData] = useState<Partial<EditStudentPayload>>({});
     const [addGradesData, setAddGradesData] = useState<Partial<GradeAddData>>({
@@ -49,7 +50,7 @@ export default function Student() {
     const [pId, setPId] = useState<number>()
     const [gradeId, setGradeId] = useState<number>()
 
-    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state.openModal ?? false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(state !== null && (state.openModal ?? false))
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
 
     const [isEditGradeModalOpen, setIsEditGradeModalOpen] = useState<boolean>(false)
@@ -181,7 +182,7 @@ export default function Student() {
     }
 
     if (data) {
-        const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, careerChoice1, careerChoice2, email, participations, grades, motherEducation, motherJob, fatherEducation, fatherJob, noOfBrothers, noOfSisters, position } = data
+        const { firstName, lastName, currentClass, address, school, dob, phone, country, yearJoined, fatherFirstName, motherFirstName, fatherPhone, motherPhone, favSubject, difficultSubject, careerChoice1, careerChoice2, email, participations, grades, motherEducation, motherJob, fatherEducation, fatherJob, noOfBrothers, noOfSisters, position, progress } = data
 
         return (
             <div className="flex flex-col">
@@ -192,7 +193,7 @@ export default function Student() {
                     <div className="w-11/12 m-auto space-y-10">
                         <div className="py-6 px-10 bg-white rounded-2xl space-y-10">
                             <div>
-                                <NavLink to={isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state.query}>
+                                <NavLink to={state !==null && isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state !== null && state.query}>
                                     <ChevronLeft color="#171717" size={14} />
                                     {isFromSearchPage ? "Back to Search" : "Back to Students"}
                                 </NavLink>
@@ -353,7 +354,7 @@ export default function Student() {
                         </div>
 
                         {/* Grades table */}
-                        {grades.length > 0 &&
+                        {grades.length >= 0 &&
                             (!data.school || !data?.school.includes('University')) && (
                                 <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
                                     <div className="flex justify-between items-center">
@@ -418,6 +419,37 @@ export default function Student() {
                                 </div>
                             )
                         }
+
+                        {/* Academic progress table */}
+
+                        <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
+                            <Heading text="Academic Progress" />
+                            <Table className="rounded-xl overflow-hidden">
+                                <TableHeader className="">
+                                    <TableRow className="bg-[#E6F7FF]">
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28">Year</TableHead>
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28">Terms</TableHead>
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28">First Term Avg</TableHead>
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28">Second Term Avg</TableHead>
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28">Third Term Avg</TableHead>
+                                        <TableHead className="text-[#808080] text-sm font-light min-w-28 w-28">Progress</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody >
+                                    {progress.map(p => (
+                                        <TableRow key={p.year}>
+                                            <TableCell className="text-[#171717] text-sm font-light">{p.year}</TableCell>
+                                            <TableCell className="text-[#171717] text-sm font-light">{p.numberOfTerms}</TableCell>
+                                            <TableCell className="text-[#171717] text-sm font-light">{p.firstTermAvg}</TableCell>
+                                            <TableCell className="text-[#171717] text-sm font-light">{p.secondTermAvg}</TableCell>
+                                            <TableCell className="text-[#171717] text-sm font-light">{p.thirdTermAvg}</TableCell>
+                                            <TableCell className="text-[#171717] text-sm font-light">{p.madeProgress ? <Up /> : <Down />}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+
 
                         {/* Participation table */}
                         <div className="py-6 px-10 bg-white rounded-2xl space-y-5">

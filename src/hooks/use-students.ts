@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import type { CallFn, EditStudentPayload, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, StudentPagination } from "../utils/types";
-import { addParticipation, deleteParticipation, deleteStudent, getAllStudents, getFilteredByProgramResults, getFilteredResults, getStudentDetails, updateParticipation, updateStudent } from "@/utils/fn";
+import type { CallFn, EditStudentPayload, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, ProgressFilterDto, StudentPagination } from "../utils/types";
+import { addParticipation, deleteParticipation, deleteStudent, getAllStudents, getFilteredByProgramResults, getFilteredResults, getStudentDetails, getYearlyAcademicProgress, updateParticipation, updateStudent } from "@/utils/fn";
 import { useMutation } from "@tanstack/react-query";
 
 export function useGetAllStudents(meta: StudentPagination, token: string | null) {
@@ -17,6 +17,14 @@ export function useGetFilteredStudents(input: ParticipationFilterDto) {
    return useQuery({
       queryKey: ['filter', input.country, input.year, input.page, input.limit],
       queryFn: () => getFilteredResults(input),
+      staleTime: 5 * 60 * 1000,
+   })
+}
+
+export function useGetStudentsAcademicProgress(input: ProgressFilterDto) {
+   return useQuery({
+      queryKey: ['progress', input.year, input.page, input.limit],
+      queryFn: () => getYearlyAcademicProgress(input),
       staleTime: 5 * 60 * 1000,
    })
 }
