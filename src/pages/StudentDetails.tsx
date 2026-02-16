@@ -994,7 +994,7 @@ export default function Student() {
                                     <Input
                                         name="class"
                                         placeholder="Class"
-                                        type="number"
+                                        type="string"
                                         maxLength={4}
                                         value={addGradesData.class! ?? ""}
                                         onChange={(e) => updateData(e, setAddGradesData)}
