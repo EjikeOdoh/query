@@ -193,7 +193,7 @@ export default function Student() {
                     <div className="w-11/12 m-auto space-y-10">
                         <div className="py-6 px-10 bg-white rounded-2xl space-y-10">
                             <div>
-                                <NavLink to={state !==null && isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state !== null && state.query}>
+                                <NavLink to={state !== null && isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state !== null && state.query}>
                                     <ChevronLeft color="#171717" size={14} />
                                     {isFromSearchPage ? "Back to Search" : "Back to Students"}
                                 </NavLink>
@@ -370,6 +370,7 @@ export default function Student() {
                                                 <TableHeader className="">
                                                     <TableRow className="bg-[#E6F7FF]">
                                                         <TableHead className="text-[#808080] text-sm font-light">Year</TableHead>
+                                                        <TableHead className="text-[#808080] text-sm font-light">Class</TableHead>
                                                         <TableHead className="text-[#808080] text-sm font-light">Term</TableHead>
                                                         <TableHead className="text-[#808080] text-sm font-light min-w-10">Mth</TableHead>
                                                         <TableHead className="text-[#808080] text-sm font-light min-w-10">Eng</TableHead>
@@ -388,6 +389,7 @@ export default function Student() {
                                                     {grades.map(grade => (
                                                         <TableRow key={grade.id}>
                                                             <TableCell className="text-[#171717] text-sm font-light">{grade.year}</TableCell>
+                                                            <TableCell className="text-[#171717] text-sm font-light">{grade.class}</TableCell>
                                                             <TableCell className="text-[#171717] text-sm font-light">{capitalize(grade.term)}</TableCell>
                                                             <TableCell className="text-[#171717] text-sm font-light">{grade.math}</TableCell>
                                                             <TableCell className="text-[#171717] text-sm font-light">{grade.english}</TableCell>
@@ -779,18 +781,32 @@ export default function Student() {
 
                         />
                         <div className="flex flex-col gap-4">
-                            <div className="flex flex-col md:flex-row gap-4">
-                                <Input
-                                    name="year"
-                                    placeholder="Year"
-                                    type="number"
-                                    maxLength={4}
-                                    value={editGradesData.year! ?? ""}
-                                    onChange={(e) => updateData(e, setEditGradesData)}
-                                    showLabel={true}
-                                />
+                            <div className="flex flex-col md:flex-row gap-4  border-[#E0E0E0] border-b-2 pb-4">
+                                <div>
+                                    <Input
+                                        name="year"
+                                        placeholder="Year"
+                                        type="number"
+                                        maxLength={4}
+                                        value={editGradesData.year! ?? ""}
+                                        onChange={(e) => updateData(e, setEditGradesData)}
+                                        showLabel={true}
+                                    />
+                                </div>
 
-                                <div className="flex-1 min-w-1/2 rounded-sm border bg-transparent py-1 text-sm">
+                                <div>
+                                    <Input
+                                        name="class"
+                                        placeholder="Class"
+                                        type="text"
+                                        value={editGradesData.class! ?? ""}
+                                        onChange={(e) => updateData(e, setEditGradesData)}
+                                        showLabel={true}
+                                    />
+                                </div>
+
+
+                                <div className="flex-1 rounded-sm border bg-transparent py-1 text-sm">
                                     <label className="text-sm font-light mb-2">Term</label>
                                     <Select
                                         name="term"
@@ -961,18 +977,32 @@ export default function Student() {
 
                         />
                         <div className="flex flex-col gap-4">
-                            <div className="flex flex-col md:flex-row gap-4">
-                                <Input
-                                    name="year"
-                                    placeholder="Year"
-                                    type="number"
-                                    maxLength={4}
-                                    value={addGradesData.year! ?? ""}
-                                    onChange={(e) => updateData(e, setAddGradesData)}
-                                    showLabel={true}
-                                />
+                            <div className="flex flex-col md:flex-row gap-4 border-b-2 border-[#E0E0E0] pb-4 mb-4">
+                                <div>
+                                    <Input
+                                        name="year"
+                                        placeholder="Year"
+                                        type="number"
+                                        maxLength={4}
+                                        value={addGradesData.year! ?? ""}
+                                        onChange={(e) => updateData(e, setAddGradesData)}
+                                        showLabel={true}
+                                    />
+                                </div>
 
-                                <div className="flex-1 min-w-1/2 rounded-sm border bg-transparent py-1 text-sm">
+                                <div>
+                                    <Input
+                                        name="class"
+                                        placeholder="Class"
+                                        type="number"
+                                        maxLength={4}
+                                        value={addGradesData.class! ?? ""}
+                                        onChange={(e) => updateData(e, setAddGradesData)}
+                                        showLabel={true}
+                                    />
+                                </div>
+
+                                <div className="flex-1 rounded-sm border bg-transparent py-1 text-sm">
                                     <label className="text-sm font-light mb-2">Term</label>
                                     <Select
                                         name="term"

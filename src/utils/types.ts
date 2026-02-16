@@ -47,6 +47,7 @@ export interface Grade {
   accounting?: string | null
   term: string
   year: number
+  class: string
 }
 
 export interface StudentProgress {
