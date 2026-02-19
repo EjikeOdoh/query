@@ -283,8 +283,9 @@ export async function addUser(data: CreateUserDto) {
 
 // Patch functions
 export async function updateStudent(id: string, data: EditStudentPayload) {
+    const {progress, ...studentDetails} = data
     try {
-        const res = await client.patch(`/students/${id}`, data)
+        const res = await client.patch(`/students/${id}`, studentDetails)
         return res.data
     } catch (error) {
         throw extractApiError(error)

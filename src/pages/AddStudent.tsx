@@ -61,6 +61,7 @@ export default function AddStudent() {
         year: "",
         quarter: "",
         academicYear: "",
+        class: "",
         term: "",
         english: "",
         math: "",
@@ -432,20 +433,27 @@ export default function AddStudent() {
                             />
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col md:flex-row gap-4">
-                                    <div className="flex-1">
+                                   
                                         <Input
                                             name="academicYear"
                                             placeholder="Academic Year"
                                             value={data.academicYear}
                                             onChange={(e) => updateData(e, setData)}
                                         />
-                                    </div>
+                                   
+                                   
+                                       <Input
+                                            name="class"
+                                            placeholder="Class"
+                                            value={data.class}
+                                            onChange={(e) => updateData(e, setData)}
+                                        />
+                                   
                                     <div className="flex-1">
                                         <Select
                                             name="term"
-                                            required
                                         >
-                                            <SelectTrigger className="flex min-h-12 min-w-full rounded-sm border bg-transparent px-6 py-1 text-sm">
+                                            <SelectTrigger className="flex min-h-12 rounded-sm border bg-transparent px-6 py-1 text-sm">
                                                 <SelectValue placeholder="Select term" />
                                             </SelectTrigger>
                                             <SelectContent className="bg-white py-4">
