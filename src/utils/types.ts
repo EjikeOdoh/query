@@ -111,7 +111,7 @@ export interface StudentDetail {
   progress: Omit<StudentProgress,'firstName' | 'lastName' | 'school'>[]
 }
 
-export type EditStudentPayload = Omit<StudentDetail, 'id' | 'grades' | 'participations'| 'progress'>
+export type EditStudentPayload = Omit<StudentDetail, 'id' | 'grades' | 'participations'>
 
 export interface SearchResult {
   count: number
