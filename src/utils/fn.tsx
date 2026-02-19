@@ -283,7 +283,8 @@ export async function addUser(data: CreateUserDto) {
 
 // Patch functions
 export async function updateStudent(id: string, data: EditStudentPayload) {
-    const {progress, ...studentDetails} = data
+    const { progress, ...studentDetails } = data
+    void progress;
     try {
         const res = await client.patch(`/students/${id}`, studentDetails)
         return res.data
