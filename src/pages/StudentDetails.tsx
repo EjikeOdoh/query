@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAddGrades, useDeleteGrades, useUpdateGrades } from "@/hooks/use-grades";
 import { useAddStudentParticipation, useDeleteStudent, useDeleteStudentParticipation, useGetStudentDetails, useUpdateStudent, useUpdateStudentParticipation } from "@/hooks/use-students";
-import { capitalize, dateFormatter, updateData } from "@/utils/fn";
+import { capitalize, dateFormatter, trimObjectValues, updateData } from "@/utils/fn";
 import { type ParticipationAddData, type GradeAddData, type GradeEditData, type ParticipationEditData, type EditStudentPayload } from "@/utils/types";
 import { ChevronLeft, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -59,7 +59,7 @@ export default function Student() {
     const [isAddParticipationModalOpen, setIsAddParticipationModalOpen] = useState<boolean>(false)
 
     const { isLoading, isError, error, data, refetch } = useGetStudentDetails(Number(studentId));
-    const { isPending, mutate } = useUpdateStudent(studentId!, editData as EditStudentPayload, () => {
+    const { isPending, mutate } = useUpdateStudent(studentId!, trimObjectValues(editData) as EditStudentPayload, () => {
         refetch()
         queryClient.invalidateQueries({ queryKey: ['students'] })
         queryClient.invalidateQueries({ queryKey: ['search'] })

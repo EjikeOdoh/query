@@ -475,11 +475,10 @@ export function updateData<T>(
     } else if (type === "checkbox") {
         processedValue = (e.target as HTMLInputElement).checked;
     } else if (type === "text") {
-        processedValue = String(processedValue).trim()
+        processedValue = String(processedValue)
     } else {
-        processedValue = String(processedValue).trim()
+        processedValue = String(processedValue)
     }
-
 
     setData(prev => ({
         ...prev,
@@ -519,4 +518,36 @@ export function extractNames(data: ProfileState) {
     } else {
         return `VF`
     }
+}
+
+export function trimObjectValues<T>(obj: T): T {
+  if (obj === null || obj === undefined) return obj;
+
+  // Handle arrays
+  if (Array.isArray(obj)) {
+    return obj.map((item) => trimObjectValues(item)) as unknown as T;
+  }
+
+  // Handle objects
+  if (typeof obj === 'object') {
+    const result = {} as {
+      [K in keyof T]: T[K];
+    };
+
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+
+        if (typeof value === 'string') {
+          result[key] = value.trim() as T[typeof key];
+        } else {
+          result[key] = trimObjectValues(value) as T[typeof key];
+        }
+      }
+    }
+
+    return result;
+  }
+
+  return obj;
 }

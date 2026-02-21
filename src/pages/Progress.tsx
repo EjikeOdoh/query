@@ -79,26 +79,29 @@ export default function Progress() {
                     </Table>
 
                     <div className="flex flex-col md:flex-row gap-5 justify-between items-baseline">
-                        <div className="flex items-center gap-5">
-                            <Select onValueChange={(value) => {
-                                setInput({
-                                    ...input, limit: Number(value)
-                                })
-                            }} >
-                                <SelectTrigger className="">
-                                    <SelectValue placeholder={input.limit} />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                    <SelectGroup>
-                                        <SelectLabel>Rows per page</SelectLabel>
-                                        <SelectItem value="10">10</SelectItem>
-                                        <SelectItem value="20">20</SelectItem>
-                                        <SelectItem value="50">50</SelectItem>
-                                        <SelectItem value="100">100</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                            <p className="text-sm font-light">Page {input.page}</p>
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-5">
+                                <Select onValueChange={(value) => {
+                                    setInput({
+                                        ...input, limit: Number(value), page: value !== "10" ? 1 : input.page
+                                    })
+                                }} >
+                                    <SelectTrigger className="">
+                                        <SelectValue placeholder={input.limit} />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                        <SelectGroup>
+                                            <SelectLabel>Rows per page</SelectLabel>
+                                            <SelectItem value="10">10</SelectItem>
+                                            <SelectItem value="20">20</SelectItem>
+                                            <SelectItem value="50">50</SelectItem>
+                                            <SelectItem value="100">100</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-sm font-light">Page {input.page} of {data.meta.totalPages}</p>
+                            </div>
+                            <p className="text-sm text-[#808080]">Total student count: <span className="font-bold text-xl">{data.meta.total}</span></p>
                         </div>
                         <div className="w-fit">
                             <Pagination>

@@ -4,7 +4,7 @@ import LoadingLayout from "@/components/LoadingLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createStudent, updateData } from "@/utils/fn";
+import { createStudent, trimObjectValues, updateData } from "@/utils/fn";
 import type { CreateStudentData } from "@/utils/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CircleCheck, ShieldOff } from "lucide-react";
@@ -90,7 +90,7 @@ export default function AddStudent() {
     }
 
     const { mutate, isPending, isError, error, reset } = useMutation({
-        mutationFn: () => createStudent(data),
+        mutationFn: () => createStudent(trimObjectValues(data)),
         onSuccess: cleanUp,
         
     })
