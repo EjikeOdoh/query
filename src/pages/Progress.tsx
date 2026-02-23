@@ -42,7 +42,7 @@ export default function Progress() {
     if (data) {
         return (
             <Container label="Progress Report">
-                <div className="py-6 px-10 bg-white rounded-2xl space-y-5">
+                <div className="bg-white rounded-2xl space-y-5">
                     <Heading text={`Academic Progress Table for ${input.year}`} />
                     <Table className="rounded-xl overflow-hidden mt-5">
                         <TableHeader className="">
