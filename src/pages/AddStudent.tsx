@@ -199,7 +199,7 @@ export default function AddStudent() {
                                 <Input name="school" placeholder="School"
                                     value={data.school}
                                     onChange={(e) => updateData(e, setData)}
-                                    required />
+                                    />
                                 <Input name="currentClass" placeholder="Current Class"
                                     value={data.currentClass}
                                     onChange={(e) => updateData(e, setData)}

@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 
 export function useGetAllStudents(meta: StudentPagination, token: string | null) {
    return useQuery({
-      queryKey: ['students', meta.page, meta.limit],
+      queryKey: ['students', meta.page, meta.limit, meta.school],
       queryFn: () => getAllStudents(meta),
       placeholderData: keepPreviousData,
       staleTime: 5 * 60 * 1000,

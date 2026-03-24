@@ -31,6 +31,7 @@ export interface StudentResponse {
 export interface StudentPagination {
   page: number
   limit: number
+  school?: string
 }
 
 export interface Grade {

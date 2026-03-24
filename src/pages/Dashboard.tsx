@@ -72,7 +72,7 @@ export default function Dashboard() {
     };
 
 
-    if (isLoading) {
+    if (isLoading || breakdownQuery.isLoading) {
         return (
             <Container
                 label="Dashboard">

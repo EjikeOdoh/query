@@ -20,6 +20,8 @@ import Modal from "@/components/Dialog"
 import { useQueryClient } from "@tanstack/react-query"
 import { SpinnerCustom } from "@/components/Loader"
 import ErrorLayout from "@/components/ErrorLayout"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useGetAllSchools } from "@/hooks/use-dashboard"
 
 export default function Students() {
 
@@ -30,6 +32,9 @@ export default function Students() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
+    const schoolsBreakdown = useGetAllSchools()
+
+
   function logInput(formData: FormData) {
     const studentName = formData.get('name') as string;
     navigate('/students/search', {
@@ -39,10 +44,11 @@ export default function Students() {
 
   const [meta, setMeta] = useState<StudentPagination>({
     page: state ? Number(state) : 1,
-    limit: 10
+    limit: 10,
+    school: ""
   })
 
-  const { isPending, isError, data, error, refetch } = useGetAllStudents(meta, token)
+  const { isPending, isError, data, error,isFetching, refetch } = useGetAllStudents(meta, token)
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
   const [sId, setSId] = useState<number>()
@@ -68,7 +74,7 @@ export default function Students() {
     deleteStudentMutation.mutate()
   }
 
-  if (isPending) {
+  if (isPending || schoolsBreakdown.isPending || isFetching) {
     return (
       <Container label="Students">
         <SpinnerCustom />
@@ -80,10 +86,11 @@ export default function Students() {
     return <ErrorLayout label="Filters" text={error.message} />
   }
 
-  if (data) {
+  if (data || schoolsBreakdown.data) {
     const res: StudentResponse = data!
     const students: Student[] = res.data
     const info: Meta = res.meta
+    const schools = schoolsBreakdown.data as string[]
 
     return (
       <Container label="Students">
@@ -91,6 +98,25 @@ export default function Students() {
           <SearchForm
             placeholder="Search by student names"
             action={logInput} />
+
+          {/* Dropdown for school selection */}
+          <Select
+            value={meta.school}
+            onValueChange={(value) => setMeta({ ...meta, school: value })}
+          >
+            <SelectTrigger className="w-full md:w-[200px]">
+              <SelectValue placeholder='All' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value=" ">All</SelectItem>
+              {
+                schools.map(school => (
+                  <SelectItem value={school} key={school}>{school}</SelectItem>
+                ))
+              }
+            </SelectContent>
+          </Select>
+
           <Button
             className="bg-[#00AEFF] text-white text-sm"
             onClick={() => navigate('/add-student')}

@@ -15,7 +15,7 @@ export async function getStudentDetails(id: number): Promise<StudentDetail | und
 }
 
 export async function getAllStudents(meta: StudentPagination): Promise<StudentResponse> {
-    return client.get(`/students?page=${meta.page}&limit=${meta.limit}`)
+    return client.get(`/students?page=${meta.page}&limit=${meta.limit}&school=${meta.school ? meta.school : ""}`)
         .then(res => res.data)
 }
 
@@ -45,6 +45,10 @@ export async function getStats(year: number): Promise<DashStats> {
 export async function getProgramBreakdown(year: number): Promise<QuarterlyProgramBreakdown> {
     const res = await client.get(`/participation/breakdown?year=${year}`)
     return res.data
+}
+
+export async function getAllSchools() {
+    return await client.get('/students/schools')
 }
 
 export async function getFilteredResults(input: ParticipationFilterDto): Promise<FilterStudentsPayload> {
@@ -521,33 +525,33 @@ export function extractNames(data: ProfileState) {
 }
 
 export function trimObjectValues<T>(obj: T): T {
-  if (obj === null || obj === undefined) return obj;
+    if (obj === null || obj === undefined) return obj;
 
-  // Handle arrays
-  if (Array.isArray(obj)) {
-    return obj.map((item) => trimObjectValues(item)) as unknown as T;
-  }
-
-  // Handle objects
-  if (typeof obj === 'object') {
-    const result = {} as {
-      [K in keyof T]: T[K];
-    };
-
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const value = obj[key];
-
-        if (typeof value === 'string') {
-          result[key] = value.trim() as T[typeof key];
-        } else {
-          result[key] = trimObjectValues(value) as T[typeof key];
-        }
-      }
+    // Handle arrays
+    if (Array.isArray(obj)) {
+        return obj.map((item) => trimObjectValues(item)) as unknown as T;
     }
 
-    return result;
-  }
+    // Handle objects
+    if (typeof obj === 'object') {
+        const result = {} as {
+            [K in keyof T]: T[K];
+        };
 
-  return obj;
+        for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                const value = obj[key];
+
+                if (typeof value === 'string') {
+                    result[key] = value.trim() as T[typeof key];
+                } else {
+                    result[key] = trimObjectValues(value) as T[typeof key];
+                }
+            }
+        }
+
+        return result;
+    }
+
+    return obj;
 }
