@@ -26,6 +26,8 @@ export default function AddStudent() {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
 
+    const programs: { id: number; program: string }[] = queryClient.getQueryData(['programs']) || []
+
     const [step, setStep] = useState<number>(1)
 
     const [type, setType] = useState<boolean>(false)
@@ -92,7 +94,7 @@ export default function AddStudent() {
     const { mutate, isPending, isError, error, reset } = useMutation({
         mutationFn: () => createStudent(trimObjectValues(data)),
         onSuccess: cleanUp,
-        
+
     })
 
     function handleError() {
@@ -151,10 +153,9 @@ export default function AddStudent() {
                                     </SelectTrigger>
                                     <SelectContent className="bg-white py-4">
                                         <SelectGroup>
-                                            <SelectItem value="ASCG">ASCG</SelectItem>
-                                            <SelectItem value="CBC">CBC</SelectItem>
-                                            <SelectItem value="SSC">SSC</SelectItem>
-                                            <SelectItem value="DSC">DSC</SelectItem>
+                                            {programs.map((program) => (
+                                                <SelectItem key={program.id} value={String(program.id)}>{program.program}</SelectItem>
+                                            ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
@@ -199,7 +200,7 @@ export default function AddStudent() {
                                 <Input name="school" placeholder="School"
                                     value={data.school}
                                     onChange={(e) => updateData(e, setData)}
-                                    />
+                                />
                                 <Input name="currentClass" placeholder="Current Class"
                                     value={data.currentClass}
                                     onChange={(e) => updateData(e, setData)}
@@ -433,22 +434,22 @@ export default function AddStudent() {
                             />
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col md:flex-row gap-4">
-                                   
-                                        <Input
-                                            name="academicYear"
-                                            placeholder="Academic Year"
-                                            value={data.academicYear}
-                                            onChange={(e) => updateData(e, setData)}
-                                        />
-                                   
-                                   
-                                       <Input
-                                            name="class"
-                                            placeholder="Class"
-                                            value={data.class}
-                                            onChange={(e) => updateData(e, setData)}
-                                        />
-                                   
+
+                                    <Input
+                                        name="academicYear"
+                                        placeholder="Academic Year"
+                                        value={data.academicYear}
+                                        onChange={(e) => updateData(e, setData)}
+                                    />
+
+
+                                    <Input
+                                        name="class"
+                                        placeholder="Class"
+                                        value={data.class}
+                                        onChange={(e) => updateData(e, setData)}
+                                    />
+
                                     <div className="flex-1">
                                         <Select
                                             name="term"

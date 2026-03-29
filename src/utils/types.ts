@@ -453,6 +453,7 @@ export interface ParticipationFilterDto {
   year?: number
   page?: number
   limit?: number
+  school?: string
 }
 
 export type AgeGroup = {
@@ -487,4 +488,5 @@ export interface ProgressFilterDto {
   year: number
   page?: number
   limit?: number
+  school?: string
 }

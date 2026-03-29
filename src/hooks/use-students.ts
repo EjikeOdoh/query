@@ -23,7 +23,7 @@ export function useGetFilteredStudents(input: ParticipationFilterDto) {
 
 export function useGetStudentsAcademicProgress(input: ProgressFilterDto) {
    return useQuery({
-      queryKey: ['progress', input.year, input.page, input.limit],
+      queryKey: ['progress', input.year, input.page, input.limit, input.school],
       queryFn: () => getYearlyAcademicProgress(input),
       staleTime: 5 * 60 * 1000,
    })
@@ -31,7 +31,7 @@ export function useGetStudentsAcademicProgress(input: ProgressFilterDto) {
 
 export function useGetFilteredByProgramStudents(input: ParticipationFilterDto) {
    return useQuery({
-      queryKey: ['filter-program', input.program, input.year, input.page, input.limit],
+      queryKey: ['filter-program', input.program, input.year, input.page, input.limit, input.school],
       queryFn: () => getFilteredByProgramResults(input),
       staleTime: 5 * 60 * 1000,
    })

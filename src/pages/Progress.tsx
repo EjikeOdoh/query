@@ -8,12 +8,15 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CurrentYearContext } from "@/context/CurrentYearContext";
+import { useGetAllSchools } from "@/hooks/use-dashboard";
 import { useGetStudentsAcademicProgress } from "@/hooks/use-students";
 import type { ProgressFilterDto } from "@/utils/types";
 import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 export default function Progress() {
+
+    const schoolsBreakdown = useGetAllSchools()
 
     const currentYear = useContext(CurrentYearContext)
     const { state } = useLocation()
@@ -23,11 +26,13 @@ export default function Progress() {
         year: state.year || currentYear,
         page: 1,
         limit: 10,
+        school: ""
 
     })
 
     const { data, isLoading, isError, error } = useGetStudentsAcademicProgress(input)
-    if (isLoading) {
+
+    if (isLoading || schoolsBreakdown.isLoading) {
         return (
             <Container label="Academic Progress">
                 <SpinnerCustom />
@@ -39,11 +44,30 @@ export default function Progress() {
         return <ErrorLayout label="Students Filters" text={error.message} />
     }
 
-    if (data) {
+    if (data && schoolsBreakdown.data) {
         return (
             <Container label="Progress Report">
                 <div className="bg-white rounded-2xl space-y-5">
-                    <Heading text={`Academic Progress Table for ${input.year}`} />
+                    <div className="flex justify-between align-center">
+                        <Heading text={`Academic Progress Table for ${input.year}`} />
+                        {/* Dropdown for school selection */}
+                        <Select
+                            value={input.school}
+                            onValueChange={(value) => setInput({ ...input, school: value })}
+                        >
+                            <SelectTrigger className="w-full md:w-[200px]">
+                                <SelectValue placeholder='Filter by school' />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value=" ">All</SelectItem>
+                                {
+                                    schoolsBreakdown.data?.map((school: string) => (
+                                        <SelectItem value={school} key={school}>{school}</SelectItem>
+                                    ))
+                                }
+                            </SelectContent>
+                        </Select>
+                    </div>
                     <Table className="rounded-xl overflow-hidden mt-5">
                         <TableHeader className="">
                             <TableRow className="bg-[#E6F7FF]">

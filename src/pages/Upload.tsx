@@ -13,6 +13,7 @@ export default function Upload() {
 
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+     const programs: { id: number; program: string }[] = queryClient.getQueryData(['programs']) || []
 
     function handleSubmit(x: FormData) {
         const file = x.get('file')
@@ -73,10 +74,11 @@ export default function Upload() {
                         </SelectTrigger>
                         <SelectContent className="bg-white py-4">
                             <SelectGroup>
-                                <SelectItem value="ASCG">ASCG</SelectItem>
-                                <SelectItem value="CBC">CBC</SelectItem>
-                                <SelectItem value="SSC">SSC</SelectItem>
-                                <SelectItem value="DSC">DSC</SelectItem>
+                              {programs.map((program) => (
+                                <SelectItem value={program.id.toString()} key={program.id}>
+                                  {program.program}
+                                </SelectItem>
+                              ))}
                             </SelectGroup>
                         </SelectContent>
                     </Select>

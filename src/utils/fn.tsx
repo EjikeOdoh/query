@@ -62,7 +62,12 @@ export async function getFilteredResults(input: ParticipationFilterDto): Promise
 }
 
 export async function getYearlyAcademicProgress(input: ProgressFilterDto): Promise<ProgressResponseDto> {
-    const res = await client.get(`grades/progress?year=${input.year}&page=${input.page}&limit=${input.limit}`)
+    let res;
+    if (input.school) {
+        res = await client.get(`grades/progress?year=${input.year}&school=${input.school}&page=${input.page}&limit=${input.limit}`)
+    } else {
+        res = await client.get(`grades/progress?year=${input.year}&page=${input.page}&limit=${input.limit}`)
+    }
     return res.data
 }
 
@@ -70,7 +75,10 @@ export async function getFilteredByProgramResults(input: ParticipationFilterDto)
     let res;
     if (input.year === 0 || !input.year) {
         res = await client.get(`participation/filter-by-program?program=${input.program}&page=${input.page}&limit=${input.limit}`)
-    } else {
+    } else if (input.school) {
+        res = await client.get(`participation/filter-by-program?program=${input.program}&school=${input.school}&year=${input.year}&page=${input.page}&limit=${input.limit}`)
+    }
+    else {
         res = await client.get(`participation/filter-by-program?program=${input.program}&year=${input.year}&page=${input.page}&limit=${input.limit}`)
     }
     return res.data

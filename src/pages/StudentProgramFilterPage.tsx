@@ -11,16 +11,20 @@ import { motion } from 'framer-motion'
 import { CalendarFold, ChevronLeft, Target, Users } from "lucide-react";
 import ErrorLayout from "@/components/ErrorLayout";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ASCGStudentTable from "@/components/ASCGTable";
+import { useGetAllSchools } from "@/hooks/use-dashboard";
 
 export default function StudentProgramFilterPage() {
     const { state } = useLocation()
+
+    const schoolsBreakdown = useGetAllSchools()
 
     const [input, setInput] = useState<ParticipationFilterDto>({
         year: state.year,
         program: state.program,
         page: 1,
         limit: 10,
-
+        school: ""
     })
 
     const { isLoading, isError, data, error } = useGetFilteredByProgramStudents(input)
@@ -30,7 +34,7 @@ export default function StudentProgramFilterPage() {
     }
 
 
-    if (isLoading) {
+    if (isLoading || schoolsBreakdown.isLoading) {
         return (
             <Container label="Students Filter">
                 <SpinnerCustom />
@@ -43,7 +47,7 @@ export default function StudentProgramFilterPage() {
     }
 
 
-    if (data) {
+    if (data && schoolsBreakdown.data) {
         return (
             <Container
                 label="Students By Programs"
@@ -67,7 +71,6 @@ export default function StudentProgramFilterPage() {
                                 <Card className="rounded-2xl bg-[#D9F3FF] shadow-sm h-40">
                                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                                         <CardTitle className="text-sm font-medium">Program</CardTitle>
-
                                         <Target className="h-5 w-5" />
                                     </CardHeader>
                                     <CardContent>
@@ -106,13 +109,45 @@ export default function StudentProgramFilterPage() {
                     </Card>
 
                     <Card className="px-6 py-10">
-                        <StudentTable
-                            data={data?.data}
-                            remove={selectStudent}
-                            filter={true}
-                            source="filter"
-                            query={input.page?.toString()}
-                        />
+
+
+                        {/* Dropdown for school selection */}
+                        <Select
+                            value={input.school}
+                            onValueChange={(value) => setInput({ ...input, school: value })}
+                        >
+                            <SelectTrigger className="w-full md:w-[200px]">
+                                <SelectValue placeholder='Filter by school' />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value=" ">All</SelectItem>
+                                {
+                                    schoolsBreakdown.data?.map((school: string) => (
+                                        <SelectItem value={school} key={school}>{school}</SelectItem>
+                                    ))
+                                }
+                            </SelectContent>
+                        </Select>
+
+                        {input.program === "ASCG" ?
+                            <ASCGStudentTable
+                                data={data?.data}
+                                remove={selectStudent}
+                                filter={true}
+                                source="filter"
+                                query={input.page?.toString()}
+                            />
+                            : <StudentTable
+                                data={data?.data}
+                                remove={selectStudent}
+                                filter={true}
+                                source="filter"
+                                query={input.page?.toString()}
+                            />
+                        }
+
+
+                        {/* Pagination markup */}
                         <div className="flex flex-col md:flex-row gap-5 justify-between items-baseline">
                             <div className="flex items-center gap-5">
                                 <Select onValueChange={(value) => {

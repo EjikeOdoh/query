@@ -32,7 +32,7 @@ export default function Students() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-    const schoolsBreakdown = useGetAllSchools()
+  const schoolsBreakdown = useGetAllSchools()
 
 
   function logInput(formData: FormData) {
@@ -48,7 +48,7 @@ export default function Students() {
     school: ""
   })
 
-  const { isPending, isError, data, error,isFetching, refetch } = useGetAllStudents(meta, token)
+  const { isPending, isError, data, error, isFetching, refetch } = useGetAllStudents(meta, token)
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
   const [sId, setSId] = useState<number>()
@@ -105,7 +105,7 @@ export default function Students() {
             onValueChange={(value) => setMeta({ ...meta, school: value })}
           >
             <SelectTrigger className="w-full md:w-[200px]">
-              <SelectValue placeholder='All' />
+              <SelectValue placeholder='Filter by school' />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value=" ">All</SelectItem>
@@ -196,9 +196,7 @@ export default function Students() {
               <div>
                 <h3 className="font-bold text-3xl text-center">Delete Student</h3>
                 <p className="font-light text-center">Are you sure you want to delete this student?</p>
-
               </div>
-
             </div>
             <div className="flex items-center gap-4">
               <Button variant='outline' className="flex-1" onClick={closeModal}>No</Button>
