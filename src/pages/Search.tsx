@@ -10,28 +10,32 @@ import { useDeleteStudent } from "@/hooks/use-students";
 import Modal from "@/components/Dialog";
 import { Button } from "@/components/ui/button";
 import LoadingLayout from "@/components/LoadingLayout";
+import { useGetAllSchools } from "@/hooks/use-dashboard";
 
 export default function Search() {
-    const { state }: { state: string } = useLocation()
+    const { state }: { state: { name: string; school: string } } = useLocation()
+    console.log(state)
     const queryClient = useQueryClient()
 
-    const [name, setName] = useState<string>(state)
+    const schools = useGetAllSchools()
+
+    const [search, setSearch] = useState<{ name: string; school: string }>(state)
+
 
     const { isLoading, isError, error, data, refetch, } = useQuery({
-        queryKey: ['search', name],
-        queryFn: () => searchStudent(name),
+        queryKey: ['search', search.name, search.school],
+        queryFn: () => searchStudent(search.name, search.school),
         staleTime: 5 * 60 * 1000,
     })
 
     const [isSearchError, setIsSearchError] = useState<boolean>(isError)
 
-
     function logInput(formData: FormData) {
         const studentName = formData.get('name') as string;
-        setName(studentName)
+        const school = formData.get('school') as string;
+        setSearch({ name: studentName, school })
         refetch()
     }
-
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const [sId, setSId] = useState<number>()
@@ -69,17 +73,19 @@ export default function Search() {
             <div className="w-fit">
                 <NavLink to="/students" className="flex items-center gap-2 text-[#171717] font-light text-xs" replace={true}>
                     <ChevronLeft color="#171717" size={14} />
-                    Back to Dashboard
+                    Back to Students
                 </NavLink>
             </div>
-            <SearchForm action={logInput} />
+
+            <SearchForm action={logInput} schools={schools.data} />
+
             {
                 data && (data.students.length > 0 ? <StudentTable
                     data={data.students}
                     remove={selectStudent}
                     source="search"
-                    query={name}
-                /> : <p className="">Student with name: <span className="font-bold text-xl text-[#00AEEF]">{name}</span> not found.</p>)
+                    query={search.name}
+                /> : <p className="">Student with name: <span className="font-bold text-xl text-[#00AEEF]">{search.name}</span> not found.</p>)
             }
             <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
                 <div className="space-y-10">

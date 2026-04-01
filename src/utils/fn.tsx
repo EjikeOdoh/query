@@ -4,8 +4,13 @@ import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, Cr
 import axios from "axios"
 
 // Fetchers
-export async function searchStudent(name: string): Promise<SearchResult> {
-    const res = await client.get(`/students/search?name=${name}`)
+export async function searchStudent(name: string, school?: string): Promise<SearchResult> {
+    let res;
+    if (school) {
+        res = await client.get(`/students/search?name=${name}&school=${school}`)
+    } else {
+        res = await client.get(`/students/search?name=${name}`)
+    }
     return await res.data
 }
 

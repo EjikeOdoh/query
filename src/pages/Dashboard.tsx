@@ -28,7 +28,7 @@ export default function Dashboard() {
     const dispatch = useContext(CurrentYearReducerContext)
     const selectedYear = useContext(CurrentYearContext)
 
-    const { isLoading, isError, error, data, } = useDashboardStats(selectedYear)
+    const { isLoading, isError, error, data, isFetching } = useDashboardStats(selectedYear)
     useGetPrograms()
     const breakdownQuery = useGetProgramBreakdown(selectedYear)
     const hiddenRef = useRef(null);
@@ -72,7 +72,7 @@ export default function Dashboard() {
     };
 
 
-    if (isLoading || breakdownQuery.isLoading) {
+    if (isLoading || isFetching || breakdownQuery.isLoading) {
         return (
             <Container
                 label="Dashboard">
@@ -141,7 +141,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* KPI cards */}
-                        <div className={`grid grid-cols-1 ${selectedYear ? "md:grid-cols-2" : "md:grid-cols-3"} gap-4`}>
+                        <div className={`grid grid-cols-1 md:grid-cols-2 gap-4`}>
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                                 <Card className="rounded-2xl bg-[#D9F3FF] shadow-sm min-h-40">
                                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -186,41 +186,44 @@ export default function Dashboard() {
                                 </motion.div> : undefined
                             }
 
-                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                                <Card className="rounded-2xl bg-[#F3F7DA] shadow-sm min-h-40">
-                                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                        <CardTitle className="text-sm font-medium">Target</CardTitle>
-                                        <Target className="h-5 w-5" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        {data!.target === 0 ? (
-                                            <p className="text-xs text-muted-foreground mb-2">
-                                                Please select a year with a defined target.
-                                            </p>
-                                        ) : (
-                                            <>
-                                                <div className="text-3xl font-bold">
-                                                    {currentYear?.count} / {data?.target}
-                                                </div>
+                            {
+                                !!(selectedYear) && <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                                    <Card className="rounded-2xl bg-[#F3F7DA] shadow-sm min-h-40">
+                                        <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                            <CardTitle className="text-sm font-medium">Target</CardTitle>
+                                            <Target className="h-5 w-5" />
+                                        </CardHeader>
+                                        <CardContent>
+                                            {data!.target === 0 ? (
                                                 <p className="text-xs text-muted-foreground mb-2">
-                                                    Progress toward the participation goal
+                                                    Please select a year with a defined target.
                                                 </p>
-                                                <Progress
-                                                    value={(data!.target > 0) ? (currentYear!.count / data!.target) > 1 ? 100 : ((currentYear!.count / data!.target) * 100) : 0}
-                                                    className="h-2"
-                                                />
-                                            </>
-                                        )}
-                                    </CardContent>
+                                            ) : (
+                                                <>
+                                                    <div className="text-3xl font-bold">
+                                                        {currentYear?.count} / {data?.target}
+                                                    </div>
+                                                    <p className="text-xs text-muted-foreground mb-2">
+                                                        Progress toward the participation goal
+                                                    </p>
+                                                    <Progress
+                                                        value={(data!.target > 0) ? (currentYear!.count / data!.target) > 1 ? 100 : ((currentYear!.count / data!.target) * 100) : 0}
+                                                        className="h-2"
+                                                    />
+                                                </>
+                                            )}
+                                        </CardContent>
 
-                                </Card>
-                            </motion.div>
+                                    </Card>
+                                </motion.div>
+                            }
+
                         </div>
                     </Card>
 
                     {/* Charts  */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <Card className="rounded-2xl shadow-sm">
+                    <div className="flex flex-col md:flex-row gap-6 items-start">
+                        <Card className="rounded-2xl shadow-sm flex-1 w-full">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
                                     <PieIcon className="h-4 w-4" /> Program Mix
@@ -261,150 +264,155 @@ export default function Dashboard() {
                             </CardContent>
                         </Card>
 
-                        <Card className="rounded-2xl shadow-sm lg:col-span-2">
+                        {/* Country Breakdown table only */}
+                        <Card className="rounded-2xl shadow-sm flex-1 w-full">
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
-                                    <BarChart2Icon className="h-4 w-4" />
-                                    Yearly Trend</CardTitle>
+                                <div className="flex items-center justify-between">
+                                    <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
+                                        <Map />
+                                        Country Breakdown</CardTitle>
+                                    <Badge variant="secondary" className="text-xs">Year: {selectedYear || "All"}</Badge>
+                                </div>
                             </CardHeader>
-                            <CardContent className="h-[320px]">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart
-                                        data={data?.countByYear}
-                                        margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
-                                        onClick={x => {
-                                            dispatch({
-                                                type: 'set',
-                                                value: Number(x.activePayload![0]["payload"].year)
-                                            })
-                                        }}
-                                    >
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis
-                                            dataKey="year"
-                                            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
-                                            label={{
-                                                value: 'Year',
-                                                position: 'bottom',
-                                                offset: -10,
-                                                fontSize: 10,
-                                            }}
-                                        />
-                                        <YAxis
-                                            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
-                                            label={{
-                                                value: 'Count',
-                                                angle: -90,
-                                                position: 'insideLeft',
-                                                fontSize: 10,
-                                            }}
-                                            domain={[0, Math.ceil(data!.highestYearlyCount * 1.1)]}
-                                        />
-                                        <RTooltip formatter={(v) => v as number} />
-                                        <Line
-                                            type="monotone"
-                                            dataKey="count"
-                                            stroke="#00C950"
-                                            strokeWidth={2}
-                                            dot={{ r: 4 }}
-                                            activeDot={{ r: 6 }}
-                                        />
-                                    </LineChart>
-                                </ResponsiveContainer>
+                            <CardContent>
+                                <CountryTable data={data?.countByCountry || []} year={selectedYear} />
                             </CardContent>
-
                         </Card>
+
+
                     </div>
 
-                    {/* Country Breakdown table only */}
+                    {!!(selectedYear) && (
+                        <div className="flex flex-col md:flex-row gap-6">
+                            <Card className="flex-1 rounded-2xl shadow-sm">
+                                <CardHeader className="pb-2">
+                                    <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
+                                        <ChartBarBig className="h-4 w-4" /> Age Distribution - {selectedYear}
+                                    </CardTitle>
+                                </CardHeader>
+
+                                <CardContent className="h-[320px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart
+                                            data={breakdownQuery.data?.ageRanges}
+                                            layout="vertical"
+                                            margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis
+                                                type="number"
+                                                tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+                                                label={{
+                                                    value: 'COUNT',
+                                                    position: 'bottom',
+                                                    offset: -8,
+                                                    fontSize: 10,
+
+                                                }}
+                                            />
+                                            <YAxis
+                                                type="category"
+                                                dataKey="range"
+                                                tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+                                                label={{
+                                                    value: 'AGE GROUP',
+                                                    angle: -90,
+                                                    position: 'insideLeft',
+                                                    fontSize: 10,
+                                                }}
+                                            />
+                                            <RTooltip formatter={(v, n) => [v as number, n as string]} />
+                                            <Bar dataKey="count">
+                                                {breakdownQuery.data?.ageRanges?.map((_, idx) => (
+                                                    <Cell
+                                                        key={idx}
+                                                        fill={COLORS['ASCG']}
+                                                    />
+                                                ))}
+                                                <LabelList
+                                                    dataKey="count"
+                                                    position="insideLeft"
+                                                    offset={5}
+                                                    fill="#000"
+                                                    className="text-xs font-bold"
+                                                />
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+
+
+                            </Card>
+                            <Card className="flex-1">
+                                <CardHeader className="pb-2">
+                                    <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
+                                        <ChartColumnBig className="h-4 w-4" /> Quarterly Breakdown - {selectedYear}
+                                    </CardTitle>
+                                </CardHeader>
+                                <GroupedBarChart data={breakdownQuery.data?.programs ?? []} />
+                            </Card>
+                        </div>
+                    )
+                    }
+
+                    {/* Yearly Trend */}
                     <Card className="rounded-2xl shadow-sm">
                         <CardHeader className="pb-2">
-                            <div className="flex items-center justify-between">
-                                <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
-                                    <Map />
-                                    Country Breakdown</CardTitle>
-                                <Badge variant="secondary" className="text-xs">Year: {selectedYear || "All"}</Badge>
-                            </div>
+                            <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
+                                <BarChart2Icon className="h-4 w-4" />
+                                Yearly Trend</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <CountryTable data={data?.countByCountry || []} year={selectedYear} />
+                        <CardContent className="h-[320px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart
+                                    data={data?.countByYear}
+                                    margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
+                                    onClick={x => {
+                                        dispatch({
+                                            type: 'set',
+                                            value: Number(x.activePayload![0]["payload"].year)
+                                        })
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                        dataKey="year"
+                                        tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+                                        label={{
+                                            value: 'Year',
+                                            position: 'bottom',
+                                            offset: -10,
+                                            fontSize: 10,
+                                        }}
+                                    />
+                                    <YAxis
+                                        tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
+                                        label={{
+                                            value: 'Count',
+                                            angle: -90,
+                                            position: 'insideLeft',
+                                            fontSize: 10,
+                                        }}
+                                        domain={[0, Math.ceil(data!.highestYearlyCount * 1.1)]}
+                                    />
+                                    <RTooltip formatter={(v) => v as number} />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="count"
+                                        stroke="#00C950"
+                                        strokeWidth={2}
+                                        dot={{ r: 4 }}
+                                        activeDot={{ r: 6 }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
                         </CardContent>
+
                     </Card>
                 </div>
 
 
-                {!!(selectedYear) && (
-                    <div className="flex flex-col md:flex-row gap-6">
-                        <Card className="flex-1 rounded-2xl shadow-sm">
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
-                                    <ChartBarBig className="h-4 w-4" /> Age Distribution - {selectedYear}
-                                </CardTitle>
-                            </CardHeader>
 
-                            <CardContent className="h-[320px]">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart
-                                        data={breakdownQuery.data?.ageRanges}
-                                        layout="vertical"
-                                        margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
-                                    >
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis
-                                            type="number"
-                                            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
-                                            label={{
-                                                value: 'COUNT',
-                                                position: 'bottom',
-                                                offset: -8,
-                                                fontSize: 10,
-
-                                            }}
-                                        />
-                                        <YAxis
-                                            type="category"
-                                            dataKey="range"
-                                            tick={{ fontSize: 10, fontWeight: 600, color: "#000" }}
-                                            label={{
-                                                value: 'AGE GROUP',
-                                                angle: -90,
-                                                position: 'insideLeft',
-                                                fontSize: 10,
-                                            }}
-                                        />
-                                        <RTooltip formatter={(v, n) => [v as number, n as string]} />
-                                        <Bar dataKey="count">
-                                            {breakdownQuery.data?.ageRanges?.map((_, idx) => (
-                                                <Cell
-                                                    key={idx}
-                                                    fill={COLORS['ASCG']}
-                                                />
-                                            ))}
-                                            <LabelList
-                                                dataKey="count"
-                                                position="insideLeft"
-                                                offset={5}
-                                                fill="#000"
-                                                className="text-xs font-bold"
-                                            />
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-
-
-                        </Card>
-                        <Card className="flex-1">
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-base text-[#171717] font-semibold flex items-center gap-2">
-                                    <ChartColumnBig className="h-4 w-4" /> Quarterly Breakdown - {selectedYear}
-                                </CardTitle>
-                            </CardHeader>
-                            <GroupedBarChart data={breakdownQuery.data?.programs ?? []} />
-                        </Card>
-                    </div>
-                )
-                }
 
                 {
                     (profile.role === "admin" && selectedYear > 0) ? (

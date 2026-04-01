@@ -37,8 +37,9 @@ export default function Students() {
 
   function logInput(formData: FormData) {
     const studentName = formData.get('name') as string;
+    const school = formData.get('school') as string;
     navigate('/students/search', {
-      state: studentName
+      state: {name: studentName, school}
     })
   }
 
@@ -94,11 +95,22 @@ export default function Students() {
 
     return (
       <Container label="Students">
-        <div className="flex gap-5 flex-col-reverse md:flex-row md:items-center justify-between">
-          <SearchForm
-            placeholder="Search by student names"
-            action={logInput} />
+        <div className="space-y-5">
+          <div className="flex gap-5 flex-col-reverse md:flex-row md:items-center justify-between">
+            <SearchForm
+              placeholder="Search by student names"
+              action={(formData)=>logInput(formData)}
+              schools={schools}
+              />
 
+            <Button
+              className="bg-[#00AEFF] text-white text-sm"
+              onClick={() => navigate('/add-student')}
+            >
+              <CircleFadingPlus />
+              <span>Add Student</span>
+            </Button>
+          </div>
           {/* Dropdown for school selection */}
           <Select
             value={meta.school}
@@ -116,14 +128,6 @@ export default function Students() {
               }
             </SelectContent>
           </Select>
-
-          <Button
-            className="bg-[#00AEFF] text-white text-sm"
-            onClick={() => navigate('/add-student')}
-          >
-            <CircleFadingPlus />
-            <span>Add Student</span>
-          </Button>
         </div>
 
         <StudentTable data={students} remove={selectStudent} query={meta.page.toString()} />

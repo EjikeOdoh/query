@@ -30,6 +30,8 @@ export default function Student() {
         }
     } = useLocation()
 
+    console.log(state)
+
     const navigate = useNavigate()
 
     const queryClient = useQueryClient()
@@ -58,7 +60,7 @@ export default function Student() {
     const [isEditParticipationModalOpen, setIsParticipationModalOpen] = useState<boolean>(false)
     const [isAddParticipationModalOpen, setIsAddParticipationModalOpen] = useState<boolean>(false)
 
-    const { isLoading, isError, error, data, refetch } = useGetStudentDetails(Number(studentId));
+    const { isLoading, isError, error, data, isFetching, refetch } = useGetStudentDetails(Number(studentId));
     const { isPending, mutate } = useUpdateStudent(studentId!, trimObjectValues(editData) as EditStudentPayload, () => {
         refetch()
         queryClient.invalidateQueries({ queryKey: ['students'] })
@@ -177,7 +179,7 @@ export default function Student() {
         return <ErrorLayout label="Student Details" text={error.message} />
     }
 
-    if (isLoading || programs.isLoading || isPending || updateGradeMutation.isPending || addGradeMutation.isPending || updateParticipationMutation.isPending || addPartipationMutation.isPending || deleteParticipationMutation.isPending || deleteGradeMutation.isPending || deleteStudentMutation.isPending) {
+    if (isLoading || isFetching || programs.isLoading || isPending || updateGradeMutation.isPending || addGradeMutation.isPending || updateParticipationMutation.isPending || addPartipationMutation.isPending || deleteParticipationMutation.isPending || deleteGradeMutation.isPending || deleteStudentMutation.isPending) {
         return <LoadingLayout label="Student Details" />;
     }
 
@@ -193,7 +195,8 @@ export default function Student() {
                     <div className="w-11/12 m-auto space-y-10">
                         <div className="py-6 px-10 bg-white rounded-2xl space-y-10">
                             <div>
-                                <NavLink to={state !== null && isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state !== null && state.query}>
+                                <NavLink to={state !== null && isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state !== null && isFromSearchPage ? { name: state.query, school: school } : state.query}
+                                >
                                     <ChevronLeft color="#171717" size={14} />
                                     {isFromSearchPage ? "Back to Search" : "Back to Students"}
                                 </NavLink>
