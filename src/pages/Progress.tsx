@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { CurrentYearContext } from "@/context/CurrentYearContext";
 import { useGetAllSchools } from "@/hooks/use-dashboard";
 import { useGetStudentsAcademicProgress } from "@/hooks/use-students";
+import { downloader } from "@/utils/fn";
 import type { ProgressFilterDto } from "@/utils/types";
 import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -29,6 +30,18 @@ export default function Progress() {
         school: ""
 
     })
+
+    const [isDownloading, setIsDownloading] = useState<boolean>(false)
+
+    async function handleDownload() {
+        try {
+            setIsDownloading(true)
+            await downloader({ year: input.year, school: input.school })
+        } finally {
+            setIsDownloading(false)
+        }
+    }
+
 
     const { data, isLoading, isError, error } = useGetStudentsAcademicProgress(input)
 
@@ -68,6 +81,14 @@ export default function Progress() {
                             </SelectContent>
                         </Select>
                     </div>
+
+                    {(data.data.length > 0 && !!(input.school)) &&
+                        <div>
+                            <Button
+                                onClick={handleDownload}
+                                className="w-full">{isDownloading ? `Downloading` : `Download Progress Sheet for ${input.school}`}</Button>
+                        </div>}
+
                     <Table className="rounded-xl overflow-hidden mt-5">
                         <TableHeader className="">
                             <TableRow className="bg-[#E6F7FF]">

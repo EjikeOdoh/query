@@ -195,7 +195,10 @@ export default function Student() {
                     <div className="w-11/12 m-auto space-y-10">
                         <div className="py-6 px-10 bg-white rounded-2xl space-y-10">
                             <div>
-                                <NavLink to={state !== null && isFromSearchPage ? "/students/search" : "/students"} className="flex items-center gap-2 text-[#171717] font-light text-xs" state={state !== null && isFromSearchPage ? { name: state.query, school: school } : state.query}
+                                <NavLink
+                                    to={state !== null && isFromSearchPage ? "/students/search" : "/students"}
+                                    className="flex items-center gap-2 text-[#171717] font-light text-xs"
+                                    state={state !== null && isFromSearchPage ? { name: state.query, school: school } : undefined}
                                 >
                                     <ChevronLeft color="#171717" size={14} />
                                     {isFromSearchPage ? "Back to Search" : "Back to Students"}

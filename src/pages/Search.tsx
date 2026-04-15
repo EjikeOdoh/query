@@ -87,6 +87,7 @@ export default function Search() {
                     query={search.name}
                 /> : <p className="">Student with name: <span className="font-bold text-xl text-[#00AEEF]">{search.name}</span> not found.</p>)
             }
+            
             <Modal isOpen={isDeleteModalOpen} onClose={closeModal}>
                 <div className="space-y-10">
                     <div className="space-y-8">

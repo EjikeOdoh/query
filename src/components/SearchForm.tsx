@@ -11,18 +11,17 @@ type SearchFormProps = {
 
 export function SearchForm({ action, placeholder = "Search", schools = [] }: SearchFormProps) {
   return (
-    <form action={action} className="flex flex-col md:flex-row min-w-1/2 items-center gap-2 border border-[#E5E5E5] rounded-lg overflow-hidden p-4 items-stretch">
+    <form action={action} className="flex flex-col md:flex-row min-w-1/2 items-center gap-4 lg:gap-6 border border-[#E5E5E5] rounded-lg overflow-hidden p-4 items-stretch">
       <Input
         name="name"
         placeholder={placeholder}
         required
         className="w-full"
       />
-
       <Select
         name="school"
       >
-        <SelectTrigger className="w-full md:w-[200px] ">
+        <SelectTrigger className="w-full md:w-[200px] lg:ml-20">
           <SelectValue placeholder='Search by school' />
         </SelectTrigger>
         <SelectContent>

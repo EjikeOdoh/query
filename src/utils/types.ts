@@ -109,7 +109,7 @@ export interface StudentDetail {
   yearJoined: number
   grades: Grade[]
   participations: Participation[]
-  progress: Omit<StudentProgress,'firstName' | 'lastName' | 'school'>[]
+  progress: Omit<StudentProgress, 'firstName' | 'lastName' | 'school'>[]
 }
 
 export type EditStudentPayload = Omit<StudentDetail, 'id' | 'grades' | 'participations'>
@@ -488,5 +488,10 @@ export interface ProgressFilterDto {
   year: number
   page?: number
   limit?: number
+  school?: string
+}
+
+export interface DownloadDto {
+  year?: number
   school?: string
 }

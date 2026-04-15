@@ -1,6 +1,6 @@
 import type React from "react"
 import client from "./api"
-import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateUserDto, CreateVolunteer, DashStats, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, FilterStudentsPayload, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, Partner, PartnerDetails, ProfileState, ProgramStat, ProgressFilterDto, ProgressResponseDto, QuarterlyProgramBreakdown, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, User, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
+import type { ApiError, CreateSponsorshipDto, CreateStaff, CreateStudentData, CreateStudentPayload, CreateTargetDto, CreateUserDto, CreateVolunteer, DashStats, DownloadDto, EditPartnerDetailsDto, EditSponsorshipDto, EditStudentPayload, EditTargetDto, EditUserDto, EditVolunteerDto, FilterStudentsPayload, GradeAddData, GradeEditData, HistoryTable, LoginForm, ParticipationAddData, ParticipationEditData, ParticipationFilterDto, Partner, PartnerDetails, ProfileState, ProgramStat, ProgressFilterDto, ProgressResponseDto, QuarterlyProgramBreakdown, SearchResult, StaffDetails, StaffPayload, StudentDetail, StudentPagination, StudentResponse, Target, User, VolunteerDetails, VolunteerParticipation, VolunteersPayload } from "./types"
 import axios from "axios"
 
 // Fetchers
@@ -568,3 +568,17 @@ export function trimObjectValues<T>(obj: T): T {
 
     return obj;
 }
+
+
+export async function downloader(dto: DownloadDto) {
+    const response = await client.get(`/grades/all-progress?year=${dto.year}&school=${dto.school}`, {
+        responseType: 'blob',
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${dto.year}_Progress_Report_For_${dto.school}.xlsx`;
+    a.click();
+};
