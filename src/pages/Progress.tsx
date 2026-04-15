@@ -61,7 +61,7 @@ export default function Progress() {
         return (
             <Container label="Progress Report">
                 <div className="bg-white rounded-2xl space-y-5">
-                    <div className="flex justify-between align-center">
+                    <div className="flex flex-col md:flex-row gap-5 justify-between align-center">
                         <Heading text={`Academic Progress Table for ${input.year}`} />
                         {/* Dropdown for school selection */}
                         <Select
