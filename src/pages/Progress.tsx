@@ -82,7 +82,7 @@ export default function Progress() {
                         </Select>
                     </div>
 
-                    {(data.data.length > 0 && !!(input.school)) &&
+                    {(!!(input.school)) &&
                         <div>
                             <Button
                                 onClick={handleDownload}
