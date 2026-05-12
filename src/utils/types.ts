@@ -443,6 +443,7 @@ export interface FilterStudentsPayload {
 }
 
 export interface ProgressResponseDto {
+  schools: string[]
   data: StudentProgress[]
   meta: Meta
 }

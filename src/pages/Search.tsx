@@ -22,7 +22,7 @@ export default function Search() {
     const [search, setSearch] = useState<{ name: string; school: string }>(state)
 
 
-    const { isLoading, isError, error, data, refetch, } = useQuery({
+    const { isLoading, isError, error, data, refetch, isFetching } = useQuery({
         queryKey: ['search', search.name, search.school],
         queryFn: () => searchStudent(search.name, search.school),
         staleTime: 5 * 60 * 1000,
@@ -64,7 +64,7 @@ export default function Search() {
         deleteStudentMutation.mutate()
     }
 
-    if (isLoading) {
+    if (isLoading || isFetching || deleteStudentMutation.isPending) {
         return <LoadingLayout label="Student Search" />
     }
 

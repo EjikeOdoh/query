@@ -32,7 +32,7 @@ export function useGetAllSchools() {
         staleTime: 5 * 60 * 1000,
         select(data) {
             const keywords = ["GSS", "JSS", "MSS", "MJSS", "GDSS", "GGSS", "ADSS"];
-            return data.data.filter((school: string) =>  keywords.some(keyword => school.includes(keyword)))
-        },
+            return data.data.filter((school: string) => keywords.some(keyword => school.includes(keyword)))
+        }
     })
 }

@@ -253,6 +253,7 @@ export default function AddStudent() {
                                         placeholder="Country"
                                         value={data.country}
                                         onChange={(e) => updateData(e, setData)}
+                                        required
                                     />
                                 </div>
 

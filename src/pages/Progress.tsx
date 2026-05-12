@@ -8,18 +8,18 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CurrentYearContext } from "@/context/CurrentYearContext";
-import { useGetAllSchools } from "@/hooks/use-dashboard";
 import { useGetStudentsAcademicProgress } from "@/hooks/use-students";
 import { downloader } from "@/utils/fn";
-import type { ProgressFilterDto } from "@/utils/types";
+import type { ProfileState, ProgressFilterDto } from "@/utils/types";
 import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 export default function Progress() {
 
-    const schoolsBreakdown = useGetAllSchools()
-
     const currentYear = useContext(CurrentYearContext)
+
+    const profile: ProfileState = JSON.parse(sessionStorage.getItem("profile") as string)
+
     const { state } = useLocation()
 
     const navigate = useNavigate()
@@ -42,10 +42,9 @@ export default function Progress() {
         }
     }
 
-
     const { data, isLoading, isError, error } = useGetStudentsAcademicProgress(input)
 
-    if (isLoading || schoolsBreakdown.isLoading) {
+    if (isLoading) {
         return (
             <Container label="Academic Progress">
                 <SpinnerCustom />
@@ -57,7 +56,7 @@ export default function Progress() {
         return <ErrorLayout label="Students Filters" text={error.message} />
     }
 
-    if (data && schoolsBreakdown.data) {
+    if (data) {
         return (
             <Container label="Progress Report">
                 <div className="bg-white rounded-2xl space-y-5">
@@ -74,7 +73,7 @@ export default function Progress() {
                             <SelectContent>
                                 <SelectItem value=" ">All</SelectItem>
                                 {
-                                    schoolsBreakdown.data?.map((school: string) => (
+                                    data.schools?.map((school: string) => (
                                         <SelectItem value={school} key={school}>{school}</SelectItem>
                                     ))
                                 }
@@ -82,12 +81,21 @@ export default function Progress() {
                         </Select>
                     </div>
 
-                    {(!!(input.school)) &&
-                        <div>
-                            <Button
+                    <div>
+                        {
+                            profile.role === 'admin' ? <Button
                                 onClick={handleDownload}
-                                className="w-full">{isDownloading ? `Downloading` : `Download Progress Sheet for ${input.school}`}</Button>
-                        </div>}
+                                className="w-full"
+                            >{isDownloading ? `Downloading` : `Download Progress Sheet for ${(input.school && input.school !== " ") ? input.school : "All Schools"}`}</Button> : (
+                                input.school &&
+                                <Button
+                                    onClick={handleDownload}
+                                    className="w-full"
+                                >{isDownloading ? `Downloading` : `Download Progress Sheet for ${input.school}`}</Button>
+                            )
+                        }
+
+                    </div>
 
                     <Table className="rounded-xl overflow-hidden mt-5">
                         <TableHeader className="">
