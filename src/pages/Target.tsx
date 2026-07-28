@@ -160,5 +160,4 @@ export default function Target() {
             </Container>
         )
     }
-
 }

@@ -7,7 +7,7 @@ import { extractApiError, login } from "@/utils/fn";
 import type { ApiError, TokenAction } from "@/utils/types";
 import { useContext, type Dispatch, useState } from "react";
 import WhiteLogo from '../assets/whiteLogo.svg'
-import { ShieldOff } from "lucide-react";
+import { Eye, EyeOffIcon, ShieldOff } from "lucide-react";
 import Modal from "@/components/Dialog";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -15,8 +15,13 @@ export default function LoginPage() {
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isError, setIsError] = useState<boolean>(false)
+    const [isPassVisible, setIsPassVisible] = useState<boolean>(false)
     const [error, setError] = useState<ApiError | null>(null)
     const dispatch: Dispatch<TokenAction> = useContext(TokenReducerContext)
+
+    function toggleVisible() {
+        setIsPassVisible(!isPassVisible)
+    }
 
     function closeModal() {
         setIsError(false)
@@ -76,25 +81,31 @@ export default function LoginPage() {
                                             required
                                         />
                                     </div>
-                                    <div className="grid gap-3">
-                                        <div className="flex items-center">
-                                            <Label htmlFor="password">Password</Label>
-                                        </div>
-                                        <Input
-                                            id="password"
-                                            name="password"
-                                            type="password"
-                                            placeholder="Enter password"
-                                            required
 
-                                        />
+                                    <div className="grid gap-3">
+                                        <Label htmlFor="password">Password</Label>
+                                        <div className="flex border items-center">
+
+                                            <input
+                                                placeholder="Enter password"
+                                                type={isPassVisible ? 'text' : 'password'} id="password"
+                                                name="password"
+                                                required
+                                                className="placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30  flex-1 flex h-12 border-input  rounded-sm border bg-transparent px-6 py-1 text-sm transition-[color,box-shadow] outline-none  disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm font-light focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive" />
+                                            <Button type="button" size={"icon"} className="h-12 w-12 border-l" onClick={toggleVisible}>
+                                                {isPassVisible ? <EyeOffIcon size={20} /> : <Eye size={20} />}
+
+                                            </Button>
+                                        </div>
+
                                     </div>
-                                    <Button type="submit" className="w-full p-5" disabled={isLoading}>
-                                        {isLoading && <Spinner />}
-                                        Login
-                                    </Button>
                                 </div>
+                                <Button type="submit" className="w-full p-5" disabled={isLoading}>
+                                    {isLoading && <Spinner />}
+                                    Login
+                                </Button>
                             </div>
+
                         </form>
                     </CardContent>
                 </Card>

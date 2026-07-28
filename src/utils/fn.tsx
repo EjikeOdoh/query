@@ -458,7 +458,8 @@ export async function login(payload: LoginForm) {
     return res.data
 }
 
-export function logout() {
+export async function logout() {
+    await client.get("/auth/logout")
     sessionStorage.clear();
     window.history.replaceState({}, '', '/');
     window.location.reload();
