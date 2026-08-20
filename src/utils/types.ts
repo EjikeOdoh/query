@@ -129,6 +129,7 @@ export interface ProfileState {
   email?: string
   firstName?: string
   lastName?: string
+  isLoggedIn?: boolean
   staff?: StaffDetails | null
   volunteer?: VolunteerDetails | null
 }

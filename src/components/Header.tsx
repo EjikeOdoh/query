@@ -1,15 +1,17 @@
 import type { ProfileState } from "@/utils/types";
 import { SidebarTrigger } from "./ui/sidebar";
 import { useSidebar } from "./ui/sidebar";
-import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Header({ label }: { label?: string }) {
-    const { open, isMobile } = useSidebar()
-    const [profile, setProfile] = useState<ProfileState>()
 
-    useEffect(() => {
-        setProfile(JSON.parse(sessionStorage.getItem('profile') as string))
-    }, [])
+    const queryClient = useQueryClient()
+    const profile = queryClient.getQueryData(["profile"]) as ProfileState
+
+    console.log(profile)
+
+    const { open, isMobile } = useSidebar()
+
 
     const name = profile?.firstName || profile?.staff?.firstName || profile?.volunteer?.firstName || `VF`
     return (

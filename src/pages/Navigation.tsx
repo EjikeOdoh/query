@@ -28,6 +28,7 @@ import Users from "./Users";
 import StudentFilterPage from "./StudentFilterPage";
 import StudentProgramFilterPage from "./StudentProgramFilterPage";
 import Progress from "./Progress";
+import Authenticator from "./Authenticator";
 
 export default function Navigation() {
 
@@ -54,74 +55,123 @@ export default function Navigation() {
 
 
     const accountType: ProfileState = data!
+    // build routes clearly to avoid nested JSX/ternary syntax issues
+    let routes = null
+
+    if (token) {
+
+//   routes = (
+//                 <Route path="/" element={<Protected />} >
+//                     <Route index element={<Dashboard />} />
+//                     <Route path='/profile' element={<Account />} />
+
+//                     {(accountType.role === "editor" || accountType.role === "admin") && (
+//                         <>
+//                             {/* Routes for students */}
+//                             <Route path='/students' element={<Students />} />
+//                             <Route path='/students/search' element={<Search />} />
+//                             <Route path='/add-student' element={<AddStudent />} />
+//                             <Route path='/students/:studentId' element={<Student />} />
+//                             <Route path='/student-filter' element={<StudentFilterPage />} />
+//                             <Route path='/program-filter' element={<StudentProgramFilterPage />} />
+//                             <Route path='/progress' element={<Progress />} />
+//                         </>
+//                     )}
+
+//                     {accountType.role === 'admin' && (
+//                         <>
+//                             {/* Routes for volunteers */}
+//                             <Route path='/volunteers' element={<Volunteers />} />
+//                             <Route path='/add-volunteer' element={<AddVolunteer />} />
+//                             <Route path='/volunteers/:volunteerId' element={<VolunteerDetails />} />
+
+//                             {/* Routes for staff */}
+//                             <Route path='/staff' element={<Staff />} />
+//                             <Route path='/add-staff' element={<AddStaff />} />
+//                             <Route path='/staff/:staffId' element={<StaffDetails />} />
+
+//                             {/* Routes for partners */}
+//                             <Route path='/partners' element={<Partners />} />
+//                             <Route path='/add-partner' element={<AddPartner />} />
+//                             <Route path='/partners/:partnerId' element={<PartnerDetails />} />
+
+//                             {/* Admin routes */}
+//                             <Route path='/upload' element={<Upload />} />
+//                             <Route path='/target' element={<Target />} />
+//                             <Route path='/upload-history' element={<BulkUploads />} />
+//                             <Route path='/accounts' element={<Users />} />
+//                         </>
+//                     )}
+
+//                     {/* Handle random routes */}
+//                     <Route path="*" element={<Dashboard />} />
+//                 </Route>
+//             )
+        if (accountType.isLoggedIn) {
+            routes = (
+                <Route path="/" element={<Protected />} >
+                    <Route index element={<Dashboard />} />
+                    <Route path='/profile' element={<Account />} />
+
+                    {(accountType.role === "editor" || accountType.role === "admin") && (
+                        <>
+                            {/* Routes for students */}
+                            <Route path='/students' element={<Students />} />
+                            <Route path='/students/search' element={<Search />} />
+                            <Route path='/add-student' element={<AddStudent />} />
+                            <Route path='/students/:studentId' element={<Student />} />
+                            <Route path='/student-filter' element={<StudentFilterPage />} />
+                            <Route path='/program-filter' element={<StudentProgramFilterPage />} />
+                            <Route path='/progress' element={<Progress />} />
+                        </>
+                    )}
+
+                    {accountType.role === 'admin' && (
+                        <>
+                            {/* Routes for volunteers */}
+                            <Route path='/volunteers' element={<Volunteers />} />
+                            <Route path='/add-volunteer' element={<AddVolunteer />} />
+                            <Route path='/volunteers/:volunteerId' element={<VolunteerDetails />} />
+
+                            {/* Routes for staff */}
+                            <Route path='/staff' element={<Staff />} />
+                            <Route path='/add-staff' element={<AddStaff />} />
+                            <Route path='/staff/:staffId' element={<StaffDetails />} />
+
+                            {/* Routes for partners */}
+                            <Route path='/partners' element={<Partners />} />
+                            <Route path='/add-partner' element={<AddPartner />} />
+                            <Route path='/partners/:partnerId' element={<PartnerDetails />} />
+
+                            {/* Admin routes */}
+                            <Route path='/upload' element={<Upload />} />
+                            <Route path='/target' element={<Target />} />
+                            <Route path='/upload-history' element={<BulkUploads />} />
+                            <Route path='/accounts' element={<Users />} />
+                        </>
+                    )}
+
+                    {/* Handle random routes */}
+                    <Route path="*" element={<Dashboard />} />
+                </Route>
+            )
+        } else {
+            routes = <Route path="/" element={<Authenticator />} />
+        }
+    } else {
+        routes = (
+            <>
+                <Route path='/' element={<LoginPage />} />
+                <Route path="*" element={<LoginPage />} />
+            </>
+        )
+    }
 
     return (
         <BrowserRouter>
             <Routes>
-                {token ? (
-                    <Route path="/" element={<Protected />} >
-                        <Route index element={<Dashboard />} />
-                        <Route path='/profile' element={<Account />} />
-                        {
-                            (accountType.role === "editor" || accountType.role === "admin") && <>
-                                {/* Routes for students */}
-                                <Route path='/students' element={<Students />} />
-                                <Route path='/students/search' element={<Search />} />
-                                <Route path='/add-student' element={<AddStudent />} />
-                                <Route path='/students/:studentId' element={<Student />} />
-                                <Route path='/student-filter' element={<StudentFilterPage />} />
-                                <Route path='/program-filter' element={<StudentProgramFilterPage />} />
-                                <Route path='/progress' element={<Progress />} />
-                            </>
-                        }
-
-                        {
-                            accountType.role === 'admin' && (
-                                <>
-                                    {/* Routes for volunteers */}
-                                    <Route path='/volunteers' element={<Volunteers />} />
-                                    <Route path='/add-volunteer' element={<AddVolunteer />} />
-                                    <Route path='/volunteers/:volunteerId' element={<VolunteerDetails />} />
-
-                                    {/* Routes for staff */}
-                                    <Route path='/staff' element={<Staff />} />
-                                    <Route path='/add-staff' element={<AddStaff />} />
-                                    <Route path='/staff/:staffId' element={<StaffDetails />} />
-
-                                    {/* Routes for partners */}
-                                    <Route path='/partners' element={<Partners />} />
-                                    <Route path='/add-partner' element={<AddPartner />} />
-                                    <Route path='/partners/:partnerId' element={<PartnerDetails />} />
-
-                                    {/* Admin routes */}
-                                    <Route path='/upload' element={<Upload />} />
-                                    <Route path='/target' element={<Target />} />
-                                    <Route path='/upload-history' element={<BulkUploads />} />
-                                    <Route path='/accounts' element={<Users />} />
-                                </>
-                            )
-                        }
-
-
-                        {/* Handle random routes */}
-                        <Route
-                            path="*"
-                            element={<Dashboard />}
-                        />
-                    </Route>
-                ) : (
-                    <>
-                        <Route path='/' element={<LoginPage />} />
-                        <Route
-                            path="*"
-                            element={<LoginPage />}
-                        />
-
-                    </>
-                )}
-
+                {routes}
             </Routes>
-
         </BrowserRouter>
     )
 

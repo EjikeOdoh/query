@@ -12,17 +12,22 @@ import { TokenContext } from "@/context/TokenContext";
 import { useUpdateStaff, useUpdateUser, useUpdateVolunteer } from "@/hooks/use-admin";
 import { useGetProfile } from "@/hooks/useGetProfile";
 import { dateFormatter, extractInitials, extractNames, updateData } from "@/utils/fn";
-import type { EditUserDto, EditVolunteerDto, StaffDetails, VolunteerDetails } from "@/utils/types";
+import type { EditUserDto, EditVolunteerDto, ProfileState, StaffDetails, VolunteerDetails } from "@/utils/types";
 import { CircleCheckBig, Eye, EyeOff, Pencil } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function Account() {
+
+    const queryClient = useQueryClient()
+    const profile = queryClient.getQueryData(["profile"]) as ProfileState
+
     const value = sessionStorage.getItem("myToken")
     const token = useContext(TokenContext) || value
     const { data, isLoading, isError, error, refetch } = useGetProfile(token as string)
 
-    const isStaff = data?.staff?.id ? true : false
-    const isVolunteer = data?.volunteer?.id ? true : false
+    const isStaff = profile?.staff?.id ? true : false
+    const isVolunteer = profile?.volunteer?.id ? true : false
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false)
@@ -38,9 +43,9 @@ export function Account() {
     const updateAccountMutation = useUpdateUser(cleanUp)
 
     // Mutation fns
-    const updateVolunteerMutation = useUpdateVolunteer(String(data!.volunteer?.id), editVolunteerDto, refetch)
+    const updateVolunteerMutation = useUpdateVolunteer(String(profile!.volunteer?.id), editVolunteerDto, refetch)
 
-    const updateStaffMutation = useUpdateStaff(String(data!.staff?.id), editStaffDto as StaffDetails, refetch)
+    const updateStaffMutation = useUpdateStaff(String(profile!.staff?.id), editStaffDto as StaffDetails, refetch)
 
     function openEditModal() {
         setIsEditModalOpen(true)
